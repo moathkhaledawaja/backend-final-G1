@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import sequelize from './config/db';
 import productRoutes from './routes/productRoutes';
-
+import swaggerUi from 'swagger-ui-express'
 dotenv.config();
 
 
@@ -11,6 +11,11 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use('/api', productRoutes);
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(undefined, {
+    swaggerOptions: {
+        url: "/swagger.json"
+    }
+}))
 
 const startServer = async () => {
     try {
