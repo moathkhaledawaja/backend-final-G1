@@ -1,37 +1,30 @@
-import Comment from '../models/comment.model';
-import bcrypt from 'bcrypt';
+import { ICommentRepository } from '../data-access/Interfaces/ICommentRepository';
+import { Comment } from '../models';
+import { commentRepository } from '../data-access';
 
-class UserService {
-
-  public static async createComment(data: Partial<Comment>): Promise<Comment> {
-    const commentData = { data };
-    return await Comment.create(commentData);
+class CommentService {
+  static comment: ICommentRepository = commentRepository
+  public static async createComment(data: Comment): Promise<Comment | null> {
+    return await CommentService.comment.create(data);
   }
 
-  public static async getCommentsByProductId(productId: number): Promise<Comment | null> {
-    return await Comment.findAll({ where: { productId } });
+  public static async getCommentsByProductId(productId: number): Promise<Comment[] | null> {
+    return await CommentService.comment.findByProductId(productId);
   }
 
 
   public static async getCommentById(id: number): Promise<Comment | null> {
-    return await Comment.findByPk(id);
+    return await CommentService.comment.findById(id);
   }
 
   public static async updateComment(id: number, data: Partial<Comment>): Promise<Comment | null> {
-    const comment = await Comment.findByPk(id);
-    if (comment) {
-      await comment.update(data);
-      return comment;
-    }
-    return null;
+    return await CommentService.comment.update(id, data)
   }
 
-  public static async deleteComment(id: number): Promise<number> {
-    return await Comment.destroy({
-      where: { id }
-    });
+  public static async deleteComment(id: number): Promise<boolean> {
+    return await CommentService.comment.delete(id);
   }
 
 }
 
-export default UserService;
+export default CommentService;
