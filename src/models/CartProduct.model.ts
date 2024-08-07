@@ -7,7 +7,7 @@ import {
   HasOne,
 } from "sequelize-typescript";
 import ModelBase from "./ModelBase/ModelBase";
-import { User } from "./User.model";
+import { User } from "./user.model";
 import { Cart } from "./Cart.model";
 import { Product } from "./Product.model";
 
