@@ -1,51 +1,48 @@
-import { Model, DataTypes } from 'sequelize';
-import sequelize from '../config/db';
-import bcrypt from 'bcrypt';
+import { Table, Column, DataType, HasMany } from "sequelize-typescript";
+import ModelBase from "./ModelBase/ModelBase";
+import { Comment } from "./Comment.model";
+import { UserRating } from "./UserRating.model";
 
-class User extends Model {
-    public id!: number;
-    public username!: string;
-    public email!: string;
-    public password!: string;
-    public role!: string;
+@Table({
+  tableName: "users",
+})
+export class User extends ModelBase<User> {
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  name!: string;
 
-    public async validPassword(password: string): Promise<boolean> {
-        return await bcrypt.compare(password, this.password);
-    }
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  email!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  address!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  password!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  role!: string;
+
+  //user-comment relationship.
+  @HasMany(() => Comment)
+  comments!: Comment[];
+
+  //user-rating relationship.
+
+  @HasMany(() => UserRating)
+  ratings!: UserRating[];
 }
-
-User.init({
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-    },
-    username: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-    },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        validate: {
-            isEmail: true,
-        }
-    },
-    password: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    role:{
-        type: DataTypes.STRING,
-        allowNull:false,
-        defaultValue:"user"
-    }
-}, {
-    sequelize,
-    modelName: 'User',
-    tableName: 'users',
-});
-
-export default User;
