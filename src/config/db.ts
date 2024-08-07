@@ -26,6 +26,7 @@ const sequelize = new Sequelize(
     host: process.env.DB_HOST,
     dialect: "postgres",
     port: Number(process.env.DB_PORT),
+    repositoryMode: true,
     models: [
       User,
       Cart,
