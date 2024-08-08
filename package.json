@@ -26,7 +26,11 @@
     "pg": "^8.12.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.3",
+<<<<<<< HEAD
     "tsyringe": "^4.8.0"
+=======
+    "winston": "^3.13.1"
+>>>>>>> 54f8de94ae2d94b98737fbdd84f2283cf995e4f7
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
