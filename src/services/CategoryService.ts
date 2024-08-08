@@ -1,14 +1,18 @@
+import { CategoryRepository } from "../data-access/CategoryRepository"
+import { injectable } from "tsyringe";
+import { Category } from "../models";
 
-import { Category, Product } from "../models";
-import { ICategoryRepository } from "./Interfaces/ICategoryRepository";
-import { RepositoryBase } from "./RepositoryBase";
+@injectable()
+export class CategoryService {
+    private categoryRepository: CategoryRepository;
 
-
-export class CategoryRepository extends RepositoryBase<Category> implements ICategoryRepository {
+    constructor(categoryRepository: CategoryRepository) {
+        this.categoryRepository = categoryRepository
+    }
 
     async createCategory(categoryData: Category): Promise<Category> {
         try {
-            const category = await Category.create(categoryData);
+            const category = await this.categoryRepository.createCategory(categoryData);
             return category;
         } catch (error) {
             throw new Error('Error creating category')
@@ -19,7 +23,7 @@ export class CategoryRepository extends RepositoryBase<Category> implements ICat
     // all find methods
     async findById(id: string): Promise<Category | null> {
         try {
-            const category = await Category.findByPk(id);
+            const category = await this.categoryRepository.findById(id);
             return category;
         } catch (error) {
             throw new Error('Error retrieving category')
@@ -28,7 +32,7 @@ export class CategoryRepository extends RepositoryBase<Category> implements ICat
     }
     async findAll(): Promise<Category[]> {
         try {
-            const category = await Category.findAll();
+            const category = await this.categoryRepository.findAll();;
             return category;
         }
         catch (error) {
@@ -38,9 +42,7 @@ export class CategoryRepository extends RepositoryBase<Category> implements ICat
     }
     async findByName(name: string): Promise<Category | null> {
         try {
-            const category = await Category.findOne({
-                where: { name }
-            });
+            const category = await this.categoryRepository.findByName(name);
             return category;
         } catch (error) {
             throw new Error('Error retrieving Category')
@@ -49,15 +51,14 @@ export class CategoryRepository extends RepositoryBase<Category> implements ICat
     }
     async findByProduct(productId: string): Promise<Category[] | null> {
         try {
-            const category = await Category.findAll({
-                include: [{ model: Product }, { through: { attributes: [] }, where: { productId } }],
-
-            });
+            const category = await this.categoryRepository.findByProduct(productId);
             return category;
         } catch (error) {
             throw new Error('Error retrieving Category')
         }
 
     }
+
+
 
 }
