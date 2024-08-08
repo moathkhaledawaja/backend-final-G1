@@ -8,7 +8,7 @@ export class RepositoryBase<T extends Model> implements IRepositoryBase<T> {
     this.model = model;
   }
 
-  async findById(id: string): Promise<T | null> {
+  async findById(id: number): Promise<T | null> {
     try {
       return await this.model.findByPk<T>(id);
     } catch (ex) {
