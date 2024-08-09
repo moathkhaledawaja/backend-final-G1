@@ -12,7 +12,10 @@ export class ProductService {
 
     async createProduct(productData: Product, categoryId: number): Promise<Product> {
         try {
-            const product = await this.productRepository.createProduct(productData, categoryId);
+            const product = await this.productRepository.create(productData);
+            if (!product) {
+                throw new Error("Failed to create cart");
+            }
             return product;
         } catch (error) {
             throw new Error(`Error while creating product`);
@@ -20,7 +23,7 @@ export class ProductService {
 
     }
 
-    async findById(id: string): Promise<Product | null> {
+    async findById(id: number): Promise<Product | null> {
         try {
             const product = await this.productRepository.findById(id);
             return product;

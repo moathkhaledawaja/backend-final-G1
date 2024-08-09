@@ -12,7 +12,11 @@ export class CategoryService {
 
     async createCategory(categoryData: Category): Promise<Category> {
         try {
-            const category = await this.categoryRepository.createCategory(categoryData);
+            const category = await this.categoryRepository.create(categoryData);
+
+            if (!category) {
+                throw new Error("Failed to create cart");
+            }
             return category;
         } catch (error) {
             throw new Error('Error creating category')
@@ -21,7 +25,7 @@ export class CategoryService {
 
     }
     // all find methods
-    async findById(id: string): Promise<Category | null> {
+    async findById(id: number): Promise<Category | null> {
         try {
             const category = await this.categoryRepository.findById(id);
             return category;
