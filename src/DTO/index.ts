@@ -1,4 +1,4 @@
-export {CreateCartDTO , UpdateCartDTO} from './cartDto';
-export { CreateUserDTO, UpdateUserDTO } from './userDto';
+export { CartDTO } from './cartDto';
+export { UserDTO } from './userDto';
 
 
