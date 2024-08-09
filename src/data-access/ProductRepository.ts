@@ -3,40 +3,8 @@ import { Category, Discount, Product, ProductCategory, UserRating, } from "../mo
 import { RepositoryBase } from "./RepositoryBase";
 
 export class ProductRepository extends RepositoryBase<Product> implements IProductRepository {
-    //create product aasociated with category
-    async createProduct(productData: Product, categoryId: number): Promise<Product> {
-        try {
-            const product = await Product.create(productData, {
-                include: [
-                    {
-                        model: Category, through: { attributes: [] }, where: { id: categoryId },
-                    }
-                ]
-            });
-            return product;
-        } catch (error) {
-            throw new Error(`Error while creating product`);
-        }
-
-    }
-    // all find methods
-    async findById(id: string): Promise<Product | null> {
-        try {
-            const product = await Product.findByPk(id, {
-                include: [
-                    { model: Category, through: { attributes: [] } },
-                    { model: UserRating },
-                    { model: Discount }
-
-                ]
-            });
-            return product;
-        } catch (error: any) {
-            throw new Error(`Error retrieving product : ${error.message}`)
-        }
 
 
-    }
     async findByName(name: string): Promise<Product | null> {
         try {
             const product = await Product.findOne({
@@ -55,21 +23,7 @@ export class ProductRepository extends RepositoryBase<Product> implements IProdu
 
     }
 
-    async findAll(): Promise<Product[]> {
-        try {
-            const product = await Product.findAll({
-                include: [
-                    { model: Category, through: { attributes: [] } },
-                    { model: UserRating },
-                    { model: Discount }
-                ]
-            });
-            return product;
-        } catch (error: any) {
-            throw new Error(`Error retrieving products : ${error.message}`)
-        }
 
-    }
     async findByCategory(categoryId: number): Promise<Product[] | null> {
         try {
             const product = await Product.findAll({
