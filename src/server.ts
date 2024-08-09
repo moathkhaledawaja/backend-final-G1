@@ -1,8 +1,10 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import sequelize from './config/db';
+
 import productRoutes from './routes/productRoutes';
 import userRouter from './routes/userRoutes'
+import { cartRouter } from './routes';
 
 dotenv.config();
 
@@ -15,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/users', userRouter);
 app.use('/api/products', productRoutes);
+app.use('/api/carts', cartRouter);
 
 
 const startServer = async () => {
