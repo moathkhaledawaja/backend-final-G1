@@ -7,9 +7,9 @@ import {
   BelongsToMany,
 } from "sequelize-typescript";
 import ModelBase from "./ModelBase/ModelBase";
-import { User } from "./user.model";
-import { Product } from "./Product.model";
-import { CartProduct } from "./CartProduct.model";
+import { User } from '../models'
+import { Product } from '../models'
+import { CartProduct } from '../models'
 
 @Table({
   tableName: "carts",
