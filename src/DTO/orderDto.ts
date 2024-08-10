@@ -6,9 +6,7 @@ export type OrderDTO = {
   isPaid: boolean;
   products: {
     productId: number;
-    quantity: number;
-    totalPrice: number;
   }[];
-};
+}
 
 

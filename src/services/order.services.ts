@@ -12,32 +12,63 @@ export default class OrderService {
     this.orderRepository = orderRepository;
   }
 
-  public async createOrder(data: OrderDTO): Promise<OrderDTO | null> {
-    const {userId, status, isPaid, products} = data;
-    const products
-    const newOrder = new Order({userId, status:status, isPaid})
-    return await this.orderRepository.create(data);
+  public async createOrder(data: OrderDTO): Promise<Order | null> {
+    const { userId, status, isPaid, products } = data;
+
+    const newOrder = new Order({ userId, status, isPaid, products })
+    try {
+      const order = await this.orderRepository.create(newOrder);
+      if (!order) {
+        throw new Error(" Failed to create Order");
+      }
+      return order;
+    }
+    catch (error: any) {
+      throw new Error(`Error Creating Order: ${error.message}`);
+    }
+
   }
 
   public async getOrderById(id: number): Promise<Order | null> {
-    return await OrderService.order.findById(id);
+    try {
+      return await this.orderRepository.findById(id);
+    }
+    catch (error: any) {
+      throw new Error(`Error retrieving Order: ${error.message}`)
+    }
   }
 
   public async getOrders(): Promise<Order[] | null> {
-    return await OrderService.order.findAll();
+    try {
+      return await this.orderRepository.findAll();
+    }
+    catch (error: any) {
+      throw new Error(`Error retrieving Order: ${error.message}`);
+
+    }
   }
 
 
   public async updateOrder(id: number, data: Partial<Order>): Promise<Order | null> {
-    return await OrderService.order.update(id, data);
+    try{
+      return await this.orderRepository.update(id, data);
+    }
+    catch(error:any){
+      throw new Error(`Error Updating the order ${error.message}`)
+    }
   }
 
-  public async deleteOrder(id: number): Promise<number> {
-    return await OrderService.order.delete(id);
+  public async deleteOrder(id: number): Promise<boolean> {
+    try{
+      return await this.orderRepository.delete(id);
+    }
+    catch(error:any){
+      throw new Error(`Error Deleting the order ${error.message}`);
+    }
   }
 
   public async getOrdersByUserId(userId: number): Promise<Order[] | null> {
-    return await OrderService.order.findByUserId(userId);
+    return await this.orderRepository.findByUserId(userId);
   }
 
 }
