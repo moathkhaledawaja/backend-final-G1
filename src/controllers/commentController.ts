@@ -10,9 +10,9 @@ export class CommentController {
 
   async createComment(req: Request, res: Response): Promise<CommentDTO | null> {
     try {
+      const userId = (req as any).user.userId;
       const commentData: CommentDTO = req.body;
 
-      //the user id to be found;
       const comment = await this.commentService.createComment(userId, commentData);
       res.status(201).json(comment);
       return comment;
@@ -25,6 +25,7 @@ export class CommentController {
 
 
   async updateComment(req: Request, res: Response): Promise<Comment | null> {
+    const userId = (req as any).user.id;
     const id = req.params.id;
     const commentData: CommentDTO = req.body;
     try {
@@ -44,6 +45,7 @@ export class CommentController {
   async deleteComment(req: Request, res: Response): Promise<boolean> {
     try {
       const id = req.params.id;
+      const userId = (req as any).user.id;
       const isDeleted = await this.commentService.deleteComment(id, userId);
       res.status(204).send(isDeleted);
       return isDeleted;

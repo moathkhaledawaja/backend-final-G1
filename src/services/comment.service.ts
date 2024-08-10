@@ -1,4 +1,4 @@
-import { ICommentRepository } from '../data-access/Interfaces/ICommentRepository';
+import { ICommentRepository } from '../data-access';
 import { Comment } from '../models';
 import { CommentDTO } from '../DTO/commentDto';
 
@@ -77,7 +77,7 @@ export class CommentService {
     }
   }
 
-  public async deleteComment(id: number, userId:number): Promise<boolean> {
+  public async deleteComment(id: number, userId: number): Promise<boolean> {
     //to be checked
     try {
       return await this.commentRepository.delete(id);
