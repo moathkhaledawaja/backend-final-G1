@@ -13,9 +13,8 @@ export default class OrderService {
   }
 
   public async createOrder(data: OrderDTO): Promise<Order | null> {
-    const { userId, status, isPaid, products } = data;
-
-    const newOrder = new Order({ userId, status, isPaid, products })
+    
+    const newOrder = new Order({ userId, status, isPaid})
     try {
       const order = await this.orderRepository.create(newOrder);
       if (!order) {
@@ -29,18 +28,18 @@ export default class OrderService {
 
   }
 
-  public async getOrderById(id: number): Promise<Order | null> {
+  public async getOrderById(id: number, userId: number): Promise<Order | null> {
     try {
-      return await this.orderRepository.findById(id);
+      return await this.orderRepository.findByIdAndUserId(id, userId);
     }
     catch (error: any) {
       throw new Error(`Error retrieving Order: ${error.message}`)
     }
   }
 
-  public async getOrders(): Promise<Order[] | null> {
+  public async getOrders(userId: number): Promise<Order[] | null> {
     try {
-      return await this.orderRepository.findAll();
+      return await this.orderRepository.findByUserId(userId);
     }
     catch (error: any) {
       throw new Error(`Error retrieving Order: ${error.message}`);
@@ -49,27 +48,28 @@ export default class OrderService {
   }
 
 
-  public async updateOrder(id: number, data: Partial<Order>): Promise<Order | null> {
-    try{
-      return await this.orderRepository.update(id, data);
+  public async updateOrder(data: Partial<Order>): Promise<Order | null> {
+    try {
+      const order = await this.orderRepository.update(data);
+      if (!order) {
+        throw new Error("Order not Found");
+      }
+      return order;
     }
-    catch(error:any){
+    catch (error: any) {
       throw new Error(`Error Updating the order ${error.message}`)
     }
   }
 
-  public async deleteOrder(id: number): Promise<boolean> {
-    try{
+  public async cancelOrder(id: number): Promise<boolean> {
+    try {
       return await this.orderRepository.delete(id);
     }
-    catch(error:any){
+    catch (error: any) {
       throw new Error(`Error Deleting the order ${error.message}`);
     }
   }
 
-  public async getOrdersByUserId(userId: number): Promise<Order[] | null> {
-    return await this.orderRepository.findByUserId(userId);
-  }
 
 }
 

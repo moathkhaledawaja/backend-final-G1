@@ -5,9 +5,16 @@ import { RepositoryBase } from "./RepositoryBase";
 export class OrderRepository
   extends RepositoryBase<Order>
   implements IOrderRepository {
-  async findById(id: string): Promise<Order | null> {
+  async findById(id: number): Promise<Order | null> {
+    throw new Error("Order Can't Be Found By ID")
+  }
+  async findAll(): Promise<Order[]> {
+    throw new Error("Order Can't Be Found By ID")
+  }
+  
+  async findByIdAndUserId(id: number, userId: number): Promise<Order | null> {
     return await Order.findOne({
-      where: { id },
+      where: { id, userId },
       include: [
         {
 
@@ -26,6 +33,7 @@ export class OrderRepository
   async findByUserId(userId: number): Promise<Order[] | null> {
     return await Order.findAll({ where: { userId } });
   }
+
 
 
 }
