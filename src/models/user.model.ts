@@ -1,7 +1,5 @@
 import { Table, Column, DataType, HasMany } from "sequelize-typescript";
-import ModelBase from "./ModelBase/ModelBase";
-import { Comment } from "./Comment.model";
-import { UserRating } from "./UserRating.model";
+import { ModelBase, Comment, UserRating } from "../models";
 
 @Table({
   tableName: "users",

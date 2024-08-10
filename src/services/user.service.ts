@@ -1,57 +1,87 @@
-import User from '../models/user.model';
-import bcrypt from 'bcrypt';
+import { User } from "../models";
+import { IUserRepository } from '../data-access/Interfaces/IUserRepository';
+import { injectable } from "tsyringe";
+import { UserDTO } from "../DTO/userDto";
 
-class UserService {
-    
-    public static async createUser(data: Partial<User>): Promise<User> {
-        const hashedPassword = await bcrypt.hash(data.password as string, 10);
-        const userData = { ...data, password: hashedPassword };
-        return await User.create(userData);
+@injectable()
+export default class UserService {
+    private userRepository: IUserRepository;
+
+    constructor(userRepository: IUserRepository) {
+        this.userRepository = userRepository;
     }
 
-    public static async getUserByEmail(email: string): Promise<User | null> {
-        return await User.findOne({ where: { email } });
-    }
-
-    public static async getUsers(): Promise<User[]> {
-        return await User.findAll({
-            attributes: { exclude: ['password'] }
-        });
-    }
-
-    public static async getUserById(id: number): Promise<User | null> {
-        return await User.findByPk(id);
-    }
-
-    public static async updateUser(id: number, data: Partial<User>): Promise<User | null> {
-        const user = await User.findByPk(id);
-        if (user) {
-            if (data.password) {
-                data.password = await bcrypt.hash(data.password as string, 10);
+    async createUser(userData: UserDTO): Promise<User> {
+        try {
+            const newUser = new User();
+            newUser.name = userData.name;
+            newUser.email = userData.email;
+            newUser.password = userData.password;
+            newUser.address = userData.address;
+            newUser.role = userData.role;
+            const user = await this.userRepository.createUser(newUser);
+            if (!user) {
+                throw new Error("Failed to create user");
             }
-            await user.update(data);
             return user;
+        } catch (error: any) {
+            throw new Error(`Error creating user: ${error.message}`);
         }
-        return null;
     }
 
-    public static async deleteUser(id: number): Promise<number> {
-        return await User.destroy({
-            where: { id }
-        });
-    }
 
-    public static async getUser(key: 'email' | 'username', value: string): Promise<User | null> {
-        return await User.findOne({ where: { [key]: value } });
-    }
-
-    public static async verifyUser(email: string, password: string): Promise<User | null> {
-        const user = await User.findOne({ where: { email } });
-        if (user && await bcrypt.compare(password, user.password)) {
+    async getUserById(userId: number): Promise<User | null> {
+        try {
+            const user = await this.userRepository.findById(userId);
             return user;
+        } catch (error) {
+            throw new Error(`Error retrieving user: ${error}`);
         }
-        return null;
+    }
+
+    async getUserByEmail(email: string): Promise<User | null> {
+        try {
+            const user = await this.userRepository.findByEmail(email);
+            return user;
+        } catch (error) {
+            throw new Error(`Error retrieving user: ${error}`);
+        }
+    }
+
+    async updateUser(userId: number, userData: UserDTO): Promise<User | null> {
+        try {
+            const user = await this.userRepository.findById(userId);
+            if (!user) {
+                throw new Error("User not found");
+            }
+            const newUser = new User();
+            newUser.name = userData.name;
+            newUser.email = userData.email;
+            newUser.password = userData.password;
+            newUser.address = userData.address;
+            newUser.role = userData.role;
+
+            const updatedUser = await this.userRepository.updateUser(userId, newUser);
+            return updatedUser;
+        } catch (error) {
+            throw new Error(`Error updating user: ${error}`);
+        }
+    }
+
+    async deleteUser(userId: number): Promise<void> {
+        try {
+            await this.userRepository.deleteUser(userId);
+        } catch (error) {
+            throw new Error(`Error deleting user: ${error}`);
+        }
+    }
+
+    async getAllUsers(): Promise<User[]> {
+        try {
+            const users = await this.userRepository.findAll();
+            return users;
+        } catch (error) {
+            throw new Error(`Error retrieving users: ${error}`);
+        }
     }
 }
-
-export default UserService;
