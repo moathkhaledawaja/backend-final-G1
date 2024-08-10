@@ -1,15 +1,5 @@
-import {
-  Table,
-  Column,
-  DataType,
-  ForeignKey,
-  BelongsTo,
-  HasOne,
-} from "sequelize-typescript";
-import ModelBase from "./ModelBase/ModelBase";
-import { User } from "./User.model";
-import { Cart } from "./Cart.model";
-import { Product } from "./Product.model";
+import { Table, Column, DataType, ForeignKey } from "sequelize-typescript";
+import { Cart, Product, ModelBase } from "../models";
 
 @Table({
   tableName: "cartProduct",

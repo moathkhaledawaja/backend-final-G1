@@ -1,5 +1,5 @@
 export enum OrderStatus {
-  processed,
-  outForDelivery,
-  delivered,
+  processed = "processed",
+  outForDelivery = "outForDelivery",
+  delivered = "delivered",
 }

@@ -1,8 +1,12 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import sequelize from './config/db';
+
 import productRoutes from './routes/productRoutes';
 import swaggerUi from 'swagger-ui-express'
+import userRouter from './routes/userRoutes'
+import { cartRouter } from './routes';
+
 dotenv.config();
 
 
@@ -16,6 +20,12 @@ app.use("/swagger", swaggerUi.serve, swaggerUi.setup(undefined, {
         url: "/swagger.json"
     }
 }))
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/api/users', userRouter);
+app.use('/api/products', productRoutes);
+app.use('/api/carts', cartRouter);
+
 
 const startServer = async () => {
     try {
