@@ -1,11 +1,13 @@
-import { ICommentRepository } from '../data-access';
 import { Comment } from '../models';
 import { CommentDTO } from '../DTO/commentDto';
+import { injectable } from 'tsyringe';
+import { CommentRepository } from '../data-access/CommentRepository';
 
+@injectable()
 export class CommentService {
-  private commentRepository: ICommentRepository
+  private commentRepository: CommentRepository
 
-  constructor(commentRepository: ICommentRepository) {
+  constructor(commentRepository: CommentRepository) {
     this.commentRepository = commentRepository;
   }
 
