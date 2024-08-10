@@ -1,6 +1,7 @@
 import { CategoryRepository } from "../data-access/CategoryRepository"
 import { injectable } from "tsyringe";
 import { Category } from "../models";
+import { CategoryDTO } from "../DTO";
 
 @injectable()
 export class CategoryService {
@@ -10,12 +11,14 @@ export class CategoryService {
         this.categoryRepository = categoryRepository
     }
 
-    async createCategory(categoryData: Category): Promise<Category> {
+    async createCategory(categoryData: CategoryDTO): Promise<Category> {
         try {
-            const category = await this.categoryRepository.create(categoryData);
+            const newCategory = new Category();
+            newCategory.name = categoryData.name;
+            const category = await this.categoryRepository.create(newCategory);
 
             if (!category) {
-                throw new Error("Failed to create cart");
+                throw new Error("Failed to create category  `");
             }
             return category;
         } catch (error) {
@@ -53,7 +56,7 @@ export class CategoryService {
         }
 
     }
-    async findByProduct(productId: string): Promise<Category[] | null> {
+    async findByProduct(productId: number): Promise<Category[] | null> {
         try {
             const category = await this.categoryRepository.findByProduct(productId);
             return category;
