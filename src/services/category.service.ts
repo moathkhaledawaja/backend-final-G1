@@ -27,6 +27,26 @@ export class CategoryService {
 
 
     }
+
+    async updateCategory(categoryId: number, categoryData: CategoryDTO): Promise<Category> {
+        try {
+            const oldCategory = await this.categoryRepository.findById(categoryId);
+            if (!oldCategory) {
+                throw new Error("Category Doesn't exist");
+            }
+
+            oldCategory.name = categoryData.name;
+            const category = await this.categoryRepository.update(oldCategory);
+            if (!category) {
+                throw new Error("Failed to update category");
+            }
+            return category;
+        } catch (error) {
+            throw new Error(`Error while updating category`);
+        }
+
+    }
+
     // all find methods
     async findById(id: number): Promise<Category | null> {
         try {
@@ -63,6 +83,20 @@ export class CategoryService {
         } catch (error) {
             throw new Error('Error retrieving Category')
         }
+
+    }
+
+    async deleteCategory(CategoryId: number): Promise<boolean> {
+        try {
+            const deletedCategory = await this.categoryRepository.delete(CategoryId);
+
+            return deletedCategory;
+
+        } catch (error) {
+            throw new Error(`Error while deleting category`);
+        }
+
+        return false;
 
     }
 

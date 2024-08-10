@@ -1,11 +1,10 @@
-import { ProductService } from "../services/ProductService";
+import { ProductService } from "../services/product.service";
 import { Product } from "../models"
 import { ProductDTO } from '../DTO';
 import { injectable, inject } from 'tsyringe';
 import express, { Request, Response } from 'express';
 @injectable()
 class ProductController {
-
 
 
     constructor(@inject(ProductService) private productService: ProductService) { }
@@ -41,10 +40,13 @@ class ProductController {
 
     public async daleteProduct(req: Request, res: Response): Promise<void> {
         try {
-            const { productId } = req.body;
+            const productId = parseInt(req.params.id);
+            if (!productId) {
+                throw new Error("Required Data is Unavailable");
+            }
             await this.productService.deleteProduct(productId);
         } catch (error) {
-            throw new Error(`Error deleting user: ${error}`);
+            throw new Error(`Error deleting product: ${error}`);
         }
 
     }
@@ -121,7 +123,7 @@ class ProductController {
         }
     }
 
-    public async getAllByDiscount(req:Request, res:Response): Promise<Product[] | null> {
+    public async getAllByDiscount(req: Request, res: Response): Promise<Product[] | null> {
         const { discountId } = req.body
         try {
             const product = await this.productService.findAllByDiscount(discountId);
