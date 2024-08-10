@@ -5,9 +5,7 @@ import {
   BelongsTo,
   ForeignKey,
 } from "sequelize-typescript";
-import ModelBase from "./ModelBase/ModelBase";
-import { Product } from "./Product.model";
-import { User } from "./User.model";
+import { User, Product, ModelBase } from "../models";
 
 @Table({
   tableName: "comments",

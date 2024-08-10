@@ -1,7 +1,5 @@
 import { Table, Column, DataType, BelongsToMany } from "sequelize-typescript";
-import ModelBase from "./ModelBase/ModelBase";
-import { Product } from "./Product.model";
-import { ProductCategory } from "./ProductCategory.model";
+import { Product, ProductCategory, ModelBase } from "../models";
 
 @Table({
   tableName: "categories",

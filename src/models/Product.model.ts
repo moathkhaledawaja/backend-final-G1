@@ -6,18 +6,20 @@ import {
   BelongsToMany,
   HasMany,
 } from "sequelize-typescript";
-import ModelBase from "./ModelBase/ModelBase";
-import { Discount } from "./Discount.model";
-import { Category } from "./Category.model";
-import { Comment } from "./Comment.model";
-import { UserRating } from "./UserRating.model";
-import { Wishlist } from "./WishList.model";
-import { Cart } from "./Cart.model";
-import { OrderProduct } from "./OrderProduct.model";
-import { CartProduct } from "./CartProduct.model";
-import { ProductCategory } from "./ProductCategory.model";
-import { Order } from "./Order.model";
-import { WishlistProduct } from "./WishlistProduct.model";
+import {
+  Discount,
+  ModelBase,
+  Category,
+  Comment,
+  UserRating,
+  Wishlist,
+  Cart,
+  OrderProduct,
+  ProductCategory,
+  Order,
+  CartProduct,
+  WishlistProduct,
+} from "../models";
 
 @Table({
   tableName: "products",
