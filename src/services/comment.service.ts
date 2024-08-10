@@ -2,7 +2,7 @@ import { ICommentRepository } from '../data-access/Interfaces/ICommentRepository
 import { Comment } from '../models';
 import { CommentDTO } from '../DTO/commentDto';
 
-class CommentService {
+export class CommentService {
   private commentRepository: ICommentRepository
 
   constructor(commentRepository: ICommentRepository) {
@@ -10,8 +10,8 @@ class CommentService {
   }
 
 
-  public async createComment(data: CommentDTO): Promise<CommentDTO | null> {
-    const { userId, content, productId } = data;
+  public async createComment(userId: number, data: CommentDTO): Promise<CommentDTO | null> {
+    const { content, productId } = data;
     const newComment = new Comment();
     newComment.userId = userId;
     newComment.content = content;
@@ -57,13 +57,12 @@ class CommentService {
     }
   }
 
-  public async updateComment(id: number, data: Partial<CommentDTO>): Promise<Comment | null> {
+  public async updateComment(id: number, userId: number, data: Partial<CommentDTO>): Promise<Comment | null> {
     const comment = new Comment();
     comment.id = id;
-    Object.keys(data).forEach((key) => {
-      // @ts-ignore
-      comment[key] = data[key];
-    });
+    comment.userId = id;
+    if (data.content)
+      comment.content = data.content;
     try {
       const updatedComment = await this.commentRepository.update(comment);
       if (!updatedComment) {
@@ -78,7 +77,8 @@ class CommentService {
     }
   }
 
-  public async deleteComment(id: number): Promise<boolean> {
+  public async deleteComment(id: number, userId:number): Promise<boolean> {
+    //to be checked
     try {
       return await this.commentRepository.delete(id);
     }
@@ -90,4 +90,3 @@ class CommentService {
 
 }
 
-export default CommentService;
