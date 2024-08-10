@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import User from '../models/user.model';
+import {User} from '../models'
 import AuthService from '../services/auth.service';
 
 const authAndRoleMiddleware = (allowedRoles: string[]) => {
@@ -11,9 +11,6 @@ const authAndRoleMiddleware = (allowedRoles: string[]) => {
             return res.status(401).json({ error: 'Unauthorized' });
         }
 
-        if (AuthService.isTokenBlacklisted(token)) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
 
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET || "jwt_secret") as { id: number, role: string };
