@@ -28,17 +28,20 @@ export class RepositoryBase<T extends Model> implements IRepositoryBase<T> {
 
   async create(entity: T): Promise<T | null> {
     try {
-      return await entity.save();
+      return await this.model.create(entity.dataValues);
     } catch (ex) {}
     return null;
   }
 
   async update(entity: T): Promise<T | null> {
     try {
-      const [_, [updatedEntity]] = await this.model.update<T>(entity.toJSON(), {
-        where: { id: entity.id },
-        returning: true,
-      });
+      const [_, [updatedEntity]] = await this.model.update<T>(
+        entity.dataValues,
+        {
+          where: { id: entity.id },
+          returning: true,
+        }
+      );
 
       return updatedEntity;
     } catch (ex) {
@@ -47,11 +50,12 @@ export class RepositoryBase<T extends Model> implements IRepositoryBase<T> {
     return null;
   }
 
-  async delete(id : number): Promise<boolean> {
+  async delete(id: number): Promise<boolean> {
     try {
       const T = await this.model.findByPk(id);
-      const deleted = await this.model.destroy<T>();
-      return deleted > 0;
+      if (T != null) {
+        await T.destroy();
+      }
     } catch (ex) {
       console.log(ex);
     }
