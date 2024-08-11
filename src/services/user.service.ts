@@ -1,13 +1,13 @@
 import { User } from "../models";
-import { IUserRepository } from '../data-access/Interfaces/IUserRepository';
+import { UserRepository } from "../data-access/UserRepository";
 import { injectable } from "tsyringe";
 import { UserDTO } from "../DTO/userDto";
 
 @injectable()
 export default class UserService {
-    private userRepository: IUserRepository;
+    private userRepository: UserRepository;
 
-    constructor(userRepository: IUserRepository) {
+    constructor(userRepository: UserRepository) {
         this.userRepository = userRepository;
     }
 
