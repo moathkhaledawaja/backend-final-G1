@@ -22,7 +22,7 @@ class CategoryController {
 
     public async getCategoryByID(req: Request, res: Response): Promise<Category> {
         try {
-            const categoryId = parseInt(req.params.id);
+            const categoryId = parseInt(req.params.id, 10);
             if (!categoryId) {
                 throw new Error("No Id provided");
             }
@@ -79,7 +79,7 @@ class CategoryController {
     //delete controller
     public async deleteCategory(req: Request, res: Response): Promise<void> {
         try {
-            const deletedId = parseInt(req.params.id);
+            const deletedId = parseInt(req.params.id, 10);
             if (!deletedId) {
                 throw new Error("Required Data is Unavailable");
             }
@@ -92,7 +92,43 @@ class CategoryController {
 
 
     //findByName
+    public async findByName(req: Request, res: Response): Promise<Category | null> {
+        try {
+            const { name } = req.body;
+            if (!name) {
+                throw new Error("No name provided");
+            }
+            const category = await this.categoryService.findByName(name);
+            if (!category) {
+                throw new Error("No Category related to this product")
+            }
+            return category;
+        } catch (error) {
+            throw new Error('Error retrieving Category')
+        }
+
+    }
+
     //findByProduct
+
+    public async findByProduct(req: Request, res: Response): Promise<Category[] | null> {
+        try {
+            const productId = parseInt(req.params.id, 10);
+            if (!productId) {
+                throw new Error('No Product assigned');
+            }
+
+            const category = await this.categoryService.findByProduct(productId);
+
+            if (!category) {
+                throw new Error("No Categories Found");
+            }
+            return category;
+        } catch (error) {
+            throw new Error('Error retrieving Category')
+        }
+
+    }
 
 
 }
