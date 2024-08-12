@@ -1,4 +1,3 @@
-export type CategorytDTO = {
-    name: string;
-
+export type CategoryDTO = {
+  name: string;
 };
