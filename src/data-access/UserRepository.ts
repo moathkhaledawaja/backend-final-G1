@@ -4,16 +4,9 @@ import { RepositoryBase } from "./RepositoryBase";
 
 export class UserRepository
   extends RepositoryBase<User>
-  implements IUserRepository {
-
-  async createUser(userData: User): Promise<User> {
-    try {
-      return await this.model.create(userData);
-    } catch (error) {
-      throw new Error(`Error creating user: ${error}`);
-    }
-  }
-
+  implements IUserRepository
+{
+ 
   async findByEmail(email: string): Promise<User | null> {
     try {
       return await this.model.findOne({ where: { email } });
