@@ -12,7 +12,7 @@ export default class UserService {
       newUser.address = userData.address;
       newUser.role = userData.role;
 
-      const user = await userRepository.createUser(newUser);
+      const user = await userRepository.create(newUser);
       if (!user) {
         throw new Error("Failed to create user");
       }
