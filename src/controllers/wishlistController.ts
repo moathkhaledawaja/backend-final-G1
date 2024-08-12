@@ -10,7 +10,7 @@ export class WishlistController {
 
   async getWishList(req: Request, res: Response): Promise<WishlistDTO | null> {
     try {
-      const userId = req.params.id;
+      const userId = (req as any).params.id;
       const wishlist = await this.wishlistService.getWishlistByUserId(userId);
       if (!wishlist) {
         res.status(404).json({ error: 'Wishlist not found' });
