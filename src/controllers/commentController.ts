@@ -1,58 +1,78 @@
-import { Request, Response } from 'express';
-import { injectable, inject } from 'tsyringe';
+import { Post, Put, Delete, Route, Body, Path, SuccessResponse, Tags, Response } from 'tsoa';
 import { CommentService } from '../services';
 import { CommentDTO } from '../DTO';
 import { Comment } from '../models';
+import { injectable, inject } from 'tsyringe';
+import { BaseController } from './BaseController/BaseController';
+import { Request as Req, Response as Res } from 'express';
 
+@Route('comments')
+@Tags('Comment')
 @injectable()
-export class CommentController {
-  constructor(@inject(CommentService) private commentService: CommentService) { }
+export class CommentController extends BaseController {
+  constructor(@inject(CommentService) private commentService: CommentService, req: Req, res: Res) {
+    super(req, res);
+  }
 
-  async createComment(req: Request, res: Response): Promise<CommentDTO | null> {
+  /**
+   * Create a new comment
+   * @param commentData - The data for the new comment
+   * @returns The created comment
+   */
+  @Post()
+  @SuccessResponse('201', 'Created')
+  public async createComment(@Body() commentData: CommentDTO): Promise<CommentDTO | null> {
     try {
-      const userId = (req as any).user.userId;
-      const commentData: CommentDTO = req.body;
-
+      const userId = (this.request as any).user.userId;
       const comment = await this.commentService.createComment(userId, commentData);
-      res.status(201).json(comment);
+      this.setStatus(201);
       return comment;
     } catch (error: any) {
-      res.status(400).json({ error: error.message });
-      throw error;
+      this.setStatus(400);
+      throw new Error(error.message);
     }
   }
 
-
-
-  async updateComment(req: Request, res: Response): Promise<Comment | null> {
-    const userId = (req as any).user.id;
-    const id = req.params.id;
-    const commentData: CommentDTO = req.body;
+  /**
+   * Update an existing comment
+   * @param id - The ID of the comment to update
+   * @param commentData - The new data for the comment
+   * @returns The updated comment
+   */
+  @Put('{id}')
+  @SuccessResponse('200', 'Updated')
+  @Response('404', 'Not Found')
+  public async updateComment(@Path() id: number, @Body() commentData: CommentDTO): Promise<Comment | null> {
     try {
+      const userId = (this.request as any).user.id;
       const comment = await this.commentService.updateComment(id, userId, commentData);
       if (!comment) {
-        res.status(404).json({ error: 'Comment not found' });
-        return null;
+        this.setStatus(404);
+        throw new Error('Comment not found');
       }
-      res.json(comment);
       return comment;
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
-      throw error;
+      this.setStatus(500);
+      throw new Error(error.message);
     }
   }
 
-  async deleteComment(req: Request, res: Response): Promise<boolean> {
+  /**
+   * Delete a comment
+   * @param id - The ID of the comment to delete
+   * @returns Success status
+   */
+  @Delete('{id}')
+  @SuccessResponse('204', 'No Content')
+  @Response('500', 'Server Error')
+  public async deleteComment(@Path() id: number): Promise<void> {
     try {
-      const id = req.params.id;
-      const userId = (req as any).user.id;
-      const isDeleted = await this.commentService.deleteComment(id, userId);
-      res.status(204).send(isDeleted);
-      return isDeleted;
+      const userId = (this.request as any).user.id;
+      await this.commentService.deleteComment(id, userId);
+      this.setStatus(204);
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
-      throw error;
+      this.setStatus(500);
+      throw new Error(error.message);
     }
   }
-
 }
