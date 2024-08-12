@@ -19,7 +19,10 @@ export class CommentService {
     newComment.content = content;
     newComment.productId = productId;
     try {
-      await this.commentRepository.create(newComment);
+      const comment = await this.commentRepository.create(newComment);
+      if(!comment){
+        return null;
+      }
       return data;
     }
     catch (error: any) {
@@ -80,7 +83,6 @@ export class CommentService {
   }
 
   public async deleteComment(id: number, userId: number): Promise<boolean> {
-    //to be checked
     try {
       return await this.commentRepository.delete(id);
     }
