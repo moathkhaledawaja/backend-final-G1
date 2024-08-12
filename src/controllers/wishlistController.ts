@@ -25,10 +25,10 @@ export class WishlistController {
   }
 
 
-  async addProductToWishList(req: Request, res: Response): Promise<boolean> {
+  async addProductToWishlist(req: Request, res: Response): Promise<boolean> {
     try {
       const userId = (req as any).user.id;
-      const productId: number = req.body;
+      const productId: number = req.body.productId;
       const added = await this.wishlistService.addProductToWishlist(userId, productId);
       if (!added) {
         res.status(404).json({ error: 'Product not found' });
@@ -44,7 +44,7 @@ export class WishlistController {
   async removeProductFromWishlist(req: Request, res: Response): Promise<boolean> {
     try {
       const userId = (req as any).user.id;
-      const productId: number = req.body;
+      const productId: number = req.body.productId;
       const removed = await this.wishlistService.removeProductFromWishList(userId, productId);
       if (!removed) {
         res.status(404).json({ error: 'Product not found' });
