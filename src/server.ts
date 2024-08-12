@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import sequelize from "./config/db";
 
+import swaggerUi from 'swagger-ui-express'
 import productRoutes from "./routes/productRoutes";
 import userRouter from "./routes/userRoutes";
 import { cartRouter } from "./routes";
@@ -13,6 +14,12 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use('/api', productRoutes);
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(undefined, {
+    swaggerOptions: {
+        url: "/swagger.json"
+    }
+}))
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth", authRouter);
@@ -24,8 +31,8 @@ const startServer = async () => {
   try {
     await sequelize.authenticate();
     console.log("Database connected!");
-    await sequelize.sync({ force: true });
-    console.log("Database synchronized!");
+    // await sequelize.sync({ force: true });
+    // console.log("Database synchronized!");
     app.listen(PORT, () => {
       console.log(`Server is running on http://localhost:${PORT}`);
     });

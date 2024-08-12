@@ -6,13 +6,7 @@ export class CartRepository
     extends RepositoryBase<Cart>
     implements ICartRepository {
 
-    async createCart(cartData: Cart): Promise<Cart> {
-        try {
-            return await this.model.create(cartData);
-        } catch (error) {
-            throw new Error(`Error creating cart: ${error}`);
-        }
-    }
+  
     async findCartByUserId(userId: number): Promise<Cart[]> {
         try {
             return await this.model.findAll({ where: { userId } });
