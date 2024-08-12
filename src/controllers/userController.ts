@@ -42,7 +42,9 @@ export class UserController {
 
     async getUserByEmail(req: Request, res: Response): Promise<User | null> {
         try {
-            const email = req.query.email as string;
+            const email = req.params.email as string;
+            email.toString();
+
             const user = await this.userService.getUserByEmail(email);
             if (!user) {
                 res.status(404).json({ error: 'User not found' });

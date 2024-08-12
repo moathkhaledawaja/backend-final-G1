@@ -2,7 +2,6 @@ import { User } from "../../models";
 import { IRepositoryBase } from "./IRepositoryBase";
 
 export interface IUserRepository extends IRepositoryBase<User> {
-    createUser(userData: User): Promise<User>;
     findByEmail(email: string): Promise<User | null>;
     findByRole(role: string): Promise<User[]>;
     findByAddress(address: string): Promise<User[]>;
