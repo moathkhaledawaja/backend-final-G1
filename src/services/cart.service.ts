@@ -14,7 +14,7 @@ export default class CartService {
         try {
             const newCart = new Cart();
             newCart.userId = cartData.userId;
-            const cart = await this.cartRepository.createCart(newCart);
+            const cart = await this.cartRepository.create(newCart);
             if (!cart) {
                 throw new Error("Failed to create cart");
             }
