@@ -60,7 +60,6 @@ export default class UserService {
         console.log('No changes detected in user data.');
         return user;
       }
-
       // Convert UserDTO to Partial<User>
       const partialUser: Partial<User> = {
         name: userData.name,
@@ -89,6 +88,24 @@ export default class UserService {
       existingUser.role !== newUserData.role
     );
   }
+
+  // Edit the user password
+  async editUserPassword(userId: number, newPassword: string):Promise<string>{
+    try {
+      const user = await userRepository.findById(userId);
+      if(!user){
+        throw new Error("User not found");
+      }
+      user.password = newPassword;
+      await userRepository.updateUser(userId, user);
+
+      return "Password updated successfully";
+    } catch (error: any) {
+      throw new Error(`Error editing user password: ${error}`);
+      
+    }
+  }
+
 
   async deleteUser(userId: number): Promise<void> {
     try {
