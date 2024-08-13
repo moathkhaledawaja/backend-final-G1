@@ -54,7 +54,7 @@ export class UserRatingService {
       if (!userRating) {
         return null;
       }
-      const res: UserRatingDTO = { rating: userRating.toJSON().rating, userId: userRating.toJSON().userId };
+      const res: UserRatingDTO = { rating: userRating.toJSON().rating };
       return res;
     }
     catch (error: any) {
@@ -63,7 +63,7 @@ export class UserRatingService {
     }
   }
 
-  public async updateUserRating(userId: number,productId:number, data: UserRatingDTO): Promise<UserRatingDTO | null> {
+  public async updateUserRating(userId: number, productId: number, data: UserRatingDTO): Promise<UserRatingDTO | null> {
     const { rating } = data;
     const userRating = new UserRating();
     userRating.userId = userId;
