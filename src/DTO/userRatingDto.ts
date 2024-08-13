@@ -1,5 +1,5 @@
 
-type userRatingsDto = {
+export type userRatingDTO = {
+  userId: number,
   rating: number;
 }
-export default userRatingsDto

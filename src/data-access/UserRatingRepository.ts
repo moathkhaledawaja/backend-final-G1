@@ -1,10 +1,10 @@
 import logger from "../helpers/logger";
 import { UserRating } from "../models";
-import { IUserRatingsRepository } from "./Interfaces/IUserRatingsRepository";
+import { IUserRatingRepository } from "./Interfaces/IUserRatingRepository";
 import { RepositoryBase } from "./RepositoryBase";
 
 
-export class UserRatingsRepository extends RepositoryBase<UserRating> implements IUserRatingsRepository {
+export class UserRatingRepository extends RepositoryBase<UserRating> implements IUserRatingRepository {
   async findAllByProductId(productId: number): Promise<UserRating[] | null> {
     try {
       return await UserRating.findAll({ where: { productId: productId } });
