@@ -4,7 +4,7 @@ import { CategoryService } from '../services/category.service';
 import { Category } from '../models';
 import { CategoryDTO } from '../DTO';
 @injectable()
-class CategoryController {
+export class CategoryController {
 
     constructor(@inject(CategoryService) private categoryService: CategoryService) { }
 

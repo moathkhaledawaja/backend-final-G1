@@ -11,10 +11,14 @@ const productController = container.resolve(ProductController);
 
 const router = Router();
 
-router.get('/products', productController.getALlProducts.bind(productController));
-router.get('/products/:id', productController.getProductById.bind(productController));
-router.post('/products', productController.createProduct.bind(productController));
-router.put('/products/:id', productController.updateProduct.bind(productController));
-router.delete('/products/:id', productController.deleteProduct.bind(productController));
+router.get('/', productController.getAllProducts.bind(productController));
+router.get('/:id', productController.getProductById.bind(productController));
+router.get('/name', productController.getProductByName.bind(productController));
+router.get('/categoryid/:id', productController.getProductByName.bind(productController));
+router.get('/ratingid/:id', productController.getAllByRating.bind(productController));
+router.get('/discountid/:id', productController.getAllByDiscount.bind(productController));
+router.post('/', productController.createProduct.bind(productController));
+router.put('/:id', productController.updateProduct.bind(productController));
+router.delete('/:id', productController.deleteProduct.bind(productController));
 
 export default router;

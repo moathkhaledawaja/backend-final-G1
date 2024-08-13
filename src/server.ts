@@ -3,9 +3,9 @@ import dotenv from "dotenv";
 import sequelize from "./config/db";
 
 import swaggerUi from 'swagger-ui-express'
-import productRoutes from "./routes/productRoutes";
+
 import userRouter from "./routes/userRoutes";
-import { cartRouter } from "./routes";
+import { cartRouter, categoryRoutes, productRoutes } from "./routes";
 import { authRouter } from "./routes";
 
 dotenv.config();
@@ -26,6 +26,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/products", productRoutes);
 app.use("/api/carts", cartRouter);
+app.use("/api/categories", categoryRoutes)
 
 const startServer = async () => {
   try {

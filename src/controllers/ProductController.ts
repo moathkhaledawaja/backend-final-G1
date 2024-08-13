@@ -64,7 +64,7 @@ export class ProductController {
 
     }
 
-    public async getALlProducts(req: Request, res: Response): Promise<void> {
+    public async getAllProducts(req: Request, res: Response): Promise<void> {
         try {
             const products = await this.productService.findAll();
 
@@ -118,7 +118,7 @@ export class ProductController {
     public async getProductByCategory(req: Request, res: Response): Promise<void> {
 
         try {
-            const { categoryId } = req.body;
+            const categoryId = parseInt(req.params.id, 10);
             if (!categoryId) {
                 res.status(500).json({ error: 'Required Data is Unavailable' });
             }
@@ -136,7 +136,7 @@ export class ProductController {
     public async getAllByRating(req: Request, res: Response): Promise<void> {
 
         try {
-            const { ratingId } = req.body;
+            const ratingId = parseInt(req.params.id, 10);
             if (!ratingId) {
                 res.status(500).json({ error: 'Required Data is Unavailable' });
             }
@@ -154,7 +154,7 @@ export class ProductController {
     public async getAllByDiscount(req: Request, res: Response): Promise<void> {
 
         try {
-            const { discountId } = req.body
+            const discountId = parseInt(req.params.id, 10);
             if (!discountId) {
                 res.status(500).json({ error: 'Required Data is Unavailable' });
             }
