@@ -2,9 +2,9 @@ import { ProductService } from "../services/product.service";
 import { Product } from "../models"
 import { ProductDTO } from '../DTO';
 import { injectable, inject } from 'tsyringe';
-import express, { Request, Response } from 'express';
+import { Request, Response } from 'express';
 @injectable()
-class ProductController {
+export class ProductController {
 
 
     constructor(@inject(ProductService) private productService: ProductService) { }
@@ -53,12 +53,9 @@ class ProductController {
 
     public async getALlProducts(req: Request, res: Response): Promise<Product[]> {
         try {
-            const product = await this.productService.findAll();
-
-            if (!product) {
-                throw new Error("Failed to retrieve products");
-            }
-            return product;
+            const products = await this.productService.findAll();
+            res.json(products);
+            return products;
         } catch (error) {
             throw new Error('Error retrieving products')
         }

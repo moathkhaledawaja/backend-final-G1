@@ -1,11 +1,12 @@
 import { Router } from 'express';
+import { container } from 'tsyringe';
+import { ProductController} from '../controllers/ProductController';
 
-const router = Router();
+const productController = container.resolve(ProductController);
 
-router.get('/products');
-router.get('/products/:id');
-router.post('/products',);
-router.put('/products/:id',);
-router.delete('/products/:id');
+const Productrouter = Router();
 
-export default router;
+Productrouter.get('/', productController.getALlProducts.bind(productController));
+
+
+export default Productrouter;

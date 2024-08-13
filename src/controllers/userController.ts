@@ -42,18 +42,22 @@ export class UserController {
 
     async getUserByEmail(req: Request, res: Response): Promise<User | null> {
         try {
-            const email = req.params.email as string;
-            email.toString();
+            const email = String(req.params.email);
+            console.log(`Fetching user with email: ${email}`);
 
             const user = await this.userService.getUserByEmail(email);
             if (!user) {
-                res.status(404).json({ error: 'User not found' });
+                console.warn(`User not found with email: ${email}`);
+                res.status(404).json({ error: `User not found: ${email}` });
                 return null;
             }
+
+            console.log(`User found: ${email}`);
             res.json(user);
             return user;
         } catch (error: any) {
-            res.status(500).json({ error: error.message });
+            console.error(`Error retrieving user with email: ${req.params.email}`, error);
+            res.status(500).json({ error: 'Internal Server Error' });
             throw error;
         }
     }
@@ -62,18 +66,25 @@ export class UserController {
         try {
             const userId = parseInt(req.params.id, 10);
             const userData: UserDTO = req.body;
+
+            console.log('Request to update user with ID:', userId);
+            console.log('Request body data:', userData);
+
             const updatedUser = await this.userService.updateUser(userId, userData);
             if (!updatedUser) {
-                res.status(404).json({ error: 'User not found' });
+                res.status(404).json({ error: 'User not found or no changes made' });
                 return null;
             }
+
             res.json(updatedUser);
             return updatedUser;
         } catch (error: any) {
+            console.error('Error in updateUser controller:', error);
             res.status(400).json({ error: error.message });
-            throw error;
+            return null; // Ensure the function completes
         }
     }
+
 
     async deleteUser(req: Request, res: Response): Promise<void> {
         try {
