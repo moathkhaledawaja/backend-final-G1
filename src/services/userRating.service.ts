@@ -1,7 +1,7 @@
 
 
 import { UserRating } from '../models';
-import { userRatingDTO } from '../DTO';
+import { UserRatingDTO } from '../DTO';
 import { injectable } from 'tsyringe';
 import { UserRatingRepository } from '../data-access/UserRatingRepository';
 
@@ -14,7 +14,7 @@ export class UserRatingService {
   }
 
 
-  public async createUserRating(userId: number, data: userRatingDTO, productId: number): Promise<userRatingDTO | null> {
+  public async createUserRating(userId: number, productId: number, data: UserRatingDTO): Promise<UserRatingDTO | null> {
     const { rating } = data;
     const userRating = new UserRating();
     userRating.userId = userId;
@@ -48,13 +48,13 @@ export class UserRatingService {
   }
 
 
-  public async findUserRatingByUserIdAndProductId(userId: number, productId: number): Promise<userRatingDTO | null> {
+  public async findUserRatingByUserIdAndProductId(userId: number, productId: number): Promise<UserRatingDTO | null> {
     try {
       const userRating = await this.userRatingRepository.findByUserIdAndProductId(userId, productId);
       if (!userRating) {
         return null;
       }
-      const res: userRatingDTO = { rating: userRating.toJSON().rating, userId: userRating.toJSON().userId };
+      const res: UserRatingDTO = { rating: userRating.toJSON().rating, userId: userRating.toJSON().userId };
       return res;
     }
     catch (error: any) {
@@ -63,11 +63,12 @@ export class UserRatingService {
     }
   }
 
-  public async updateUserRating(userId: number, data: userRatingDTO): Promise<userRatingDTO | null> {
+  public async updateUserRating(userId: number,productId:number, data: UserRatingDTO): Promise<UserRatingDTO | null> {
     const { rating } = data;
     const userRating = new UserRating();
     userRating.userId = userId;
     userRating.rating = rating;
+    userRating.productId = productId
     try {
       const updatedUserRating = await this.userRatingRepository.update(userRating);
       if (!updatedUserRating) {
