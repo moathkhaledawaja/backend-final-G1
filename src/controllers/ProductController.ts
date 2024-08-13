@@ -2,9 +2,10 @@ import { ProductService } from "../services/product.service";
 import { Product } from "../models"
 import { ProductDTO } from '../DTO';
 import { injectable, inject } from 'tsyringe';
-import express, { Request, Response } from 'express';
+import { Request, Response } from 'express';
+
 @injectable()
-class ProductController {
+export class ProductController {
 
 
     constructor(@inject(ProductService) private productService: ProductService) { }

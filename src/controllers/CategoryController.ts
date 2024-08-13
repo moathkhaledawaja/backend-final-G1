@@ -109,26 +109,6 @@ class CategoryController {
 
     }
 
-    //findByProduct
-
-    public async findByProduct(req: Request, res: Response): Promise<Category[] | null> {
-        try {
-            const productId = parseInt(req.params.id, 10);
-            if (!productId) {
-                throw new Error('No Product assigned');
-            }
-
-            const category = await this.categoryService.findByProduct(productId);
-
-            if (!category) {
-                throw new Error("No Categories Found");
-            }
-            return category;
-        } catch (error) {
-            throw new Error('Error retrieving Category')
-        }
-
-    }
 
 
 }
