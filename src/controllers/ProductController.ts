@@ -50,7 +50,7 @@ export class ProductController {
 
     }
 
-    public async daleteProduct(req: Request, res: Response): Promise<void> {
+    public async deleteProduct(req: Request, res: Response): Promise<void> {
         try {
             const productId = parseInt(req.params.id);
             if (!productId) {
