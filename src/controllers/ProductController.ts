@@ -3,7 +3,6 @@ import { Product } from "../models"
 import { ProductDTO } from '../DTO';
 import { injectable, inject } from 'tsyringe';
 import { Request, Response } from 'express';
-
 @injectable()
 export class ProductController {
 
@@ -152,7 +151,7 @@ export class ProductController {
         }
     }
 
-    public async getAllByDiscount(req: Request, res: Response): Promise<Product[] | null> {
+    public async getAllByDiscount(req: Request, res: Response): Promise<void> {
 
         try {
             const { discountId } = req.body

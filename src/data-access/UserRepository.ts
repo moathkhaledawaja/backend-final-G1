@@ -6,14 +6,20 @@ export class UserRepository
   extends RepositoryBase<User>
   implements IUserRepository
 {
- 
+
   async findByEmail(email: string): Promise<User | null> {
     try {
-      return await this.model.findOne({ where: { email } });
-    } catch (error) {
-      throw new Error(`Error finding user by email: ${error}`);
+        console.log('Finding user with email:', email);
+        const user = await this.model.findOne({ where: { email } });
+        if (!user) {
+            console.warn(`User not found with email: ${email}`);
+        }
+        return user;
+    } catch (error : any) {
+        console.error(`Error finding user by email: ${email}`, error);
+        throw new Error(`Error finding user by email: ${error.message}`);
     }
-  }
+}
 
   async findByRole(role: string): Promise<User[]> {
     try {
@@ -47,17 +53,33 @@ export class UserRepository
     }
   }
 
-  async updateUser(id: number, userData: User): Promise<User | null> {
+  async updateUser(id: number, userData: Partial<User>): Promise<User | null> {
     try {
-      const [affectedRows, [updatedUser]] = await this.model.update(userData, {
+      console.log('Updating user with ID:', id);
+      console.log('User data to update:', userData);
+  
+      const [affectedRows] = await this.model.update(userData, {
         where: { id },
-        returning: true,
       });
-      return affectedRows > 0 ? updatedUser : null;
-    } catch (error) {
-      throw new Error(`Error updating user: ${error}`);
+  
+      console.log('Affected rows:', affectedRows);
+  
+      if (affectedRows === 0) {
+        console.log('No rows affected, possibly due to identical data.');
+        return null;
+      }
+  
+      // Fetch the updated user
+      const updatedUser = await this.model.findByPk(id);
+      console.log('Updated user:', updatedUser);
+  
+      return updatedUser;
+    } catch (error: any) {
+      console.error('Error in updateUser:', error);
+      throw new Error(`Error updating user: ${error.message}`);
     }
   }
+  
 
   async deleteUser(id: number): Promise<boolean> {
     try {
@@ -67,4 +89,7 @@ export class UserRepository
       throw new Error(`Error deleting user: ${error}`);
     }
   }
+
+ 
+ 
 }
