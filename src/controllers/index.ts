@@ -1,0 +1,1 @@
+export {CommentController} from './commentController';

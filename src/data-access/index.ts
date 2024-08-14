@@ -1,17 +1,20 @@
-import { User } from "../models";
+import { Comment, User } from "../models";
+import { CommentRepository } from "./CommentRepository";
 import { UserRepository } from "./UserRepository";
 import { IUserRepository } from './Interfaces/IUserRepository';
 
 import { CartRepository} from "./CartRepository";
 import { ICartRepository } from './Interfaces/ICartRepository';
 import { Cart } from "../models";
-
+import { ICommentRepository } from "./Interfaces/ICommentRepository";
 
 export const userRepository = new UserRepository(User);
 export const cartRepository = new CartRepository(Cart);
+export const commentRepository = new CommentRepository(Comment);
 
 
 export {
     IUserRepository,
-    ICartRepository
+    ICartRepository,
+    ICommentRepository
 }
