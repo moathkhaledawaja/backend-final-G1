@@ -9,7 +9,7 @@ export class CategoryRepository extends RepositoryBase<Category> implements ICat
 
     async findByName(name: string): Promise<Category | null> {
         try {
-            const category = await Category.findOne({
+            const category = await this.model.findOne({
                 where: { name }
             });
             return category;
@@ -18,17 +18,6 @@ export class CategoryRepository extends RepositoryBase<Category> implements ICat
         }
 
     }
-    async findByProduct(productId: number): Promise<Category[] | null> {
-        try {
-            const category = await Category.findAll({
-                include: [{ model: Product }, { through: { attributes: [] }, where: { productId } }],
 
-            });
-            return category;
-        } catch (error) {
-            throw new Error('Error retrieving Category')
-        }
-
-    }
 
 }

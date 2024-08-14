@@ -9,12 +9,18 @@ export class ProductController {
 
     constructor(@inject(ProductService) private productService: ProductService) { }
 
-    public async createProduct(req: Request, res: Response): Promise<Product> {
+    public async createProduct(req: Request, res: Response): Promise<void> {
         try {
-            const newProduct: ProductDTO = req.body;
-            const product = await this.productService.createProduct(newProduct);
+            const product: ProductDTO = req.body;
+            if (!product) {
+                res.status(500).json({ error: 'Required Data is Unavailable' });
+            }
+            const newProduct = await this.productService.createProduct(product);
+            if (!newProduct) {
+                res.status(400).json({ error: 'error while creating new Product' });
+            }
             res.status(201).json(product);
-            return product;
+
         } catch (error: any) {
             res.status(400).json({ error: error.message });
             throw error;
@@ -23,13 +29,19 @@ export class ProductController {
 
 
 
-    public async updateProduct(req: Request, res: Response): Promise<Product> {
+    public async updateProduct(req: Request, res: Response): Promise<void> {
         try {
             const newProduct: ProductDTO = req.body;
             const productId = parseInt(req.params.id);
-            const product = await this.productService.updateProduct(productId, newProduct);
-            res.status(201).json(product);
-            return product;
+            if (!newProduct || !productId) {
+                res.status(500).json({ error: 'Required Data is Unavailable' });
+            }
+            const updatedProduct = await this.productService.updateProduct(productId, newProduct);
+            if (!updatedProduct) {
+                res.status(404).json({ error: 'Error while updating category' });
+            }
+
+            res.status(201).json(updatedProduct);
         } catch (error: any) {
             res.status(400).json({ error: error.message });
             throw error;
@@ -38,99 +50,122 @@ export class ProductController {
 
     }
 
-    public async daleteProduct(req: Request, res: Response): Promise<void> {
+    public async deleteProduct(req: Request, res: Response): Promise<void> {
         try {
             const productId = parseInt(req.params.id);
             if (!productId) {
-                throw new Error("Required Data is Unavailable");
+                res.status(500).json({ error: 'Required Data is Unavailable' });
             }
             await this.productService.deleteProduct(productId);
-        } catch (error) {
-            throw new Error(`Error deleting product: ${error}`);
+            res.status(201);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
         }
 
     }
 
-    public async getALlProducts(req: Request, res: Response): Promise<Product[]> {
+    public async getAllProducts(req: Request, res: Response): Promise<void> {
         try {
             const products = await this.productService.findAll();
-            res.json(products);
-            return products;
-        } catch (error) {
-            throw new Error('Error retrieving products')
-        }
-    }
 
-    public async getProductById(req: Request, res: Response): Promise<Product | null> {
-        try {
-            const productid = parseInt(req.params.id, 10);
-
-            const product = await this.productService.findById(productid);
-            if (!product) {
-                throw new Error(`Product doesn't exist`);
+            if (!products) {
+                res.status(404).json({ error: 'Product not found' });
             }
-            return product;
-
-        } catch (error) {
-            throw new Error('Error retrieving product')
+            res.status(201).json(products);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+            throw error;
         }
     }
 
-    public async getProductByName(req: Request, res: Response): Promise<Product | null> {
-        const { name } = req.body;
+    public async getProductById(req: Request, res: Response): Promise<void> {
         try {
+            const productId = parseInt(req.params.id, 10);
+            if (!productId) {
+                res.status(500).json({ error: 'Required Data is Unavailable' });
+
+            }
+            const product = await this.productService.findById(productId);
+            if (!product) {
+                res.status(400).json({ error: 'Product not found' });
+
+            }
+            res.status(201).json(product);
+
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    public async getProductByName(req: Request, res: Response): Promise<void> {
+
+        try {
+            const { name } = req.body;
+            if (!name) {
+                res.status(500).json({ error: 'Required Data is Unavailable' });
+            }
             const product = await this.productService.findByName(name);
             if (!product) {
-                throw new Error(`Product doesn't exist`);
+                res.status(404).json(product);
             }
-            return product;
 
-        } catch (error) {
-            throw new Error('Error retrieving product')
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
         }
 
     }
 
-    public async getProductByCategory(req: Request, res: Response): Promise<Product[] | null> {
-        const { categoryId } = req.body;
-        try {
+    public async getProductByCategory(req: Request, res: Response): Promise<void> {
 
+        try {
+            const categoryId = parseInt(req.params.id, 10);
+            if (!categoryId) {
+                res.status(500).json({ error: 'Required Data is Unavailable' });
+            }
             const product = await this.productService.findByCategory(categoryId);
             if (!product) {
-                throw new Error(`Product doesn't exist`);
+                res.status(400).json({ error: 'Product not found' });
             }
-            return product;
 
-        } catch (error) {
-            throw new Error('Error retrieving product')
+
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
         }
     }
 
-    public async getAllByRating(req: Request, res: Response): Promise<Product[] | null> {
-        const { ratingId } = req.body;
+    public async getAllByRating(req: Request, res: Response): Promise<void> {
+
         try {
+            const ratingId = parseInt(req.params.id, 10);
+            if (!ratingId) {
+                res.status(500).json({ error: 'Required Data is Unavailable' });
+            }
             const product = await this.productService.findAllByRating(ratingId);
             if (!product) {
-                throw new Error(`Product doesn't exist`);
+                res.status(400).json({ error: 'Category not found' });
             }
-            return product;
+            res.status(201).json(product);
 
-        } catch (error) {
-            throw new Error('Error retrieving product')
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
         }
     }
 
-    public async getAllByDiscount(req: Request, res: Response): Promise<Product[] | null> {
-        const { discountId } = req.body
+    public async getAllByDiscount(req: Request, res: Response): Promise<void> {
+
         try {
+            const discountId = parseInt(req.params.id, 10);
+            if (!discountId) {
+                res.status(500).json({ error: 'Required Data is Unavailable' });
+            }
             const product = await this.productService.findAllByDiscount(discountId);
             if (!product) {
-                throw new Error(`Product doesn't exist`);
+                res.status(400).json({ error: 'Category not found' });
             }
-            return product;
+            res.status(201).json(product);
 
-        } catch (error) {
-            throw new Error('Error retrieving product')
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
         }
     }
 

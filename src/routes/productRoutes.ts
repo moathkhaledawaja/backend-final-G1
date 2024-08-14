@@ -1,12 +1,24 @@
 import { Router } from 'express';
-import { container } from 'tsyringe';
-import { ProductController} from '../controllers/ProductController';
+import { ProductController } from '../controllers/ProductController';
+import { container } from "tsyringe";
+import { ProductService } from '../services/product.service';
+import { ProductRepository } from '../data-access/ProductRepository'
 
+/* const productRepository = new ProductRepository();
+const productService = new ProductService();
+const productController = new ProductController(); */
 const productController = container.resolve(ProductController);
 
-const Productrouter = Router();
+const router = Router();
 
-Productrouter.get('/', productController.getALlProducts.bind(productController));
+router.get('/', productController.getAllProducts.bind(productController));
+router.get('/:id', productController.getProductById.bind(productController));
+router.get('/name', productController.getProductByName.bind(productController));
+router.get('/categoryid/:id', productController.getProductByName.bind(productController));
+router.get('/ratingid/:id', productController.getAllByRating.bind(productController));
+router.get('/discountid/:id', productController.getAllByDiscount.bind(productController));
+router.post('/', productController.createProduct.bind(productController));
+router.put('/:id', productController.updateProduct.bind(productController));
+router.delete('/:id', productController.deleteProduct.bind(productController));
 
-
-export default Productrouter;
+export default router;

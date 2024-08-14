@@ -2,9 +2,9 @@ import express, { NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
 import sequelize from "./config/db";
 
-import productRoutes from "./routes/productRoutes";
+
 import userRouter from "./routes/userRoutes";
-import { cartRouter, commentRouter } from "./routes";
+import { cartRouter, categoryRouter, productRouter, commentRouter } from "./routes";
 import { authRouter } from "./routes";
 import { container } from "tsyringe";
 
@@ -19,8 +19,9 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
-app.use("/api/products", productRoutes);
+app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
+app.use("/api/categories", categoryRouter)
 app.use("/api/comments", commentRouter);
 const startServer = async () => {
   try {

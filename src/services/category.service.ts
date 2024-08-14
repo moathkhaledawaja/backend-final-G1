@@ -76,15 +76,7 @@ export class CategoryService {
         }
 
     }
-    async findByProduct(productId: number): Promise<Category[] | null> {
-        try {
-            const category = await this.categoryRepository.findByProduct(productId);
-            return category;
-        } catch (error) {
-            throw new Error('Error retrieving Category')
-        }
 
-    }
 
     async deleteCategory(CategoryId: number): Promise<boolean> {
         try {
