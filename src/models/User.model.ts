@@ -1,5 +1,5 @@
-import { Table, Column, DataType, HasMany } from "sequelize-typescript";
-import { ModelBase, Comment, UserRating } from ".";
+import { Table, Column, DataType, HasMany, Model } from "sequelize-typescript";
+import { Comment, UserRating } from ".";
 import { UserRoles } from "../enums/UserRolesEnum";
 
 let userRoles: string[] = [];
@@ -9,9 +9,11 @@ for (const value in UserRoles) {
 }
 
 @Table({
+  timestamps: true,
+  paranoid: true,
   tableName: "users",
 })
-export class User extends ModelBase<User> {
+export class User extends Model<User> {
   @Column({
     type: DataType.STRING,
     allowNull: false,

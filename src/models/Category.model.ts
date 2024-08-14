@@ -1,10 +1,18 @@
-import { Table, Column, DataType, BelongsToMany } from "sequelize-typescript";
-import { Product, ProductCategory, ModelBase } from "../models";
+import {
+  Table,
+  Column,
+  DataType,
+  BelongsToMany,
+  Model,
+} from "sequelize-typescript";
+import { Product, ProductCategory } from "../models";
 
 @Table({
+  timestamps: true,
+  paranoid: true,
   tableName: "categories",
 })
-export class Category extends ModelBase<Category> {
+export class Category extends Model<Category> {
   @Column({
     type: DataType.STRING,
     allowNull: false,

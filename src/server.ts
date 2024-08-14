@@ -1,33 +1,28 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
 import sequelize from "./config/db";
 
-import swaggerUi from 'swagger-ui-express'
 
 import userRouter from "./routes/userRoutes";
-import { cartRouter, categoryRoutes, productRoutes } from "./routes";
+import { cartRouter, categoryRouter, productRouter, commentRouter } from "./routes";
 import { authRouter } from "./routes";
+import { container } from "tsyringe";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+
 app.use(express.json());
-app.use('/api', productRoutes);
-app.use("/swagger", swaggerUi.serve, swaggerUi.setup(undefined, {
-    swaggerOptions: {
-        url: "/swagger.json"
-    }
-}))
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
-app.use("/api/products", productRoutes);
+app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
-app.use("/api/categories", categoryRoutes)
-
+app.use("/api/categories", categoryRouter)
+app.use("/api/comments", commentRouter);
 const startServer = async () => {
   try {
     await sequelize.authenticate();
