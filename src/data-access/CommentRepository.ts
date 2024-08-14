@@ -6,7 +6,7 @@ export class CommentRepository
   extends RepositoryBase<Comment>
   implements ICommentRepository {
   async findByProductId(productId: number): Promise<Comment[] | null> {
-    return await Comment.findAll({ where: { productId } });
+    return await this.model.findAll({ where: { productId } });
   }
   async findAll(): Promise<Comment[]> {
     // to be implemented...
