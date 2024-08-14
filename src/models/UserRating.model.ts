@@ -4,13 +4,16 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  Model,
 } from "sequelize-typescript";
-import { User, ModelBase, Product } from "../models";
+import { User, Product } from "../models";
 
 @Table({
+  timestamps: true,
+  paranoid: true,
   tableName: "userRatings",
 })
-export class UserRating extends ModelBase<UserRating> {
+export class UserRating extends Model<UserRating> {
   @ForeignKey(() => User)
   @Column({ allowNull: false, type: DataType.INTEGER })
   userId!: number;

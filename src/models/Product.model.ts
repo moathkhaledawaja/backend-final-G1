@@ -5,10 +5,10 @@ import {
   HasOne,
   BelongsToMany,
   HasMany,
+  Model,
 } from "sequelize-typescript";
 import {
   Discount,
-  ModelBase,
   Category,
   Comment,
   UserRating,
@@ -22,9 +22,11 @@ import {
 } from "../models";
 
 @Table({
+  timestamps: true,
+  paranoid: true,
   tableName: "products",
 })
-export class Product extends ModelBase<Product> {
+export class Product extends Model<Product> {
   @Column({
     type: DataType.STRING,
     allowNull: false,
