@@ -5,13 +5,16 @@ import {
   ForeignKey,
   BelongsTo,
   BelongsToMany,
+  Model,
 } from "sequelize-typescript";
-import { User, CartProduct, Product, ModelBase } from "../models";
+import { User, CartProduct, Product } from "../models";
 
 @Table({
+  timestamps: true,
+  paranoid: true,
   tableName: "carts",
 })
-export class Cart extends ModelBase<Cart> {
+export class Cart extends Model<Cart> {
   @ForeignKey(() => User)
   @Column({ allowNull: false, type: DataType.INTEGER })
   userId!: number;

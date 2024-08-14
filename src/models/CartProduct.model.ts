@@ -1,10 +1,18 @@
-import { Table, Column, DataType, ForeignKey } from "sequelize-typescript";
-import { Cart, Product, ModelBase } from "../models";
+import {
+  Table,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+} from "sequelize-typescript";
+import { Cart, Product } from "../models";
 
 @Table({
+  timestamps: true,
+  paranoid: true,
   tableName: "cartProduct",
 })
-export class CartProduct extends ModelBase<CartProduct> {
+export class CartProduct extends Model<CartProduct> {
   @Column({ allowNull: false, type: DataType.INTEGER })
   quantity!: number;
 
