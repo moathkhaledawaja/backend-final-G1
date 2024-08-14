@@ -106,4 +106,16 @@ export class UserController {
             throw error;
         }
     }
+
+    async editUserPassword(req: Request, res: Response): Promise<Response> {
+        const userId = parseInt(req.params.id, 10);
+        const { oldPassword, newPassword } = req.body;
+    
+        try {
+          const result = await this.userService.editUserPassword(Number(userId), oldPassword, newPassword);
+          return res.status(200).json({ message: result });
+        } catch (error: any) {
+          return res.status(400).json({ error: error.message || "An error occurred" });
+        }
+      }
 }
