@@ -55,27 +55,18 @@ export class UserRepository
 
   async updateUser(id: number, userData: Partial<User>): Promise<User | null> {
     try {
-      console.log('Updating user with ID:', id);
-      console.log('User data to update:', userData);
   
       const [affectedRows] = await this.model.update(userData, {
         where: { id },
       });
   
-      console.log('Affected rows:', affectedRows);
-  
       if (affectedRows === 0) {
         console.log('No rows affected, possibly due to identical data.');
         return null;
       }
-  
-      // Fetch the updated user
       const updatedUser = await this.model.findByPk(id);
-      console.log('Updated user:', updatedUser);
-  
       return updatedUser;
     } catch (error: any) {
-      console.error('Error in updateUser:', error);
       throw new Error(`Error updating user: ${error.message}`);
     }
   }
