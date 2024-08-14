@@ -9,7 +9,7 @@ export class CategoryRepository extends RepositoryBase<Category> implements ICat
 
     async findByName(name: string): Promise<Category | null> {
         try {
-            const category = await Category.findOne({
+            const category = await this.model.findOne({
                 where: { name }
             });
             return category;
