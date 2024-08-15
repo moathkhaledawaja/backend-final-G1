@@ -15,20 +15,21 @@ export class CommentService {
     userId: number,
     data: CommentDTO
   ): Promise<CommentDTO | null> {
-    const { content, productId } = data;
-    const newComment = new Comment();
-    newComment.userId = userId;
-    newComment.content = content;
-    newComment.productId = productId;
-    try {
-      const comment = await this.commentRepository.create(newComment);
-      if (!comment) {
-        return null;
-      }
-      return data;
-    } catch (error: any) {
-      throw new Error(`Could not create a new Comment ${error.message}`);
-    }
+    // const { content, productId } = data;
+    // const newComment = new Comment();
+    // newComment.userId = userId;
+    // newComment.content = content;
+    // newComment.productId = productId;
+    // try {
+    //   const comment = await this.commentRepository.create(newComment);
+    //   if (!comment) {
+    //     return null;
+    //   }
+    //   return data;
+    // } catch (error: any) {
+    //   throw new Error(`Could not create a new Comment ${error.message}`);
+    // }
+    return null;
   }
 
   public async getCommentsByProductId(

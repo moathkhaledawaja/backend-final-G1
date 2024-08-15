@@ -1,6 +1,6 @@
 export type CommentDTO = {
-  id?:number,
-  content:string,
-  productId:number,
-
-}
+  id?: number;
+  userId?: number;
+  productId?: number;
+  content: string;
+};
