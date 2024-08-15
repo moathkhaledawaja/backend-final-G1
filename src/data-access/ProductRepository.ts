@@ -30,7 +30,7 @@ export class ProductRepository
       offset: pageSize * (page - 1),
       where: {
         createdAt: {
-          [Op.gt]: options.earliestDate ?? Date.now, // Filter products created after the specified date
+          [Op.gt]: options.earliestDate ?? Date.now(), // Filter products created after the specified date
         },
       },
     };

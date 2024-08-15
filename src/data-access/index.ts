@@ -1,10 +1,11 @@
 import { Cart, Category, Comment, Discount, Product, User } from "../models";
 import { CommentRepository } from "./CommentRepository";
 import { UserRepository } from "./UserRepository";
+import { CategoryRepository } from "./CategoryRepository";
 import { CartRepository } from "./CartRepository";
 import { ProductRepository } from "./ProductRepository";
-import { CategoryRepository } from "./CategoryRepository";
 import { DiscountRepository } from "./DiscountRepository";
+
 
 export const userRepository = new UserRepository(User);
 export const cartRepository = new CartRepository(Cart);
