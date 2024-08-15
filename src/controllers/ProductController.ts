@@ -30,7 +30,7 @@ export class ProductController {
       if (!newProduct) {
         res.status(400).json({ error: "error while creating new Product" });
       }
-      res.status(201).json(product);
+      res.status(201).json(newProduct.toJSON());
     } catch (error: any) {
       res.status(400).json({ error: error.message });
       throw error;

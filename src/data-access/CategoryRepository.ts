@@ -1,4 +1,3 @@
-
 import { Category, Product } from "../models";
 import { ICategoryRepository } from "./Interfaces/ICategoryRepository";
 import { RepositoryBase } from "./RepositoryBase";
@@ -18,6 +17,6 @@ export class CategoryRepository extends RepositoryBase<Category> implements ICat
         }
 
     }
- 
+
 
 }

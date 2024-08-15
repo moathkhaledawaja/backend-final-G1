@@ -1,4 +1,4 @@
-import { categoryRepository } from "../data-access/";
+import { categoryRepository } from "../data-access";
 import { injectable } from "tsyringe";
 import { Category } from "../models";
 import { CategoryDTO } from "../Types/DTO";
