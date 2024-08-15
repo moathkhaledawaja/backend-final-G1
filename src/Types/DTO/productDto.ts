@@ -1,7 +1,7 @@
 import { CategoryDTO } from "./categoryDto";
 import { CommentDTO } from "./commentDto";
 import { discountDTO } from "./discountDTO";
-import { ratingDto } from "./ratingDTO";
+import { ratingDto } from "./ratingDto";
 
 export type ProductDTO = {
   name: string;
