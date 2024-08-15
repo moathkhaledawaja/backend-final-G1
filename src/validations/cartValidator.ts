@@ -13,13 +13,13 @@ export  const createCartValidator = [
       
     validateResult
 
-];
+]
 
 export const getCartValidator = [
     param("userId").isInt().toInt(),
     validateResult
 
-];
+]
 
 export const deleteCartValidator = [
         param("id").isInt().toInt(),
