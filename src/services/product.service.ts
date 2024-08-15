@@ -40,6 +40,11 @@ export default class ProductService {
     return await productRepository.GetProduct(Id);
   }
 
+  // test function to get all products
+  async GetAllProducts(): Promise<Product[]> {
+    return await productRepository.findAll()
+  }
+
   async createProduct(productData: ProductDTO): Promise<Product> {
     try {
       const newProduct = new Product();

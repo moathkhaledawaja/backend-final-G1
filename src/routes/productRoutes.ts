@@ -9,6 +9,7 @@ const productController = container.resolve(ProductController);
 
 const router = Router();
 router.get("/list", productController.GetProducts.bind(productController));
+router.get("/all", productController.getAllProducts.bind(productController));
 router.get("/:id", productController.getProductById.bind(productController));
 router.get("/name", productController.getProductByName.bind(productController));
 router.get(
