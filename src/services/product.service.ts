@@ -1,8 +1,8 @@
 import { injectable } from "tsyringe";
-import { Product } from "../models";
+import { Category, Product } from "../models";
 import { ProductDTO } from "../Types/DTO";
 import { GetProductOptions } from "../Types/GetProductOptions";
-import { productRepository } from "../data-access";
+import { productRepository, categoryRepository } from "../data-access";
 
 @injectable()
 export default class ProductService {
@@ -48,7 +48,18 @@ export default class ProductService {
       newProduct.stock = productData.stock;
       newProduct.brand = productData.brand;
       newProduct.description = productData.description;
-      const product = await productRepository.create(newProduct);
+      const categories: Category[] = [];
+
+      productData.categories?.forEach((item) => {
+        const cat = new Category();
+        cat.name = item.name;
+        categories.push(cat);
+      });
+
+      const cats = await categoryRepository.CreateCategoryList(categories);
+      newProduct.categories = cats;
+
+      const product = await productRepository.CreateProduct(newProduct);
       if (!product) {
         throw new Error("Failed to create product");
       }

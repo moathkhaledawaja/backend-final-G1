@@ -12,9 +12,9 @@ export class ProductRepository
     return await this.model.findByPk(id, {
       include: [
         { model: Category, through: { attributes: [] } },
-        { model: Discount, through: { attributes: [] } },
-        { model: Comment, through: { attributes: [] } },
-        { model: UserRating, through: { attributes: [] } },
+        { model: Discount },
+        { model: Comment },
+        { model: UserRating },
       ],
     });
   }
@@ -41,6 +41,19 @@ export class ProductRepository
         },
       ],
     });
+  }
+
+  async CreateProduct(product: Product) {
+    try {
+      console.log(product.categories);
+      const newProduct = await this.model.create(product.dataValues);
+      await newProduct.$set("categories", product.categories);
+      await newProduct.save({ returning: true });
+      return await this.GetProduct(newProduct.id);
+    } catch (ex) {
+      console.log(ex);
+    }
+    return null;
   }
 
   async findByName(name: string): Promise<Product | null> {
