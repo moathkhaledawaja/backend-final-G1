@@ -4,7 +4,7 @@ import { injectable } from "tsyringe";
 import { CommentRepository } from "../data-access/CommentRepository";
 
 @injectable()
-export class CommentService {
+export default class CommentService {
   private commentRepository: CommentRepository;
 
   constructor(commentRepository: CommentRepository) {
