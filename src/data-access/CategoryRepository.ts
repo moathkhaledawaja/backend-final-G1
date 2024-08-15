@@ -18,6 +18,6 @@ export class CategoryRepository extends RepositoryBase<Category> implements ICat
         }
 
     }
-
+ 
 
 }

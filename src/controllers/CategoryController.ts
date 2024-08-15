@@ -1,25 +1,24 @@
 import { injectable, inject } from "tsyringe";
 import { Request, Response } from "express";
-import { CategoryService } from "../services/category.service";
-import { Category } from "../models";
+import  CategoryService  from "../services/category.service";
 import { CategoryDTO } from "../Types/DTO";
+import { Category } from "../models";
 @injectable()
 export class CategoryController {
   constructor(
     @inject(CategoryService) private categoryService: CategoryService
   ) {}
 
-  public async getAllCategories(req: Request, res: Response): Promise<void> {
+  public async getAllCategories(req: Request, res: Response): Promise<Category[]> {
     try {
-      const categories = await this.categoryService.findAll();
-      if (!categories) {
-        res.status(404).json({ error: "Cart not found" });
-      }
-
-      res.status(201).json(categories);
+      
+      const Categories = await this.categoryService.getAllCategories();
+      
+      res.json(Categories);
+      return Categories;
     } catch (error: any) {
       res.status(500).json({ error: error.message });
-      throw error;
+      throw new Error(`Error retrieving categories`);
     }
   }
 

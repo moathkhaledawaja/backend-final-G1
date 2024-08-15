@@ -1,21 +1,17 @@
-import { CategoryRepository } from "../data-access/CategoryRepository";
+import { categoryRepository } from "../data-access/";
 import { injectable } from "tsyringe";
 import { Category } from "../models";
 import { CategoryDTO } from "../Types/DTO";
 
-@injectable()
-export class CategoryService {
-  private categoryRepository: CategoryRepository;
+export default class CategoryService {
 
-  constructor(categoryRepository: CategoryRepository) {
-    this.categoryRepository = categoryRepository;
-  }
+
 
   async createCategory(categoryData: CategoryDTO): Promise<Category> {
     try {
       const newCategory = new Category();
       newCategory.name = categoryData.name;
-      const category = await this.categoryRepository.create(newCategory);
+      const category = await categoryRepository.create(newCategory);
 
       if (!category) {
         throw new Error("Failed to create category  `");
@@ -31,13 +27,13 @@ export class CategoryService {
     categoryData: CategoryDTO
   ): Promise<Category> {
     try {
-      const oldCategory = await this.categoryRepository.findById(categoryId);
+      const oldCategory = await categoryRepository.findById(categoryId);
       if (!oldCategory) {
         throw new Error("Category Doesn't exist");
       }
 
       oldCategory.name = categoryData.name;
-      const category = await this.categoryRepository.update(oldCategory);
+      const category = await categoryRepository.update(oldCategory);
       if (!category) {
         throw new Error("Failed to update category");
       }
@@ -50,23 +46,25 @@ export class CategoryService {
   // all find methods
   async findById(id: number): Promise<Category | null> {
     try {
-      const category = await this.categoryRepository.findById(id);
+      const category = await categoryRepository.findById(id);
       return category;
     } catch (error) {
       throw new Error("Error retrieving category");
     }
   }
-  async findAll(): Promise<Category[]> {
+
+  async getAllCategories(): Promise<Category[]> {
     try {
-      const category = await this.categoryRepository.findAll();
-      return category;
+      const categories = await categoryRepository.findAll();
+      return categories;
     } catch (error) {
-      throw new Error("Error retrieving All Categories");
+      throw new Error("Error retrieving Categories");
     }
+  
   }
   async findByName(name: string): Promise<Category | null> {
     try {
-      const category = await this.categoryRepository.findByName(name);
+      const category = await categoryRepository.findByName(name);
       return category;
     } catch (error) {
       throw new Error("Error retrieving Category");
@@ -75,7 +73,7 @@ export class CategoryService {
 
   async deleteCategory(CategoryId: number): Promise<boolean> {
     try {
-      const deletedCategory = await this.categoryRepository.delete(CategoryId);
+      const deletedCategory = await categoryRepository.delete(CategoryId);
 
       return deletedCategory;
     } catch (error) {
