@@ -60,7 +60,7 @@ export class Product extends Model<Product> {
 
   //Product-Discount relationship.
   @HasOne(() => Discount)
-  discount!: Discount;
+  discount?: Discount;
 
   //Product-Category relationship.
   @BelongsToMany(() => Category, () => ProductCategory)

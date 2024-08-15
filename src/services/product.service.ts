@@ -27,8 +27,8 @@ export default class ProductService {
         brand: item.brand,
         description: item.description,
         discount: {
-          amount: item.discount.discountRate,
-          id: item.discount.discountRate,
+          amount: item.discount?.discountRate ?? 0,
+          id: item.discount?.id,
         },
       });
     });
