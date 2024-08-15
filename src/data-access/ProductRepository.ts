@@ -2,7 +2,7 @@ import { IProductRepository } from "./Interfaces/IProductRepository";
 import { Category, Discount, Product, Comment, UserRating } from "../models";
 import { RepositoryBase } from "./RepositoryBase";
 import { GetProductOptions } from "../Types/GetProductOptions";
-import { Op } from "sequelize";
+import { Op, QueryOptions } from "sequelize";
 
 export class ProductRepository
   extends RepositoryBase<Product>
@@ -25,7 +25,7 @@ export class ProductRepository
     pageSize: number,
     options: GetProductOptions
   ) {
-    return await this.model.findAll({
+    const opts: any = {
       limit: pageSize,
       offset: pageSize * (page - 1),
       where: {
@@ -33,14 +33,20 @@ export class ProductRepository
           [Op.gt]: options.earliestDate ?? Date.now(), // Filter products created after the specified date
         },
       },
-      include: [
+    };
+    if (options.categories) {
+      opts.include = [
         {
           model: Category,
+
           where: { name: options.categories },
           through: { attributes: [] },
         },
-      ],
-    });
+      ];
+    } else opts.include = [{ model: Category, through: { attributes: [] } }];
+
+    console.log(opts);
+    return await this.model.findAll(opts);
   }
 
   async CreateProduct(product: Product) {
