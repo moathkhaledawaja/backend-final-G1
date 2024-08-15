@@ -1,18 +1,43 @@
 import { injectable } from "tsyringe";
-import { ProductRepository } from "../data-access/ProductRepository";
 import { Product } from "../models";
 import { ProductDTO } from "../Types/DTO";
+import { GetProductOptions } from "../Types/GetProductOptions";
+import { productRepository } from "../data-access";
 
 @injectable()
-export class ProductService {
-  private productRepository: ProductRepository;
+export default class ProductService {
+  async GetProducts(
+    page: number,
+    pageSize: number,
+    options: GetProductOptions
+  ): Promise<ProductDTO[]> {
+    const products = await productRepository.GetProducts(
+      page,
+      pageSize,
+      options
+    );
 
-  constructor(productRepository: ProductRepository) {
-    this.productRepository = productRepository;
+    const prodcutsDto: ProductDTO[] = [];
+
+    products.forEach((item) => {
+      prodcutsDto.push({
+        name: item.name,
+        price: item.price,
+        stock: item.stock,
+        brand: item.brand,
+        description: item.description,
+        discount: {
+          amount: item.discount.discountRate,
+          id: item.discount.discountRate,
+        },
+      });
+    });
+
+    return prodcutsDto;
   }
 
   async GetProduct(Id: number) {
-    this.productRepository.GetProduct(Id);
+    return await productRepository.GetProduct(Id);
   }
 
   async createProduct(productData: ProductDTO): Promise<Product> {
@@ -23,7 +48,7 @@ export class ProductService {
       newProduct.stock = productData.stock;
       newProduct.brand = productData.brand;
       newProduct.description = productData.description;
-      const product = await this.productRepository.create(newProduct);
+      const product = await productRepository.create(newProduct);
       if (!product) {
         throw new Error("Failed to create product");
       }
@@ -38,7 +63,7 @@ export class ProductService {
     productData: ProductDTO
   ): Promise<Product> {
     try {
-      const oldProduct = await this.productRepository.findById(productId);
+      const oldProduct = await productRepository.findById(productId);
       if (!oldProduct) {
         throw new Error("Product Doesn't exist");
       }
@@ -48,7 +73,7 @@ export class ProductService {
       oldProduct.stock = productData.stock;
       oldProduct.brand = productData.brand;
       oldProduct.description = productData.description;
-      const product = await this.productRepository.update(oldProduct);
+      const product = await productRepository.update(oldProduct);
       if (!product) {
         throw new Error("Failed to update product");
       }
@@ -60,7 +85,7 @@ export class ProductService {
 
   async deleteProduct(productId: number): Promise<boolean> {
     try {
-      const deletedProduct = await this.productRepository.delete(productId);
+      const deletedProduct = await productRepository.delete(productId);
 
       return deletedProduct;
     } catch (error) {
@@ -71,7 +96,7 @@ export class ProductService {
   }
   async findById(id: number): Promise<Product | null> {
     try {
-      const product = await this.productRepository.findById(id);
+      const product = await productRepository.findById(id);
       return product;
     } catch (error: any) {
       throw new Error(`Error retrieving product : ${error.message}`);
@@ -79,24 +104,7 @@ export class ProductService {
   }
   async findByName(name: string): Promise<Product | null> {
     try {
-      const product = await this.productRepository.findByName(name);
-      return product;
-    } catch (error: any) {
-      throw new Error(`Error retrieving product : ${error.message}`);
-    }
-  }
-
-  async findAll(): Promise<Product[]> {
-    try {
-      const product = await this.productRepository.findAll();
-      return product;
-    } catch (error: any) {
-      throw new Error(`Error retrieving products : ${error.message}`);
-    }
-  }
-  async findByCategory(categoryId: number): Promise<Product[] | null> {
-    try {
-      const product = await this.productRepository.findByCategory(categoryId);
+      const product = await productRepository.findByName(name);
       return product;
     } catch (error: any) {
       throw new Error(`Error retrieving product : ${error.message}`);
