@@ -52,6 +52,7 @@ export class ProductRepository
     const opts: any = {
       limit: pageSize,
       offset: pageSize * (page - 1),
+
       include: [
         {
           model: Category,

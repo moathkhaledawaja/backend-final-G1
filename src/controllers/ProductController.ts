@@ -92,4 +92,13 @@ export class ProductController {
         .json({ error: "internal server error, try again later." });
     }
   }
+
+  async getAllProducts(req: Request, res: Response): Promise<void> {
+    try {
+      const products = await this.productService.GetAllProducts();
+      res.status(200).json(products);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
 }

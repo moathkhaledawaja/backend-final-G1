@@ -10,6 +10,5 @@ export interface IProductRepository extends IRepositoryBase<Product> {
     pageSize: number,
     options: GetProductOptions
   ): Promise<Product[]>;
-
   CreateProduct(product: Product): Promise<Product | null>;
 }

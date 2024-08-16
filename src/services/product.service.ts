@@ -35,6 +35,7 @@ export default class ProductService {
       throw new ValidationError("page should be more than or equal to 1");
     if (pageSize < 1)
       throw new ValidationError("pageSize should be more than or equal to 1");
+
     try {
       //fetch all products from the products repository.
       const products = await productRepository.GetProducts(
