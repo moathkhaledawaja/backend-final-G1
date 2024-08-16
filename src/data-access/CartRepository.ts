@@ -1,4 +1,4 @@
-import { Cart } from '../models'
+import { Cart, CartProduct } from '../models'
 import { ICartRepository } from './Interfaces/ICartRepository'
 import { RepositoryBase } from './RepositoryBase'
 
@@ -49,4 +49,75 @@ export class CartRepository
         }
     }
 
+    // add product to cart
+    async addProductToCart(cartId: number, productId: number, quantity: number): Promise<boolean> {
+        try {
+            // find the cart
+            const cart = await this.model.findByPk(cartId);
+            if (!cart) {
+                throw new Error("Cart not found");
+            }
+            // add the product to the cart
+            await cart.$add('products', productId, { through: { quantity } });
+            return true;
+        } catch (error: any) {
+            throw new Error(`Error adding product to cart: ${error}`);
+        }
+    }
+
+    // remove item from cart
+    async removeProductFromCart(cartId: number, productId: number): Promise<boolean>{
+        try {
+            // find the cart
+            const cart = await this.model.findByPk(cartId);
+            if (!cart) {
+                throw new Error("Cart not found");
+            }
+            // remove the product from the cart
+            await cart.$remove('products', productId);
+            return true;
+            
+        } catch (error: any) {
+            throw new Error(`Error removing product from cart: ${error}`);
+            
+        }
+    }
+
+    // update product quantity in cart
+    async updateProductQuantity(cartId: number, productId: number, quantity: number): Promise<boolean> {
+        try {
+            console.log(`Updating product quantity for cartId: ${cartId}, productId: ${productId}, quantity: ${quantity}`);
+
+            // Step 1: Find the cart by its primary key
+            const cart = await this.model.findByPk(cartId);
+
+            if (!cart) {
+                console.log(`Cart with ID ${cartId} not found`);
+                throw new Error("Cart not found");
+            }
+
+            // Step 2: Find the CartProduct entry
+            const cartProduct = await CartProduct.findOne({
+                where: {
+                    cartId: cartId,
+                    productId: productId,
+                }
+            });
+
+            if (!cartProduct) {
+                console.log(`Product with ID ${productId} not found in cart with ID ${cartId}`);
+                throw new Error("Product not found in cart");
+            }
+
+            // Step 3: Update the quantity of the product in the cart
+            cartProduct.quantity = quantity;
+            await cartProduct.save();
+
+            console.log(`Successfully updated quantity for productId: ${productId} in cartId: ${cartId} to ${quantity}`);
+            return true;
+        } catch (error: any) {
+            console.error(`Error updating product quantity: ${error.message}`);
+            throw new Error(`Error updating product quantity in cart: ${error.message}`);
+        }
+    }
 }
