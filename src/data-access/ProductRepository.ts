@@ -2,8 +2,10 @@ import { IProductRepository } from "./Interfaces";
 import { Category, Discount, Product, Comment, UserRating } from "../models";
 import { RepositoryBase } from "./RepositoryBase";
 import { GetProductOptions } from "../Types/GetProductOptions";
+
 import { Op } from "sequelize";
 import { UpdateProductDTO } from "../Types/DTO/productDto";
+
 
 export class ProductRepository
   extends RepositoryBase<Product>
