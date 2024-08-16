@@ -14,3 +14,12 @@ export type ProductDTO = {
   categories?: CategoryDTO[];
   discount?: discountDTO;
 };
+
+export type UpdateProductDTO = {
+  id: number;
+  name?: string;
+  price?: number;
+  description?: string;
+  brand?: string;
+  stock?: number;
+};

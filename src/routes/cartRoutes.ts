@@ -12,4 +12,17 @@ cartRouter.get("/:id",authAndRoleMiddleware(["user", "admin"]), getCartValidator
 cartRouter.put("/:id", authAndRoleMiddleware(["user", "admin"]),updateCartValidator,cartController.updateCart.bind(cartController));
 cartRouter.delete("/:id", authAndRoleMiddleware(["user", "admin"]), deleteCartValidator,cartController.deleteCart.bind(cartController));
 
+
+cartRouter.put("/:cartId/product/:productId/quantity",
+    authAndRoleMiddleware(["user", "admin"]),
+    cartController.updateProductQuantity.bind(cartController)
+);
+
+
+// add product to cart
+cartRouter.post("/:cartId/product/:productId",
+    authAndRoleMiddleware(["user", "admin"]),
+    cartController.addProductToCart.bind(cartController)
+);
+
 export default cartRouter;
