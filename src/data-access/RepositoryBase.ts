@@ -55,6 +55,7 @@ export class RepositoryBase<T extends Model> implements IRepositoryBase<T> {
       const T = await this.model.findByPk(id);
       if (T != null) {
         await T.destroy();
+        return true;
       }
     } catch (ex) {
       console.log(ex);
