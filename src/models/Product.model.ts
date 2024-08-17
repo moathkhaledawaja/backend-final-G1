@@ -5,10 +5,12 @@ import {
   HasOne,
   BelongsToMany,
   HasMany,
+  Model,
+  BelongsTo,
+  ForeignKey,
 } from "sequelize-typescript";
 import {
   Discount,
-  ModelBase,
   Category,
   Comment,
   UserRating,
@@ -20,11 +22,14 @@ import {
   CartProduct,
   WishlistProduct,
 } from "../models";
+import { Brand } from "./brand.model";
+import { defaultTableSettings } from "../config/DefaultTableSettings";
 
 @Table({
   tableName: "products",
+  ...defaultTableSettings,
 })
-export class Product extends ModelBase<Product> {
+export class Product extends Model<Product> {
   @Column({
     type: DataType.STRING,
     allowNull: false,
@@ -44,12 +49,6 @@ export class Product extends ModelBase<Product> {
   description?: string;
 
   @Column({
-    type: DataType.STRING,
-    allowNull: true,
-  })
-  brand?: string;
-
-  @Column({
     type: DataType.INTEGER,
     allowNull: false,
     defaultValue: 0,
@@ -58,7 +57,7 @@ export class Product extends ModelBase<Product> {
 
   //Product-Discount relationship.
   @HasOne(() => Discount)
-  discount!: Discount;
+  discount?: Discount;
 
   //Product-Category relationship.
   @BelongsToMany(() => Category, () => ProductCategory)
@@ -80,4 +79,22 @@ export class Product extends ModelBase<Product> {
 
   @BelongsToMany(() => Order, () => OrderProduct)
   Orders!: Order[];
+
+  @ForeignKey(() => Brand)
+  brandId!: number;
+
+  @BelongsTo(() => Brand)
+  brand!: Brand;
+
+  // Override destroy method to cascade soft delete
+  async destroy(options?: any) {
+    // Call the original destroy method
+    await super.destroy(options);
+
+    // Soft delete related ProductCategory records
+    await ProductCategory.update(
+      { deletedAt: new Date() }, // Set deletedAt to now
+      { where: { productId: this.id }, individualHooks: true } // Filter by current product
+    );
+  }
 }

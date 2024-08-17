@@ -1,10 +1,18 @@
-import { Table, Column, DataType, ForeignKey } from "sequelize-typescript";
-import { Product, Order, ModelBase } from "../models";
+import {
+  Table,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+} from "sequelize-typescript";
+import { Product, Order } from "../models";
+import { defaultTableSettings } from "../config/DefaultTableSettings";
 
 @Table({
   tableName: "orderProduct",
+  ...defaultTableSettings,
 })
-export class OrderProduct extends ModelBase<OrderProduct> {
+export class OrderProduct extends Model<OrderProduct> {
   @Column({ allowNull: false, type: DataType.INTEGER })
   quantity!: number;
 

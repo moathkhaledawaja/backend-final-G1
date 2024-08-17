@@ -5,13 +5,16 @@ import {
   ForeignKey,
   BelongsTo,
   BelongsToMany,
+  Model,
 } from "sequelize-typescript";
-import { User, Product, WishlistProduct, ModelBase } from "../models";
+import { User, Product, WishlistProduct } from "../models";
+import { defaultTableSettings } from "../config/DefaultTableSettings";
 
 @Table({
   tableName: "wishlists",
+  ...defaultTableSettings,
 })
-export class Wishlist extends ModelBase<Wishlist> {
+export class Wishlist extends Model<Wishlist> {
   @ForeignKey(() => User)
   @Column({ allowNull: false, type: DataType.INTEGER })
   userId!: number;

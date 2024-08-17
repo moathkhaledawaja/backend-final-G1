@@ -1,19 +1,27 @@
-import { Order, User, Cart } from "../models";
+import {
+  Brand,
+  Cart,
+  Category,
+  Comment,
+  Discount,
+  Product,
+  User,
+  Order,
+} from "../models";
+import { CommentRepository } from "./CommentRepository";
 import { UserRepository } from "./UserRepository";
-import { OrderRepository } from "./OrderRepository";
-import { ICartRepository } from './Interfaces/ICartRepository';
-import { IUserRepository } from './Interfaces/IUserRepository';
-import { IOrderRepository } from "./Interfaces/IOrderRepository";
+import { CategoryRepository } from "./CategoryRepository";
 import { CartRepository } from "./CartRepository";
-
+import { ProductRepository } from "./ProductRepository";
+import { DiscountRepository } from "./DiscountRepository";
+import { BrandRepository } from "./BrandRepository";
+import { OrderRepository } from "./OrderRepository";
 
 export const userRepository = new UserRepository(User);
 export const cartRepository = new CartRepository(Cart);
+export const commentRepository = new CommentRepository(Comment);
+export const productRepository = new ProductRepository(Product);
+export const categoryRepository = new CategoryRepository(Category);
+export const discountCategpry = new DiscountRepository(Discount);
+export const brandRepository = new BrandRepository(Brand);
 export const orderRepository = new OrderRepository(Order);
-
-
-export {
-    IUserRepository,
-    ICartRepository,
-    IOrderRepository
-}
