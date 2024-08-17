@@ -11,9 +11,9 @@ export class OrderRepository
   async findAll(): Promise<Order[]> {
     throw new Error("Order Can't Be Found By ID")
   }
-  
+
   async findByIdAndUserId(id: number, userId: number): Promise<Order | null> {
-    return await Order.findOne({
+    return await this.model.findOne({
       where: { id, userId },
       include: [
         {
@@ -31,7 +31,7 @@ export class OrderRepository
     });
   }
   async findByUserId(userId: number): Promise<Order[] | null> {
-    return await Order.findAll({ where: { userId } });
+    return await this.model.findAll({ where: { userId } });
   }
 
 

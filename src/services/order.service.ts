@@ -1,56 +1,53 @@
 import { Order } from '../models';
-import { OrderDTO } from '../DTO';
+import { OrderDTO } from '../Types/DTO';
 import { injectable } from 'tsyringe';
-import { OrderRepository } from '../data-access/OrderRepository';
+import { orderRepository } from '../data-access';
 import { OrderStatus } from '../enums/OrderStatusEnum';
 import { ordersToOrdersDTO, orderToOrderDTO } from '../helpers/orders/orderToOrderDTO';
+import { InternalServerError } from '../Errors/InternalServerError';
+import logger from '../helpers/logger';
+import { BadRequestError } from '../Errors/BadRequestError';
 
 @injectable()
 export default class OrderService {
-  private orderRepository: OrderRepository;
 
-
-  constructor(orderRepository: OrderRepository) {
-    this.orderRepository = orderRepository;
-  }
-
-  public async createOrder(userId: number, data: OrderDTO): Promise<OrderDTO | null> {
+  public async createOrder(userId: number, data: OrderDTO): Promise<OrderDTO> {
     const { products, isPaid, status } = data;
     const newOrder = new Order();
     newOrder.isPaid = isPaid;
     newOrder.status = status;
     newOrder.products = products;
     try {
-      const order = await this.orderRepository.create(newOrder);
-      if (!order) {
-        throw new Error(" Failed to create Order");
-      }
+      const order = await orderRepository.create(newOrder);
       return orderToOrderDTO(order);
     }
     catch (error: any) {
-      throw new Error(`Error Creating Order: ${error.message}`);
+      logger.error(`Error retrieving Order: ${error.message}`);
+
+      throw new InternalServerError();
     }
 
   }
 
   public async getOrderById(id: number, userId: number): Promise<OrderDTO | null> {
     try {
-      const order = await this.orderRepository.findByIdAndUserId(id, userId);
+      const order = await orderRepository.findByIdAndUserId(id, userId);
       if (!order) {
-        return null;
+        throw null;
       }
       return orderToOrderDTO(order);
 
 
     }
     catch (error: any) {
-      throw new Error(`Error retrieving Order: ${error.message}`)
+      logger.error(`Error retrieving Order: ${error.message}`);
+      throw new InternalServerError();
     }
   }
 
   public async getOrders(userId: number): Promise<OrderDTO[] | null> {
     try {
-      const orders = await this.orderRepository.findByUserId(userId);
+      const orders = await orderRepository.findByUserId(userId);
       if (!orders) {
         return null;
       }
@@ -58,40 +55,68 @@ export default class OrderService {
 
     }
     catch (error: any) {
-      throw new Error(`Error retrieving Order: ${error.message}`);
+      logger.error(`Error retrieving Orders: ${error.message}`);
+      throw new InternalServerError();
 
     }
   }
 
 
-  public async updateOrder(id: number, status: OrderStatus): Promise<OrderDTO | null> {
-    if (!status) {
-      throw new Error("Please provide a new status to the order.")
-    }
+  public async updateOrder(id: number, userId: number, status: OrderStatus, isPaid: boolean = false): Promise<OrderDTO | null> {
     try {
+      const oldOrder = await orderRepository.findByIdAndUserId(id, userId);
+      if (!oldOrder) {
+        return null;
+      }
+      const oldOrderJSON = await oldOrder?.toJSON();
+      isPaid = isPaid || oldOrderJSON.isPaid;
+      if (oldOrderJSON.status === OrderStatus.processed) {
+        if (status !== OrderStatus.outForDelivery) {
+          throw new BadRequestError("You can't change the status of a processed order to anything other than outForDelivery.")
+        }
+      }
+      if (oldOrderJSON.status === OrderStatus.outForDelivery) {
+        if (status !== OrderStatus.delivered && !isPaid) {
+          throw new BadRequestError("You can only change the status of an outForDelivery order to delivered if it is paid.")
+        }
+      }
+
+      if (oldOrderJSON.status === OrderStatus.delivered) {
+        throw new BadRequestError("You can't change the status of a delivered order.")
+
+      }
       const updateOrder = new Order();
       updateOrder.status = status;
       updateOrder.id = id;
-
-      const order = await this.orderRepository.update(updateOrder);
-      if (!order) {
-        throw new Error("Order not Found");
-      }
-      return orderToOrderDTO(order);
+      updateOrder.isPaid = isPaid;
+      const order = await orderRepository.update(updateOrder);
+      return orderToOrderDTO(order!);
 
 
     }
     catch (error: any) {
-      throw new Error(`Error Updating the order ${error.message}`)
+      logger.error(`Error updating Order: ${error.message}`);
+
+      throw new InternalServerError();
     }
   }
 
-  public async cancelOrder(id: number): Promise<boolean> {
+  public async cancelOrder(id: number, userId: number): Promise<boolean> {
     try {
-      return await this.orderRepository.delete(id);
+      const oldOrder = await orderRepository.findByIdAndUserId(id,userId);
+      if(!oldOrder){
+        return false;
+      }
+      const oldOrderJSON = oldOrder?.toJSON();
+      if(oldOrderJSON?.status !== OrderStatus.processed){
+        return false;
+      }
+      return await orderRepository.delete(id);
     }
     catch (error: any) {
-      throw new Error(`Error Deleting the order ${error.message}`);
+      logger.error(`Error canceling Order: ${error.message}`);
+
+      throw new InternalServerError();
     }
   }
 

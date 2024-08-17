@@ -2,7 +2,7 @@ import { Order } from "../../models";
 import { castToEnum } from "../castToEnum";
 import { OrderStatus } from "../../enums/OrderStatusEnum";
 import logger from "../logger";
-import { OrderDTO } from "../../DTO";
+import { OrderDTO } from "../../Types/DTO";
 
 export function orderToOrderDTO(order: Order): OrderDTO {
   const orderJson = order.toJSON();

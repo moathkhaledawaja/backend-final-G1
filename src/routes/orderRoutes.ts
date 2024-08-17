@@ -6,7 +6,7 @@ import authAndRoleMiddleware from "../middleware/authMiddleware";
 const orderRouter = Router();
 const orderController = container.resolve(OrderController);
 
-orderRouter.post("/", authAndRoleMiddleware(["user"]), orderController.createCart.bind(orderController));
+orderRouter.post("/", authAndRoleMiddleware(["user"]), orderController.createOrder.bind(orderController));
 orderRouter.get("/", authAndRoleMiddleware(["user"]), orderController.getOrdersByUserId.bind(orderController));
 orderRouter.get("/:id", authAndRoleMiddleware(["user"]), orderController.getOrderByUserId.bind(orderController));
 orderRouter.put("/:id", authAndRoleMiddleware(["user"]), orderController.updateOrder.bind(orderController));
