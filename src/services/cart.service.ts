@@ -58,11 +58,11 @@ export default class CartService {
 
   async addProductToCart(cartId: number, productId: number, quantity: number): Promise<boolean> {
     try {
-      return await cartRepository.addProductToCart(cartId, productId, quantity);
-    } catch (error : any) {
-      throw new Error(`Error adding product to cart: ${error.message}`);
+        return await cartRepository.addProductToCart(cartId, productId, quantity);
+    } catch (error: any) {
+        throw new Error(`Error adding product to cart: ${error.message}`);
     }
-  }
+}
 
   async removeProductFromCart(cartId: number, productId: number): Promise<boolean> {
     try {

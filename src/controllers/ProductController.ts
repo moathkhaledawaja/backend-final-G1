@@ -89,4 +89,3 @@ export class ProductController {
         .json({ error: "internal server error, try again later." });
     }
   }
-}
