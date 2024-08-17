@@ -7,8 +7,7 @@
     "build": "tsc",
     "watch": "nodemon src/server.ts",
     "start": "node dist/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "swagger": "tsoa spec"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -41,6 +40,9 @@
     "winston": "^3.13.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.8.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/eslint__js": "^8.42.3",
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.3",
     "@types/bcrypt": "^5.0.2",
@@ -49,10 +51,16 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^22.1.0",
     "@types/sequelize": "^4.28.20",
+    "eslint": "^9.8.0",
+    "@types/swagger-ui-express": "^4.1.6",
     "babel-jest": "^29.7.0",
+    "i": "^0.3.7",
+    "npm": "^10.8.2",
     "sequelize-typescript": "^2.1.6",
+    "swagger-ui-express": "^5.0.1",
     "ts-jest": "^29.2.4",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.0.1"
   }
 }

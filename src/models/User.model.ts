@@ -1,5 +1,5 @@
 import { Table, Column, DataType, HasMany, Model } from "sequelize-typescript";
-import { Comment, UserRating } from ".";
+import { Cart, Comment, UserRating, Wishlist } from ".";
 import { UserRoles } from "../enums/UserRolesEnum";
 import { defaultTableSettings } from "../config/DefaultTableSettings";
 
@@ -44,6 +44,12 @@ export class User extends Model<User> {
     defaultValue: UserRoles.user,
   })
   role!: string;
+
+  @HasMany(() => Wishlist)
+  wishlists!: Wishlist[];
+
+  @HasMany(() => Cart)
+  carts!: Cart[];
 
   //user-comment relationship.
   @HasMany(() => Comment)
