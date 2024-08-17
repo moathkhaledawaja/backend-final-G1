@@ -1,11 +1,18 @@
-name: Prettier
+name: Format code
 
 on:
   pull_request:
     paths:
       - '**/*.ts'
       - '**/*.tsx'
-
+      - '**/*.js'
+      - '**/*.jsx'
+  push:
+    paths:
+      - '**/*.ts'
+      - '**/*.tsx'
+      - '**/*.js'
+      - '**/*.jsx'
 
 jobs:
   format:
@@ -25,3 +32,15 @@ jobs:
 
       - name: Format code with Prettier
         run: npx prettier --write "src/**/*.{ts,tsx,js,jsx}"
+
+      - name: Commit formatted code
+        run: |
+          git config --local user.name "GitHub Actions"
+          git config --local user.email "actions@github.com"
+          git add .
+          git commit -m "Code formatted by Prettier" || echo "No changes to commit"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@v1.0.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
