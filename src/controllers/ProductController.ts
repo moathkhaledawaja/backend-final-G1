@@ -63,11 +63,10 @@ export class ProductController {
   public async deleteProduct(req: Request, res: Response) {
     try {
       const productId = parseInt(req.params.id);
-      if (!productId) {
-        res.status(500).json({ error: "Required Data is Unavailable" });
-      }
-      await this.productService.DeleteProduct(productId);
-      res.status(201);
+
+      const status = await this.productService.DeleteProduct(productId);
+      if (status) return res.status(204).json({});
+      return res.status(404).json({});
     } catch (error: any) {
       return res
         .status(500)
@@ -77,21 +76,16 @@ export class ProductController {
 
   public async getProductById(req: Request, res: Response) {
     try {
-      const productId = parseInt(req.params.id, 10);
-      if (!productId) {
-        res.status(500).json({ error: "Required Data is Unavailable" });
-      }
-      const product = await this.productService.GetProduct(productId);
+      const { id } = req.params;
+
+      const product = await this.productService.GetProduct(parseInt(id));
       if (!product) {
-        res.status(400).json({ error: "Product not found" });
+        return res.status(404).json({ error: "Product not found" });
       }
-      res.status(201).json(product);
+      return res.status(200).json({ product });
     } catch (error: any) {
       return res
         .status(500)
         .json({ error: "internal server error, try again later." });
     }
   }
-
-  
-}
