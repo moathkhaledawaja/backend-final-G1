@@ -10,9 +10,11 @@ export class CommentController {
   public async createComment(req: Request, res: Response) {
     try {
       const commentData: CommentDTO = req.body;
-      const { id } = req.user;
 
-      const comment = await this.commentService.createComment(id, commentData);
+      const comment = await this.commentService.createComment(
+        (req as any).user.id,
+        commentData
+      );
       if (!comment) {
         return res.status(404).send("product not found");
       }
