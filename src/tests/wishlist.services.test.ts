@@ -1,6 +1,6 @@
 import WishlistService from '../services/wishList.service';
 import { WishlistRepository } from '../data-access/WishListRepository';
-import { WishlistDTO } from '../DTO/wishlistDto';
+import { WishlistDTO } from '../Types/DTO/wishlistDto';
 import { mock, MockProxy } from 'jest-mock-extended';
 import { Wishlist } from '../models';
 
@@ -12,7 +12,7 @@ describe('WishlistService', () => {
 
   beforeEach(() => {
     wishlistRepository = mock<WishlistRepository>();
-    wishlistService = new WishlistService(wishlistRepository);
+    wishlistService = new WishlistService();
   });
 
   describe('getWishlistByUserId', () => {
