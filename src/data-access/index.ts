@@ -1,19 +1,17 @@
-import { User, Wishlist, Cart } from "../models";
+import { Cart, Category, Comment, Discount, Product, User, Wishlist } from "../models";
+import { CommentRepository } from "./CommentRepository";
 import { UserRepository } from "./UserRepository";
-import { IUserRepository } from './Interfaces/IUserRepository';
+import { CategoryRepository } from "./CategoryRepository";
 import { CartRepository } from "./CartRepository";
-import { ICartRepository } from './Interfaces/ICartRepository';
+import { ProductRepository } from "./ProductRepository";
 import { WishlistRepository } from "./WishListRepository";
-import { IWishlistRepository } from "./Interfaces/IWishListRepository";
+import { DiscountRepository } from "./DiscountRepository";
 
 
 export const userRepository = new UserRepository(User);
 export const cartRepository = new CartRepository(Cart);
+export const commentRepository = new CommentRepository(Comment);
+export const productRepository = new ProductRepository(Product);
+export const categoryRepository = new CategoryRepository(Category);
+export const discountCategpry = new DiscountRepository(Discount);
 export const wishlistRepository = new WishlistRepository(Wishlist);
-
-
-export {
-    IUserRepository,
-    ICartRepository,
-    IWishlistRepository
-}

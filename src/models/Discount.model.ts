@@ -4,13 +4,16 @@ import {
   DataType,
   BelongsTo,
   ForeignKey,
+  Model,
 } from "sequelize-typescript";
-import { Product, ModelBase } from "../models";
+import { Product } from "../models";
 
 @Table({
+  timestamps: true,
+  paranoid: true,
   tableName: "discounts",
 })
-export class Discount extends ModelBase<Discount> {
+export class Discount extends Model<Discount> {
   @Column({
     type: DataType.FLOAT,
     allowNull: false,

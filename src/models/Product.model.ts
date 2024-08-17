@@ -5,10 +5,10 @@ import {
   HasOne,
   BelongsToMany,
   HasMany,
+  Model,
 } from "sequelize-typescript";
 import {
   Discount,
-  ModelBase,
   Category,
   Comment,
   UserRating,
@@ -22,9 +22,11 @@ import {
 } from "../models";
 
 @Table({
+  timestamps: true,
+  paranoid: true,
   tableName: "products",
 })
-export class Product extends ModelBase<Product> {
+export class Product extends Model<Product> {
   @Column({
     type: DataType.STRING,
     allowNull: false,
@@ -58,7 +60,7 @@ export class Product extends ModelBase<Product> {
 
   //Product-Discount relationship.
   @HasOne(() => Discount)
-  discount!: Discount;
+  discount?: Discount;
 
   //Product-Category relationship.
   @BelongsToMany(() => Category, () => ProductCategory)
@@ -80,4 +82,16 @@ export class Product extends ModelBase<Product> {
 
   @BelongsToMany(() => Order, () => OrderProduct)
   Orders!: Order[];
+
+  // Override destroy method to cascade soft delete
+  async destroy(options?: any) {
+    // Call the original destroy method
+    await super.destroy(options);
+
+    // Soft delete related ProductCategory records
+    await ProductCategory.update(
+      { deletedAt: new Date() }, // Set deletedAt to now
+      { where: { productId: this.id }, individualHooks: true } // Filter by current product
+    );
+  }
 }

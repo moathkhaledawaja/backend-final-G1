@@ -5,8 +5,9 @@ import {
   ForeignKey,
   BelongsTo,
   BelongsToMany,
+  Model,
 } from "sequelize-typescript";
-import { Product, OrderProduct, User, ModelBase } from "../models";
+import { Product, OrderProduct, User } from "../models";
 import { OrderStatus } from "../enums/OrderStatusEnum";
 
 let orderStatus: string[] = [];
@@ -16,9 +17,11 @@ for (const value in OrderStatus) {
 }
 
 @Table({
+  timestamps: true,
+  paranoid: true,
   tableName: "orders",
 })
-export class Order extends ModelBase<Order> {
+export class Order extends Model<Order> {
   @Column({ allowNull: false, type: DataType.ENUM(...orderStatus) })
   status!: string;
 
