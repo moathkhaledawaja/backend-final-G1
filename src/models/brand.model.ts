@@ -1,13 +1,29 @@
 import {
   Table,
   Column,
+  Model,
+  HasMany,
+  NotNull,
+  AllowNull,
   DataType,
   ForeignKey,
-  Model,
 } from "sequelize-typescript";
-import { Wishlist, Product } from "../models";
+import { Product, Wishlist } from "../models";
+import { DataTypes } from "sequelize";
 import { defaultTableSettings } from "../config/DefaultTableSettings";
 
+@Table({
+  tableName: "brands",
+  ...defaultTableSettings,
+})
+export class Brand extends Model<Brand> {
+  @AllowNull(false)
+  @Column({ type: DataTypes.STRING })
+  name!: string;
+
+  @HasMany(() => Product)
+  brands!: Product[];
+}
 @Table({
   tableName: "wishlistProduct",
   ...defaultTableSettings,

@@ -6,11 +6,11 @@ import {
   Model,
 } from "sequelize-typescript";
 import { Product, Order } from "../models";
+import { defaultTableSettings } from "../config/DefaultTableSettings";
 
 @Table({
-  timestamps: true,
-  paranoid: true,
   tableName: "orderProduct",
+  ...defaultTableSettings,
 })
 export class OrderProduct extends Model<OrderProduct> {
   @Column({ allowNull: false, type: DataType.INTEGER })

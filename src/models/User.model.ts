@@ -1,6 +1,7 @@
 import { Table, Column, DataType, HasMany, Model } from "sequelize-typescript";
 import { Comment, UserRating } from ".";
 import { UserRoles } from "../enums/UserRolesEnum";
+import { defaultTableSettings } from "../config/DefaultTableSettings";
 
 let userRoles: string[] = [];
 for (const value in UserRoles) {
@@ -9,9 +10,8 @@ for (const value in UserRoles) {
 }
 
 @Table({
-  timestamps: true,
-  paranoid: true,
   tableName: "users",
+  ...defaultTableSettings,
 })
 export class User extends Model<User> {
   @Column({
@@ -41,6 +41,7 @@ export class User extends Model<User> {
   @Column({
     type: DataType.ENUM(...userRoles),
     allowNull: false,
+    defaultValue: UserRoles.user,
   })
   role!: string;
 

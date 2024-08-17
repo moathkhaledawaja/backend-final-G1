@@ -7,11 +7,12 @@ import {
   Model,
 } from "sequelize-typescript";
 import { User, Product } from "../models";
+import { defaultTableSettings } from "../config/DefaultTableSettings";
 
 @Table({
-  timestamps: true,
-  paranoid: true,
   tableName: "comments",
+
+  ...defaultTableSettings,
 })
 export class Comment extends Model<Comment> {
   @Column({ allowNull: false, type: DataType.STRING })

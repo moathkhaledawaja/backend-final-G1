@@ -6,6 +6,8 @@ import {
   BelongsToMany,
   HasMany,
   Model,
+  BelongsTo,
+  ForeignKey,
 } from "sequelize-typescript";
 import {
   Discount,
@@ -20,11 +22,12 @@ import {
   CartProduct,
   WishlistProduct,
 } from "../models";
+import { Brand } from "./brand.model";
+import { defaultTableSettings } from "../config/DefaultTableSettings";
 
 @Table({
-  timestamps: true,
-  paranoid: true,
   tableName: "products",
+  ...defaultTableSettings,
 })
 export class Product extends Model<Product> {
   @Column({
@@ -44,12 +47,6 @@ export class Product extends Model<Product> {
     allowNull: true,
   })
   description?: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-  })
-  brand?: string;
 
   @Column({
     type: DataType.INTEGER,
@@ -82,6 +79,12 @@ export class Product extends Model<Product> {
 
   @BelongsToMany(() => Order, () => OrderProduct)
   Orders!: Order[];
+
+  @ForeignKey(() => Brand)
+  brandId!: number;
+
+  @BelongsTo(() => Brand)
+  brand!: Brand;
 
   // Override destroy method to cascade soft delete
   async destroy(options?: any) {

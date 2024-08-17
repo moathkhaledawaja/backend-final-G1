@@ -144,4 +144,16 @@ export default class UserService {
       throw new Error(`Error deleting user: ${error}`);
     }
   }
+
+
+  // Function to change the role of a user
+  async changeRole(userId: number, role: string): Promise<User | null> {
+    try {
+      
+      return await userRepository.changeRole(userId, role);
+    } catch (error: any) {
+      throw new Error(`Error changing user role: ${error.message}`);
+
+    }
+  }
 }
