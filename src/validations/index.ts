@@ -10,4 +10,5 @@ export {
   getCartValidator,
   updateProductQuantityValidator,
   addProductToCartValidator,
+  removeProductFromCartValidator,
 } from "./cartValidator";

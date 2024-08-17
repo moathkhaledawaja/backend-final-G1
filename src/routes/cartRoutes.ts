@@ -9,6 +9,7 @@ import {
   getCartValidator,
   updateProductQuantityValidator,
   addProductToCartValidator,
+  removeProductFromCartValidator
 } from "../validations";
 
 const cartRouter = Router();
@@ -58,6 +59,7 @@ cartRouter.post(
 cartRouter.delete(
   "/:cartId/product/:productId",
   authAndRoleMiddleware(["user", "admin"]),
+  removeProductFromCartValidator,
   cartController.removeProductFromCart.bind(cartController)
 );
 
