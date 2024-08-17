@@ -11,7 +11,7 @@ export class WishlistController {
 
   async getWishList(req: Request, res: Response): Promise<WishlistDTO | null> {
     try {
-      const userId = req.user!.id;
+      const userId = (req as any).user.id;
       const wishlist = await this.wishlistService.getWishlistByUserId(userId);
       res.json(wishlist);
       return wishlist;
@@ -24,7 +24,7 @@ export class WishlistController {
 
   async addProductToWishlist(req: Request, res: Response): Promise<boolean> {
     try {
-      const userId = req.user!.id;
+      const userId = (req as any).user.id;
       const productId: number = req.body.productId;
       const added = await this.wishlistService.addProductToWishlist(userId, productId);
       if (!added) {
@@ -40,7 +40,7 @@ export class WishlistController {
   }
   async removeProductFromWishlist(req: Request, res: Response): Promise<boolean> {
     try {
-      const userId = req.user!.id;
+      const userId = (req as any).user.id;
       const productId: number = req.body.productId;
       const removed = await this.wishlistService.removeProductFromWishList(userId, productId);
       if (!removed) {
@@ -56,7 +56,7 @@ export class WishlistController {
   }
   async clearWishList(req: Request, res: Response): Promise<boolean> {
     try {
-      const userId = req.user!.id;
+      const userId = (req as any).user.id;
       const cleared = await this.wishlistService.clearWishList(userId);
       res.json("Wishlist has been cleared");
       return cleared;
