@@ -4,13 +4,17 @@ import {
   DataType,
   BelongsTo,
   ForeignKey,
+  Model,
 } from "sequelize-typescript";
-import { User, Product, ModelBase } from "../models";
+import { User, Product } from "../models";
+import { defaultTableSettings } from "../config/DefaultTableSettings";
 
 @Table({
   tableName: "comments",
+
+  ...defaultTableSettings,
 })
-export class Comment extends ModelBase<Comment> {
+export class Comment extends Model<Comment> {
   @Column({ allowNull: false, type: DataType.STRING })
   content!: string;
 

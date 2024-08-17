@@ -14,6 +14,7 @@ import {
   Wishlist,
   ProductCategory,
   WishlistProduct,
+  Brand,
 } from "../models";
 
 dotenv.config();
@@ -26,7 +27,7 @@ const sequelize = new Sequelize(
     host: process.env.DB_HOST,
     dialect: "postgres",
     port: Number(process.env.DB_PORT),
-    repositoryMode: true,
+    // repositoryMode: true,
     models: [
       User,
       Cart,
@@ -38,6 +39,7 @@ const sequelize = new Sequelize(
       OrderProduct,
       Product,
       UserRating,
+      Brand,
       Wishlist,
       ProductCategory,
       WishlistProduct,

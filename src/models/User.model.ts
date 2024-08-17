@@ -1,10 +1,19 @@
-import { Table, Column, DataType, HasMany } from "sequelize-typescript";
-import { ModelBase, Comment, UserRating } from "../models";
+import { Table, Column, DataType, HasMany, Model } from "sequelize-typescript";
+import { Comment, UserRating } from ".";
+import { UserRoles } from "../enums/UserRolesEnum";
+import { defaultTableSettings } from "../config/DefaultTableSettings";
+
+let userRoles: string[] = [];
+for (const value in UserRoles) {
+  const key = value as keyof typeof UserRoles;
+  userRoles.push(UserRoles[key]);
+}
 
 @Table({
   tableName: "users",
+  ...defaultTableSettings,
 })
-export class User extends ModelBase<User> {
+export class User extends Model<User> {
   @Column({
     type: DataType.STRING,
     allowNull: false,
@@ -30,8 +39,9 @@ export class User extends ModelBase<User> {
   password!: string;
 
   @Column({
-    type: DataType.STRING,
+    type: DataType.ENUM(...userRoles),
     allowNull: false,
+    defaultValue: UserRoles.user,
   })
   role!: string;
 

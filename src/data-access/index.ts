@@ -1,17 +1,24 @@
-import { User } from "../models";
+import {
+  Brand,
+  Cart,
+  Category,
+  Comment,
+  Discount,
+  Product,
+  User,
+} from "../models";
+import { CommentRepository } from "./CommentRepository";
 import { UserRepository } from "./UserRepository";
-import { IUserRepository } from './Interfaces/IUserRepository';
-
-import { CartRepository} from "./CartRepository";
-import { ICartRepository } from './Interfaces/ICartRepository';
-import { Cart } from "../models";
-
+import { CategoryRepository } from "./CategoryRepository";
+import { CartRepository } from "./CartRepository";
+import { ProductRepository } from "./ProductRepository";
+import { DiscountRepository } from "./DiscountRepository";
+import { BrandRepository } from "./BrandRepository";
 
 export const userRepository = new UserRepository(User);
 export const cartRepository = new CartRepository(Cart);
-
-
-export {
-    IUserRepository,
-    ICartRepository
-}
+export const commentRepository = new CommentRepository(Comment);
+export const productRepository = new ProductRepository(Product);
+export const categoryRepository = new CategoryRepository(Category);
+export const discountCategpry = new DiscountRepository(Discount);
+export const brandRepository = new BrandRepository(Brand);

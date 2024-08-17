@@ -1,10 +1,18 @@
-import { Table, Column, DataType, ForeignKey } from "sequelize-typescript";
-import { Wishlist, Product, ModelBase } from "../models";
+import {
+  Table,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+} from "sequelize-typescript";
+import { Wishlist, Product } from "../models";
+import { defaultTableSettings } from "../config/DefaultTableSettings";
 
 @Table({
   tableName: "wishlistProduct",
+  ...defaultTableSettings,
 })
-export class WishlistProduct extends ModelBase<WishlistProduct> {
+export class WishlistProduct extends Model<WishlistProduct> {
   @ForeignKey(() => Wishlist)
   @Column({ allowNull: false, type: DataType.INTEGER })
   wishlistId!: number;
