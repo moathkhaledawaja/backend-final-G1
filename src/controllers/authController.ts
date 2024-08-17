@@ -30,7 +30,7 @@ class AuthController {
     }
 
     try {
-      await this.authService.register(name, email, address, password, role);
+      await this.authService.register(name, email, address, password);
       res.status(201).json({ message: "User created successfully" });
     } catch (error: any) {
       res.status(400).json({ error: error.message });

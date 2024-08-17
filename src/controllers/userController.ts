@@ -6,7 +6,7 @@ import { User } from "../models";
 
 @injectable()
 export class UserController {
-  constructor(@inject(UserService) private userService: UserService) {}
+  constructor(@inject(UserService) private userService: UserService) { }
 
   async createUser(req: Request, res: Response): Promise<User> {
     try {
@@ -120,6 +120,37 @@ export class UserController {
       return res
         .status(400)
         .json({ error: error.message || "An error occurred" });
+    }
+  }
+
+  // controller function to change the role of a user
+  async changeRole(req: Request, res: Response): Promise<User | null> {
+    try {
+      console.log(`Changing role of user with ID: ${req.params.id}`);
+
+      const userId = parseInt(req.params.id, 10);
+      const role = req.body.role;
+
+      console.log("Request to change role of user with ID:", userId);
+      console.log("Request body data:", role);
+
+      const updatedUser = await this.userService.changeRole(userId, role);
+      if (!updatedUser) {
+        res.status(404).json({ error: "User not found or no changes made" });
+        return null;
+      }
+
+      // remove the password from the response
+      updatedUser.password = '****************';
+
+      res.json(updatedUser);
+      return updatedUser;
+
+    } catch (error: any) {
+      console.error("Error in changeRole controller:", error);
+      res.status(400).json({ error: error.message });
+      return null; // Ensure the function completes
+
     }
   }
 }
