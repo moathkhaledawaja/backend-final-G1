@@ -111,4 +111,22 @@ export class CartController {
     }
   }
 
+  // remove product from cart
+  async removeProductFromCart(req: Request, res: Response): Promise<void> {
+    try {
+      const cartId = parseInt(req.params.cartId, 10);
+      const productId = parseInt(req.params.productId, 10);
+
+      const success = await this.cartService.removeProductFromCart(cartId, productId);
+
+      if (success) {
+        res.status(200).json({ message: "Product removed from cart successfully" });
+      } else {
+        res.status(400).json({ error: "Failed to remove product from cart" });
+      }
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
 }
