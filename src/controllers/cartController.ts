@@ -6,19 +6,29 @@ import { Cart } from "../models";
 
 @injectable()
 export class CartController {
-  constructor(@inject(CartService) private cartService: CartService) {}
+  constructor(@inject(CartService) private cartService: CartService) { }
 
   async createCart(req: Request, res: Response): Promise<Cart> {
     try {
-      const cartData: CartDTO = req.body;
-      const cart = await this.cartService.createCart(cartData);
-      res.status(201).json(cart);
-      return cart;
+        const userId: number = req.body.userId;
+        const productId: number = req.body.products.productId;
+        const quantity: number = req.body.products.quantity;
+
+        const cartData: CartDTO = {
+          userId,
+          products: []
+        };
+
+        const cart = await this.cartService.createCart(cartData, productId, quantity);
+
+        res.status(201).json({ message: "Cart created and product added successfully", cart });
+        return cart; // Add this line to return the 'cart' value
     } catch (error: any) {
-      res.status(400).json({ error: error.message });
-      throw error;
+        res.status(500).json({ error: error.message });
+        throw error;
     }
-  }
+}
+
 
   async getCartByUserId(req: Request, res: Response): Promise<Cart[] | null> {
     try {
@@ -63,4 +73,42 @@ export class CartController {
       throw error;
     }
   }
+
+  async updateProductQuantity(req: Request, res: Response): Promise<void> {
+    try {
+      const cartId = parseInt(req.params.cartId, 10);
+      const productId = parseInt(req.params.productId, 10);
+      const { quantity } = req.body;
+
+      const success = await this.cartService.updateProductQuantity(cartId, productId, quantity);
+
+      if (success) {
+        res.status(200).json({ message: "Product quantity updated successfully" });
+      } else {
+        res.status(400).json({ error: "Failed to update product quantity" });
+      }
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  // add product to cart
+  async addProductToCart(req: Request, res: Response): Promise<void> {
+    try {
+      const cartId = parseInt(req.params.cartId, 10);
+      const productId = parseInt(req.params.productId, 10);
+      const { quantity } = req.body;
+
+      const success = await this.cartService.addProductToCart(cartId, productId, quantity);
+
+      if (success) {
+        res.status(200).json({ message: "Product added to cart successfully" });
+      } else {
+        res.status(400).json({ error: "Failed to add product to cart" });
+      }
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
 }
