@@ -1,32 +1,22 @@
-name: Format
+name: Prettier
 
 on:
   pull_request:
-    paths:
-      - '**/*.ts'
-      - '**/*.tsx'
-      - '**/*.js'
-      - '**/*.jsx'
+    branches: [dev]
 
 jobs:
-  format:
+  prettier:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run Prettier
-        run: npx prettier --check "src/**/*.{ts,tsx,js,jsx}"
-
-      - name: Format code with Prettier
-        run: npx prettier --write "src/**/*.{ts,tsx,js,jsx}"
-        continue-on-error: true
+      - name: Prettify code
+        uses: creyD/prettier_action@v4.2
+        with:
+          prettier_options: --write **/*.{js,md}
+          only_changed: True
