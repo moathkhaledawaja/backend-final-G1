@@ -1,12 +1,11 @@
-import { Cart, CartProduct } from '../models'
+import { Cart, CartProduct , Product  } from '../models'
 import { ICartRepository } from './Interfaces/ICartRepository'
 import { RepositoryBase } from './RepositoryBase'
+import sequelize from '../config/db';
 
 export class CartRepository
     extends RepositoryBase<Cart>
     implements ICartRepository {
-
-  
     async findCartByUserId(userId: number): Promise<Cart[]> {
         try {
             return await this.model.findAll({ where: { userId } });
@@ -51,38 +50,70 @@ export class CartRepository
 
     // add product to cart
     async addProductToCart(cartId: number, productId: number, quantity: number): Promise<boolean> {
-        try {
-            // find the cart
-            const cart = await this.model.findByPk(cartId);
-            if (!cart) {
-                throw new Error("Cart not found");
+        return await sequelize.transaction(async (transaction) => {
+            try {
+                // Step 1: Find the cart
+                const cart = await this.model.findByPk(cartId, { transaction });
+                if (!cart) {
+                    throw new Error("Cart not found");
+                }
+    
+                // Step 2: Check if the product exists
+                const productData = await Product.findByPk(productId, { transaction });
+                if (!productData) {
+                    throw new Error("Product not found");
+                }
+    
+                // Step 3: Check if the product is already in the cart
+                const productInCart = await cart.$has('products', productId, { transaction });
+                if (productInCart) {
+                    throw new Error("Product already in cart");
+                }
+    
+                // Step 4: Check if the requested quantity exceeds the available stock
+                if (productData.stock < quantity) {
+                    throw new Error("Quantity exceeds available stock");
+                }
+    
+                // Step 5: Decrease the stock of the product
+                productData.stock -= quantity;
+                await productData.save({ transaction });
+    
+                // Step 6: Add the product to the cart with the specified quantity
+                await cart.$add('products', productId, { through: { quantity }, transaction });
+    
+                return true;
+            } catch (error: any) {
+                throw new Error(`Error adding product to cart: ${error.message}`);
             }
-            // add the product to the cart
-            await cart.$add('products', productId, { through: { quantity } });
-            return true;
-        } catch (error: any) {
-            throw new Error(`Error adding product to cart: ${error}`);
-        }
+        });
     }
 
     // remove item from cart
-    async removeProductFromCart(cartId: number, productId: number): Promise<boolean>{
-        try {
-            // find the cart
-            const cart = await this.model.findByPk(cartId);
-            if (!cart) {
-                throw new Error("Cart not found");
+    async removeProductFromCart(cartId: number, productId: number): Promise<boolean> {
+        return await sequelize.transaction(async (transaction) => {
+            try {
+                // Step 1: Find the cart
+                const cart = await this.model.findByPk(cartId, { transaction });
+                if (!cart) {
+                    throw new Error("Cart not found");
+                }
+    
+                // Step 2: Ensure the product is in the cart
+                const productInCart = await cart.$has('products', productId, { transaction });
+                if (!productInCart) {
+                    throw new Error("Product not found in cart");
+                }
+    
+                // Step 3: Remove the product from the cart
+                await cart.$remove('products', productId, { transaction });
+    
+                return true;
+            } catch (error: any) {
+                throw new Error(`Error removing product from cart: ${error.message}`);
             }
-            // remove the product from the cart
-            await cart.$remove('products', productId);
-            return true;
-            
-        } catch (error: any) {
-            throw new Error(`Error removing product from cart: ${error}`);
-            
-        }
+        });
     }
-
     // update product quantity in cart
     async updateProductQuantity(cartId: number, productId: number, quantity: number): Promise<boolean> {
         try {
