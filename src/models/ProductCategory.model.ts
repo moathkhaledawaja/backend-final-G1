@@ -6,11 +6,11 @@ import {
   Model,
 } from "sequelize-typescript";
 import { Product, Category } from "../models";
+import { defaultTableSettings } from "../config/DefaultTableSettings";
 
 @Table({
-  timestamps: true,
-  paranoid: true,
   tableName: "productCategory",
+  ...defaultTableSettings,
 })
 export class ProductCategory extends Model<ProductCategory> {
   @ForeignKey(() => Product)

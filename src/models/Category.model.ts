@@ -6,11 +6,11 @@ import {
   Model,
 } from "sequelize-typescript";
 import { Product, ProductCategory } from "../models";
+import { defaultTableSettings } from "../config/DefaultTableSettings";
 
 @Table({
-  timestamps: true,
-  paranoid: true,
   tableName: "categories",
+  ...defaultTableSettings,
 })
 export class Category extends Model<Category> {
   @Column({

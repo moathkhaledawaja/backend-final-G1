@@ -11,3 +11,4 @@ export { UserRating } from "./UserRating.model";
 export { Wishlist } from "./WishList.model";
 export { ProductCategory } from "./ProductCategory.model";
 export { WishlistProduct } from "./WishlistProduct.model";
+export { Brand } from "./brand.model";

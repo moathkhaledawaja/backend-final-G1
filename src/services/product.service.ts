@@ -2,12 +2,17 @@ import { injectable } from "tsyringe";
 import { Category, Product, ProductCategory } from "../models";
 import { CategoryDTO, CommentDTO, ProductDTO } from "../Types/DTO";
 import { GetProductOptions } from "../Types/GetProductOptions";
-import { productRepository, categoryRepository } from "../data-access";
+import {
+  productRepository,
+  categoryRepository,
+  brandRepository,
+} from "../data-access";
 import { ValidationError } from "../Errors/ValidationError";
 import { ValidationError as VE } from "sequelize";
 import { InternalServerError } from "../Errors/InternalServerError";
 import { ratingDto } from "../Types/DTO/ratingDto";
 import { UpdateProductDTO } from "../Types/DTO/productDto";
+import { Brand } from "../models/brand.model";
 @injectable()
 export default class ProductService {
   /**
@@ -52,7 +57,7 @@ export default class ProductService {
           name: item.name,
           price: item.price,
           stock: item.stock,
-          brand: item.brand,
+          // brand: item.brand,
           description: item.description,
           discount: {
             amount: item.discount?.discountRate ?? 0,
@@ -116,7 +121,7 @@ export default class ProductService {
         name: product.name,
         price: product.price,
         stock: product.stock,
-        brand: product.brand,
+        // brand: product.brand,
         description: product.description,
         discount: { amount: product.discount?.discountRate ?? 0 },
         comments,
@@ -144,7 +149,6 @@ export default class ProductService {
       newProduct.name = productData.name;
       newProduct.price = productData.price;
       newProduct.stock = productData.stock;
-      newProduct.brand = productData.brand;
       newProduct.description = productData.description;
 
       const categories: Category[] = [];
@@ -157,6 +161,10 @@ export default class ProductService {
       //first we need to getorcreate the ListOfCategories
       const cats = await categoryRepository.CreateCategoryList(categories);
       newProduct.categories = cats;
+
+      //adding the brand.
+      const brand = await brandRepository.GetOrCreate(productData.brand ?? "");
+      newProduct.brand = brand;
 
       //lets create the product.
       const product = await productRepository.CreateProduct(newProduct);

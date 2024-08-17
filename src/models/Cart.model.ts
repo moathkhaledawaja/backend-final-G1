@@ -8,11 +8,11 @@ import {
   Model,
 } from "sequelize-typescript";
 import { User, CartProduct, Product } from "../models";
+import { defaultTableSettings } from "../config/DefaultTableSettings";
 
 @Table({
-  timestamps: true,
-  paranoid: true,
   tableName: "carts",
+  ...defaultTableSettings,
 })
 export class Cart extends Model<Cart> {
   @ForeignKey(() => User)
