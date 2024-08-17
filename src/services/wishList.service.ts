@@ -4,6 +4,7 @@ import { wishlistRepository } from "../data-access";
 import { WishlistDTO } from "../Types/DTO";
 import { InternalServerError } from '../Errors/InternalServerError';
 import { NotFoundError } from '../Errors/NotFoundError';
+import logger from '../helpers/logger';
 
 @injectable()
 export default class WishlistService {
@@ -15,6 +16,7 @@ export default class WishlistService {
       return wishlist;
     }
     catch (error: any) {
+      logger.error(error.message)
       throw new InternalServerError("an error occurred, please try again later.")
 
     }
@@ -28,6 +30,8 @@ export default class WishlistService {
 
     }
     catch (error: any) {
+      logger.error(error)
+      console.log(error);
       throw new InternalServerError("an error occurred, please try again later.");
     }
   }
@@ -37,6 +41,8 @@ export default class WishlistService {
       return await wishlistRepository.clearWishList(id);
     }
     catch (error: any) {
+      logger.error(error.message)
+
       throw new InternalServerError("an error occurred, please try again later.");
 
     }
@@ -47,6 +53,8 @@ export default class WishlistService {
       return await wishlistRepository.removeProductFromWishList(userId, productId);
     }
     catch (error: any) {
+      logger.error(error.message)
+
       throw new InternalServerError("an error occurred, please try again later.");
     }
   }

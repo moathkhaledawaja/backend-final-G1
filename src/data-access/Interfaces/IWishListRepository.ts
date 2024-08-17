@@ -6,5 +6,6 @@ export interface IWishlistRepository extends IRepositoryBase<Wishlist> {
   addProductToWishlist(userId: number, productId: number): Promise<boolean>
   clearWishList(userId: number): Promise<boolean>
   removeProductFromWishList(userId: number, productId: number): Promise<boolean>
+  wishlistExists(userId: number): Promise<boolean>
 
 }

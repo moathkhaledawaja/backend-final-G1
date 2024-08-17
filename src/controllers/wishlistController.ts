@@ -41,7 +41,7 @@ export class WishlistController {
   async removeProductFromWishlist(req: Request, res: Response): Promise<boolean> {
     try {
       const userId = (req as any).user.id;
-      const productId: number = req.body.productId;
+      const productId: number = req.params.productId as unknown as number;
       const removed = await this.wishlistService.removeProductFromWishList(userId, productId);
       if (!removed) {
         res.status(404).json({ error: 'Product not found' });
