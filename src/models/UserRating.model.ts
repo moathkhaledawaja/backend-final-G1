@@ -7,11 +7,11 @@ import {
   Model,
 } from "sequelize-typescript";
 import { User, Product } from "../models";
+import { defaultTableSettings } from "../config/DefaultTableSettings";
 
 @Table({
-  timestamps: true,
-  paranoid: true,
   tableName: "userRatings",
+  ...defaultTableSettings,
 })
 export class UserRating extends Model<UserRating> {
   @ForeignKey(() => User)

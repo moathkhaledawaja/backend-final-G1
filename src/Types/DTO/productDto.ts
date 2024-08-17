@@ -20,6 +20,5 @@ export type UpdateProductDTO = {
   name?: string;
   price?: number;
   description?: string;
-  brand?: string;
   stock?: number;
 };

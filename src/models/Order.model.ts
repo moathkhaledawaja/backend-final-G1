@@ -9,6 +9,7 @@ import {
 } from "sequelize-typescript";
 import { Product, OrderProduct, User } from "../models";
 import { OrderStatus } from "../enums/OrderStatusEnum";
+import { defaultTableSettings } from "../config/DefaultTableSettings";
 
 let orderStatus: string[] = [];
 for (const value in OrderStatus) {
@@ -17,9 +18,8 @@ for (const value in OrderStatus) {
 }
 
 @Table({
-  timestamps: true,
-  paranoid: true,
   tableName: "orders",
+  ...defaultTableSettings,
 })
 export class Order extends Model<Order> {
   @Column({ allowNull: false, type: DataType.ENUM(...orderStatus) })

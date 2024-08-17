@@ -8,11 +8,11 @@ import {
   Model,
 } from "sequelize-typescript";
 import { User, Product, WishlistProduct } from "../models";
+import { defaultTableSettings } from "../config/DefaultTableSettings";
 
 @Table({
-  timestamps: true,
-  paranoid: true,
   tableName: "wishlists",
+  ...defaultTableSettings,
 })
 export class Wishlist extends Model<Wishlist> {
   @ForeignKey(() => User)
