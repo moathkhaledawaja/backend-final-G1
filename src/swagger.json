@@ -11,12 +11,104 @@
       "description": "Local server"
     }
   ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "WishlistDTO": {
+        "type": "object",
+        "properties": {
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Product"
+            }
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Sample Product"
+          },
+          "description": {
+            "type": "string",
+            "example": "This is a sample product."
+          },
+          "price": {
+            "type": "number",
+            "example": 99.99
+          },
+          "stock": {
+            "type": "integer",
+            "example": 100
+          },
+          "brand": {
+            "type": "string",
+            "example": "Sample Brand"
+          }
+        }
+      },
+      "AddProductRequest": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "example": 1
+          }
+        },
+        "required": [
+          "productId"
+        ]
+      },
+      "RemoveProductRequest": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "example": 1
+          }
+        },
+        "required": [
+          "productId"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Product not found"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
   "paths": {
     "/wishlists": {
       "get": {
         "summary": "Get user's wishlist",
         "description": "Retrieve the wishlist for the authenticated user.",
-        "tags": ["Wishlist"],
+        "tags": [
+          "Wishlist"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Wishlist retrieved successfully.",
@@ -43,7 +135,14 @@
       "post": {
         "summary": "Add a product to wishlist",
         "description": "Add a product to the authenticated user's wishlist.",
-        "tags": ["Wishlist"],
+        "tags": [
+          "Wishlist"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -91,7 +190,14 @@
       "delete": {
         "summary": "Clear wishlist",
         "description": "Clear all products from the authenticated user's wishlist.",
-        "tags": ["Wishlist"],
+        "tags": [
+          "Wishlist"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Wishlist cleared successfully.",
@@ -117,21 +223,30 @@
         }
       }
     },
-    "/wishlist/product": {
+    "/wishlists/{productId}": {
       "delete": {
         "summary": "Remove a product from wishlist",
         "description": "Remove a product from the authenticated user's wishlist.",
-        "tags": ["Wishlist"],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveProductRequest"
-              }
-            }
+        "tags": [
+          "Wishlist"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
           }
-        },
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "The ID of the product to be removed from the wishlist."
+          }
+        ],
         "responses": {
           "200": {
             "description": "Product removed successfully.",
@@ -163,75 +278,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "WishlistDTO": {
-        "type": "object",
-        "properties": {
-          "products": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Product"
-            }
-          }
-        }
-      },
-      "Product": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "Sample Product"
-          },
-          "description": {
-            "type": "string",
-            "example": "This is a sample product."
-          },
-          "price": {
-            "type": "number",
-            "example": 99.99
-          },
-          "stock": {
-            "type": "integer",
-            "example": 100
-          },
-          "brand": {
-            "type": "string",
-            "example": "Sample Brand"
-          }
-        }
-      },
-      "AddProductRequest": {
-        "type": "object",
-        "properties": {
-          "productId": {
-            "type": "integer",
-            "example": 1
-          }
-        },
-        "required": ["productId"]
-      },
-      "RemoveProductRequest": {
-        "type": "object",
-        "properties": {
-          "productId": {
-            "type": "integer",
-            "example": 1
-          }
-        },
-        "required": ["productId"]
-      },
-      "Error": {
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "string",
-            "example": "Product not found"
           }
         }
       }
