@@ -1,39 +1,30 @@
 import { CommentService } from "../services";
 import { CommentDTO } from "../Types/DTO";
-import { Comment } from "../models";
 import { injectable, inject } from "tsyringe";
-import { Request as Req, Request, Response as Res, Response } from "express";
+import { Request, Response } from "express";
 
 @injectable()
 export class CommentController {
   constructor(@inject(CommentService) private commentService: CommentService) {}
 
-  public async createComment(
-    req: Request,
-    res: Response
-  ): Promise<CommentDTO | null> {
+  public async createComment(req: Request, res: Response) {
     try {
       const commentData: CommentDTO = req.body;
-      const userId = (req as any).user.userId;
-      const comment = await this.commentService.createComment(
-        userId,
-        commentData
-      );
+      const { id } = req.user;
+
+      const comment = await this.commentService.createComment(id, commentData);
       if (!comment) {
-        res.status(404).send("product not found");
-        return null;
+        return res.status(404).send("product not found");
       }
-      res.status(201).json(comment);
-      return comment;
+      return res.status(201).json(comment);
     } catch (error: any) {
-      throw new Error(error.message);
+      return res
+        .status(500)
+        .json({ error: "Internal server error, please try again alter" });
     }
   }
 
-  public async updateComment(
-    req: Request,
-    res: Response
-  ): Promise<Comment | null> {
+  public async updateComment(req: Request, res: Response) {
     try {
       const id = parseInt(req.params.id);
       const commentData: CommentDTO = req.body;
@@ -55,7 +46,7 @@ export class CommentController {
     }
   }
 
-  public async deleteComment(req: Request, res: Response): Promise<void> {
+  public async deleteComment(req: Request, res: Response) {
     try {
       const id = parseInt(req.params.id);
 
