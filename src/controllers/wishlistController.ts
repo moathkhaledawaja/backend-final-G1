@@ -1,21 +1,18 @@
 import { Request, Response } from 'express';
 import { injectable, inject } from 'tsyringe';
 import WishlistService from '../services/wishList.service';
-import { WishlistDTO } from '../DTO';
+import { WishlistDTO } from '../Types/DTO';
 
 @injectable()
 export class WishlistController {
-  constructor(@inject(WishlistService) private wishlistService: WishlistService) { }
+  constructor(@inject(WishlistService) private wishlistService: WishlistService) {
+  }
 
 
   async getWishList(req: Request, res: Response): Promise<WishlistDTO | null> {
     try {
-      const userId = (req as any).params.id;
+      const userId = req.user!.id;
       const wishlist = await this.wishlistService.getWishlistByUserId(userId);
-      if (!wishlist) {
-        res.status(404).json({ error: 'Wishlist not found' });
-        return null;
-      }
       res.json(wishlist);
       return wishlist;
     } catch (error: any) {
@@ -27,14 +24,14 @@ export class WishlistController {
 
   async addProductToWishlist(req: Request, res: Response): Promise<boolean> {
     try {
-      const userId = (req as any).user.id;
+      const userId = req.user!.id;
       const productId: number = req.body.productId;
       const added = await this.wishlistService.addProductToWishlist(userId, productId);
       if (!added) {
         res.status(404).json({ error: 'Product not found' });
         return false;
       }
-      res.json(added);
+      res.json("Product has been added to wishlist");
       return added;
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -43,14 +40,14 @@ export class WishlistController {
   }
   async removeProductFromWishlist(req: Request, res: Response): Promise<boolean> {
     try {
-      const userId = (req as any).user.id;
+      const userId = req.user!.id;
       const productId: number = req.body.productId;
       const removed = await this.wishlistService.removeProductFromWishList(userId, productId);
       if (!removed) {
         res.status(404).json({ error: 'Product not found' });
         return false;
       }
-      res.json(removed);
+      res.json("Product has been removed from the wishlist");
       return removed;
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -59,13 +56,9 @@ export class WishlistController {
   }
   async clearWishList(req: Request, res: Response): Promise<boolean> {
     try {
-      const userId = (req as any).user.id;
+      const userId = req.user!.id;
       const cleared = await this.wishlistService.clearWishList(userId);
-      if (!cleared) {
-        res.status(500).send("Something went wrong");
-        return false;
-      }
-      res.json(cleared);
+      res.json("Wishlist has been cleared");
       return cleared;
     } catch (error: any) {
       res.status(500).json({ error: error.message });

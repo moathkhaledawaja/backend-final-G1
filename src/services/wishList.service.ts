@@ -1,26 +1,21 @@
 import 'reflect-metadata';
 import { injectable } from "tsyringe";
-import { WishlistRepository } from "../data-access/WishListRepository";
-import { WishlistDTO } from "../DTO/wishlistDto";
+import { wishlistRepository } from "../data-access";
+import { WishlistDTO } from "../Types/DTO";
+import { InternalServerError } from '../Errors/InternalServerError';
+import { NotFoundError } from '../Errors/NotFoundError';
 
 @injectable()
 export default class WishlistService {
-  private wishlistRepository: WishlistRepository
 
-  constructor(wishlistRepository: WishlistRepository) {
-    this.wishlistRepository = wishlistRepository;
-  }
 
   public async getWishlistByUserId(userId: number): Promise<WishlistDTO | null> {
     try {
-      const wishlist = await this.wishlistRepository.findByUserId(userId);
-      if (!wishlist) {
-        return null;
-      }
+      const wishlist = await wishlistRepository.findByUserId(userId);
       return wishlist;
     }
     catch (error: any) {
-      throw new Error(`Error retrieving the wishlist: ${error.message}`);
+      throw new InternalServerError("an error occurred, please try again later.")
 
     }
   }
@@ -29,35 +24,33 @@ export default class WishlistService {
 
   public async addProductToWishlist(userId: number, productId: number): Promise<boolean> {
     try {
-      return await this.wishlistRepository.addProductToWishlist(userId, productId);
+      return await wishlistRepository.addProductToWishlist(userId, productId);
+
     }
     catch (error: any) {
-      throw new Error(`Error Adding the product: ${error.message}`);
-
+      throw new InternalServerError("an error occurred, please try again later.");
     }
   }
 
   public async clearWishList(id: number): Promise<boolean> {
     try {
-
-      return await this.wishlistRepository.clearWishList(id);
+      return await wishlistRepository.clearWishList(id);
     }
     catch (error: any) {
-      throw new Error(`clearing the wishlist: ${error.message}`);
+      throw new InternalServerError("an error occurred, please try again later.");
 
     }
   }
 
   public async removeProductFromWishList(userId: number, productId: number): Promise<boolean> {
     try {
-      return await this.wishlistRepository.removeProductFromWishList(userId, productId);
-
+      return await wishlistRepository.removeProductFromWishList(userId, productId);
     }
     catch (error: any) {
-      throw new Error(`Error removing the product: ${error.message}`);
-
+      throw new InternalServerError("an error occurred, please try again later.");
     }
   }
+
 
 }
 
