@@ -1,5 +1,5 @@
-import { Sequelize } from "sequelize-typescript";
-import dotenv from "dotenv";
+import { Sequelize } from 'sequelize-typescript'
+import dotenv from 'dotenv'
 import {
   User,
   Cart,
@@ -15,9 +15,9 @@ import {
   ProductCategory,
   WishlistProduct,
   Brand,
-} from "../models";
+} from '../models'
 
-dotenv.config();
+dotenv.config()
 
 const sequelize = new Sequelize(
   process.env.DB_NAME as string,
@@ -25,7 +25,7 @@ const sequelize = new Sequelize(
   process.env.DB_PASSWORD,
   {
     host: process.env.DB_HOST,
-    dialect: "postgres",
+    dialect: 'postgres',
     port: Number(process.env.DB_PORT),
     // repositoryMode: true,
     models: [
@@ -45,6 +45,6 @@ const sequelize = new Sequelize(
       WishlistProduct,
     ],
   }
-);
+)
 
-export default sequelize;
+export default sequelize

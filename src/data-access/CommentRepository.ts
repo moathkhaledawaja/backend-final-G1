@@ -2,6 +2,7 @@ import { Comment, User, UserRating } from "../models";
 import { ICommentRepository } from "./Interfaces/ICommentRepository";
 import { RepositoryBase } from "./RepositoryBase";
 
+
 export class CommentRepository
   extends RepositoryBase<Comment>
   implements ICommentRepository {
@@ -25,5 +26,9 @@ export class CommentRepository
         ]
       }]
     });
+  }
+
+  async findByUserIdAndId(userId: number, id: number): Promise<Comment | null> {
+    return await this.model.findOne({ where: { id, userId } })
   }
 }

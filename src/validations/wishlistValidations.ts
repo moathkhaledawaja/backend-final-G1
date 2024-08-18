@@ -1,9 +1,9 @@
-import { body, param } from "express-validator";
+import { body, param } from 'express-validator'
 
 export const addProductToWishlist = [
-  body("productId").notEmpty().isInt().toInt()
+  body('productId').notEmpty().isInt().toInt(),
 ]
 
 export const removeProductFromWishlist = [
-  param("productId").notEmpty().isInt().toInt()
+  param('productId').notEmpty().isInt().toInt(),
 ]
