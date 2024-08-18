@@ -1,91 +1,88 @@
-import ProductService from "../services/product.service";
-import { ProductDTO } from "../Types/DTO";
-import { injectable, inject } from "tsyringe";
-import { Request, Response } from "express";
-import { UpdateProductDTO } from "../Types/DTO/productDto";
+import ProductService from '../services/product.service'
+import { ProductDTO } from '../Types/DTO'
+import { injectable, inject } from 'tsyringe'
+import { Request, Response } from 'express'
+import { UpdateProductDTO } from '../Types/DTO/productDto'
 @injectable()
 export class ProductController {
   constructor(@inject(ProductService) private productService: ProductService) {}
 
   public async GetProducts(req: Request, res: Response) {
-    const { page, pageSize, options } = req.body;
+    const { page, pageSize, options } = req.body
     try {
       const products = await this.productService.GetProducts(
         page,
         pageSize,
         options
-      );
-      res.status(200).json({ products });
+      )
+      res.status(200).json({ products })
     } catch (ex) {
       return res
         .status(500)
-        .json({ error: "internal server error, try again later." });
+        .json({ error: 'internal server error, try again later.' })
     }
   }
 
   public async createProduct(req: Request, res: Response) {
     try {
-      const product: ProductDTO = req.body;
+      const product: ProductDTO = req.body
 
-      const newProduct = await this.productService.createProduct(product);
+      const newProduct = await this.productService.createProduct(product)
 
-      return res.status(201).json(newProduct);
+      return res.status(201).json(newProduct)
     } catch (error: any) {
       return res
         .status(500)
-        .json({ error: "internal server error, try again later." });
+        .json({ error: 'internal server error, try again later.' })
     }
   }
 
   public async updateProduct(req: Request, res: Response) {
     try {
-      const updatedData: UpdateProductDTO = req.body;
+      const updatedData: UpdateProductDTO = req.body
 
       const updatedProduct = await this.productService.FindAndUpdateProduct(
         updatedData.id,
         updatedData
-      );
+      )
 
       if (!updatedProduct) {
         return res
           .status(404)
-          .json({ error: "could not find the product with the specified Id" });
+          .json({ error: 'could not find the product with the specified Id' })
       }
 
-      return res.status(201).json(updatedProduct);
+      return res.status(201).json(updatedProduct)
     } catch (error: any) {
       return res
         .status(500)
-        .json({ error: "internal server error, try again later." });
+        .json({ error: 'internal server error, try again later.' })
     }
   }
 
   public async deleteProduct(req: Request, res: Response) {
     try {
-      const productId = parseInt(req.params.id);
-      if (!productId) {
-        res.status(500).json({ error: "Required Data is Unavailable" });
-      }
-      await this.productService.DeleteProduct(productId);
-      res.status(201);
+      const productId = parseInt(req.params.id)
+
+      const status = await this.productService.DeleteProduct(productId)
+      if (status) return res.status(204).json({})
+      return res.status(404).json({})
     } catch (error: any) {
       return res
         .status(500)
-        .json({ error: "internal server error, try again later." });
+        .json({ error: 'internal server error, try again later.' })
     }
   }
 
   public async getProductById(req: Request, res: Response) {
     try {
-      const productId = parseInt(req.params.id, 10);
-      if (!productId) {
-        res.status(500).json({ error: "Required Data is Unavailable" });
-      }
-      const product = await this.productService.GetProduct(productId);
+      const { id } = req.params
+
+      const product = await this.productService.GetProduct(parseInt(id))
       if (!product) {
-        res.status(400).json({ error: "Product not found" });
+        return res.status(404).json({ error: 'Product not found' })
       }
-      res.status(201).json(product);
+      return res.status(200).json({ product })
     } catch (error: any) {
       return res
         .status(500)

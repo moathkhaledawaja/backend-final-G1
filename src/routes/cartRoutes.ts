@@ -12,8 +12,8 @@ import {
   removeProductFromCartValidator
 } from "../validations";
 
-const cartRouter = Router();
-const cartController = container.resolve(CartController);
+const cartRouter = Router()
+const cartController = container.resolve(CartController)
 
 cartRouter.post(
   "/",
