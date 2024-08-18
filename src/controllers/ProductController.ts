@@ -3,6 +3,8 @@ import { ProductDTO } from '../Types/DTO'
 import { injectable, inject } from 'tsyringe'
 import { Request, Response } from 'express'
 import { UpdateProductDTO } from '../Types/DTO/productDto'
+import { ReadAllImage } from '../helpers/Storage/StorageManager'
+import fs from 'fs'
 @injectable()
 export class ProductController {
   constructor(@inject(ProductService) private productService: ProductService) {}
@@ -26,8 +28,9 @@ export class ProductController {
   public async createProduct(req: Request, res: Response) {
     try {
       const product: ProductDTO = req.body
-
+      product.images = req.files as Express.Multer.File[]
       const newProduct = await this.productService.createProduct(product)
+      await ReadAllImage('newimage', product.images[0].buffer)
 
       return res.status(201).json(newProduct)
     } catch (error: any) {
