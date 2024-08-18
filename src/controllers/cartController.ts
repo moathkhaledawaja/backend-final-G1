@@ -6,7 +6,7 @@ import { Cart } from '../models'
 
 @injectable()
 export class CartController {
-  constructor(@inject(CartService) private cartService: CartService) {}
+  
   constructor(@inject(CartService) private cartService: CartService) {}
 
   async createCart(req: Request, res: Response): Promise<Cart> {
@@ -35,7 +35,7 @@ export class CartController {
       throw error;
     }
   }
-  }
+  
 
   async getCartByUserId(req: Request, res: Response): Promise<Cart[] | null> {
     try {
