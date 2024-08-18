@@ -5,7 +5,7 @@ import { UserDTO } from "../Types/DTO";
 
 @injectable()
 class AuthController {
-  constructor(@inject(AuthService) private authService: AuthService) {}
+  constructor(@inject(AuthService) private authService: AuthService) { }
 
   async login(req: Request, res: Response) {
     const { email, password } = req.body;
@@ -23,19 +23,34 @@ class AuthController {
   }
 
   async register(req: Request, res: Response) {
-    const { name, email, password, role, address }: UserDTO = req.body;
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      // role,
+      street,
+      city,
+      state,
+      zip
+    } = req.body;
 
-    if (!name || !email || !password || !role || !address) {
+    const name = `${firstName} ${lastName}`;
+
+    const address = `${street}, ${city}, ${state}, ${zip}`;
+
+    if (!firstName || !lastName || !email || !password  || !street || !city || !state || !zip) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
     try {
-      await this.authService.register(name, email, address, password, role);
+      await this.authService.register(name, email, address, password);
       res.status(201).json({ message: "User created successfully" });
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
   }
+
 
   async logout(req: Request, res: Response) {
     const authHeader = req.headers.authorization;

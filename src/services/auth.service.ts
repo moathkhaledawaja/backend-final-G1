@@ -37,7 +37,7 @@ export default class AuthService {
         email: string,
         address: string,
         password: string,
-        role: string
+        // role: string
     ): Promise<User> {
         const existingUser = await this.userService.getUserByEmail(email);
         if (existingUser) {
@@ -45,7 +45,7 @@ export default class AuthService {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = { name, email, password: hashedPassword, address, role };
+        const newUser = { name, email, password: hashedPassword, address, role: 'user' };
         return await this.userService.createUser(newUser);
     }
 
