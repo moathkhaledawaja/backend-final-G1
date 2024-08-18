@@ -1,7 +1,7 @@
-import { Brand } from "../models";
-import { ICartRepository } from "./Interfaces";
-import { IBrandRepository } from "./Interfaces/IBrandRepository";
-import { RepositoryBase } from "./RepositoryBase";
+import { Brand } from '../models'
+import { ICartRepository } from './Interfaces'
+import { IBrandRepository } from './Interfaces/IBrandRepository'
+import { RepositoryBase } from './RepositoryBase'
 
 export class BrandRepository
   extends RepositoryBase<Brand>
@@ -11,7 +11,7 @@ export class BrandRepository
     const [brand, status] = await this.model.findOrCreate({
       where: { name },
       returning: true,
-    });
-    return brand;
+    })
+    return brand
   }
 }
