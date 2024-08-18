@@ -1,42 +1,44 @@
 import { UserRatingService } from '../services/userRating.service';
 import { UserRatingRepository } from '../data-access/UserRatingRepository';
-import { UserRatingDTO } from '../DTO';
-import { UserRating } from '../models';
+import { UserRatingDTO } from '../Types/DTO';
 import { mock, MockProxy } from 'jest-mock-extended';
+import { UserRating } from '../models';
 
 jest.mock('../models/UserRating.model.ts');
 
 describe('UserRatingService', () => {
   let userRatingService: UserRatingService;
   let userRatingRepository: MockProxy<UserRatingRepository>;
-  let MockedUserRating: jest.Mocked<typeof UserRating>;
 
   beforeEach(() => {
     userRatingRepository = mock<UserRatingRepository>();
     userRatingService = new UserRatingService(userRatingRepository);
-    MockedUserRating = UserRating as jest.Mocked<typeof UserRating>;
   });
 
   describe('createUserRating', () => {
-    it('should create a new user rating and return the data', async () => {
+    it('should create and return a user rating', async () => {
       const userId = 1;
       const productId = 123;
-      const data: UserRatingDTO = { rating: 4.5 };
-      userRatingRepository.create.mockResolvedValue({ dataValues: { rating: 4.5 } } as unknown as UserRating);
-      const result = await userRatingService.createUserRating(userId, productId, data);
+      const ratingData: UserRatingDTO = { rating: 5 };
+      const userRating = new UserRating();
 
-      expect(result).toEqual(data);
+      userRatingRepository.create.mockResolvedValue(userRating);
+
+      const result = await userRatingService.createUserRating(userId, productId, ratingData);
+
+      expect(userRatingRepository.create).toHaveBeenCalled();
+      expect(result).toEqual(ratingData);
     });
 
-    it('should throw an error if the user rating cannot be created', async () => {
+    it('should throw an error if there is an issue creating the user rating', async () => {
       const userId = 1;
       const productId = 123;
-      const data: UserRatingDTO = { rating: 4.5 };
+      const ratingData: UserRatingDTO = { rating: 5 };
 
       userRatingRepository.create.mockRejectedValue(new Error('Database error'));
 
-      await expect(userRatingService.createUserRating(userId, productId, data)).rejects.toThrow(
-        'Could not create a new UserRating Database error'
+      await expect(userRatingService.createUserRating(userId, productId, ratingData)).rejects.toThrow(
+        'an error occurred, please try again later.'
       );
     });
   });
@@ -44,17 +46,14 @@ describe('UserRatingService', () => {
   describe('findUserRatingsByProductId', () => {
     it('should return the average rating for a given productId', async () => {
       const productId = 123;
-      const ratings = [
-        { dataValues: { rating: 4.5 } } as unknown as UserRating,
-        { dataValues: { rating: 3.5 } } as unknown as UserRating,
-      ];
+      const userRatings = [{ dataValues: { rating: 4 } }, { dataValues: { rating: 5 } }] as UserRating[];
 
-      userRatingRepository.findAllByProductId.mockResolvedValue(ratings);
+      userRatingRepository.findAllByProductId.mockResolvedValue(userRatings);
 
       const result = await userRatingService.findUserRatingsByProductId(productId);
 
       expect(userRatingRepository.findAllByProductId).toHaveBeenCalledWith(productId);
-      expect(result).toEqual(4.0); // Average of 4.5 and 3.5
+      expect(result).toBe(4.5);
     });
 
     it('should return 0 if no ratings are found', async () => {
@@ -64,7 +63,7 @@ describe('UserRatingService', () => {
 
       const result = await userRatingService.findUserRatingsByProductId(productId);
 
-      expect(result).toEqual(0);
+      expect(result).toBe(0);
     });
 
     it('should throw an error if there is an issue retrieving the ratings', async () => {
@@ -73,26 +72,27 @@ describe('UserRatingService', () => {
       userRatingRepository.findAllByProductId.mockRejectedValue(new Error('Database error'));
 
       await expect(userRatingService.findUserRatingsByProductId(productId)).rejects.toThrow(
-        'Could not create a retrieve the ratings Database error'
+        'an error occurred, please try again later.'
       );
     });
   });
 
   describe('findUserRatingByUserIdAndProductId', () => {
-    it('should return a user rating for a given userId and productId', async () => {
+    it('should return the user rating for a given userId and productId', async () => {
       const userId = 1;
       const productId = 123;
-      const rating = { toJSON: jest.fn().mockReturnValue({ rating: 4.5 }) } as unknown as UserRating;
+      const userRating = new UserRating();
+      userRating.rating = 5;
 
-      userRatingRepository.findByUserIdAndProductId.mockResolvedValue(rating);
+      userRatingRepository.findByUserIdAndProductId.mockResolvedValue(userRating);
 
       const result = await userRatingService.findUserRatingByUserIdAndProductId(userId, productId);
 
       expect(userRatingRepository.findByUserIdAndProductId).toHaveBeenCalledWith(userId, productId);
-      expect(result).toEqual({ rating: 4.5 });
+      expect(result).toEqual({ rating: 5 });
     });
 
-    it('should return null if the rating is not found', async () => {
+    it('should return null if no rating is found', async () => {
       const userId = 1;
       const productId = 123;
 
@@ -103,54 +103,54 @@ describe('UserRatingService', () => {
       expect(result).toBeNull();
     });
 
-    it('should throw an error if there is an issue retrieving the rating', async () => {
+    it('should throw an error if there is an issue retrieving the user rating', async () => {
       const userId = 1;
       const productId = 123;
 
       userRatingRepository.findByUserIdAndProductId.mockRejectedValue(new Error('Database error'));
 
       await expect(userRatingService.findUserRatingByUserIdAndProductId(userId, productId)).rejects.toThrow(
-        'Could not create a retrieve the Comments Database error'
+        'an error occurred, please try again later.'
       );
     });
   });
 
   describe('updateUserRating', () => {
-    it('should update a user rating and return the updated rating', async () => {
+    it('should update and return the updated user rating', async () => {
       const userId = 1;
       const productId = 123;
-      const data: UserRatingDTO = { rating: 4.0 };
-      const updatedUserRating = { dataValues: { rating: 4.0 } } as unknown as UserRating;
+      const ratingData: UserRatingDTO = { rating: 4 };
+      const userRating = new UserRating();
 
-      userRatingRepository.update.mockResolvedValue(updatedUserRating);
+      userRatingRepository.update.mockResolvedValue(userRating);
 
-      const result = await userRatingService.updateUserRating(userId, productId, data);
+      const result = await userRatingService.updateUserRating(userId, productId, ratingData);
 
-      expect(userRatingRepository.update).toHaveBeenCalledWith(expect.any(UserRating));
-      expect(result).toEqual({ rating: 4.0, userId });
+      expect(userRatingRepository.update).toHaveBeenCalled();
+      expect(result).toEqual({ rating: 4, userId });
     });
 
     it('should return null if the rating cannot be updated', async () => {
       const userId = 1;
       const productId = 123;
-      const data: UserRatingDTO = { rating: 4.0 };
+      const ratingData: UserRatingDTO = { rating: 4 };
 
       userRatingRepository.update.mockResolvedValue(null);
 
-      const result = await userRatingService.updateUserRating(userId, productId, data);
+      const result = await userRatingService.updateUserRating(userId, productId, ratingData);
 
       expect(result).toBeNull();
     });
 
-    it('should throw an error if there is an issue updating the rating', async () => {
+    it('should throw an error if there is an issue updating the user rating', async () => {
       const userId = 1;
       const productId = 123;
-      const data: UserRatingDTO = { rating: 4.0 };
+      const ratingData: UserRatingDTO = { rating: 4 };
 
       userRatingRepository.update.mockRejectedValue(new Error('Database error'));
 
-      await expect(userRatingService.updateUserRating(userId, productId, data)).rejects.toThrow(
-        'Could not create a update the Comment Database error'
+      await expect(userRatingService.updateUserRating(userId, productId, ratingData)).rejects.toThrow(
+        'an error occurred, please try again later.'
       );
     });
   });
