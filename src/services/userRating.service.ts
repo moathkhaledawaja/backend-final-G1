@@ -1,9 +1,11 @@
 
 
 import { UserRating } from '../models';
-import { UserRatingDTO } from '../DTO';
+import { UserRatingDTO } from '../Types/DTO';
 import { injectable } from 'tsyringe';
 import { UserRatingRepository } from '../data-access/UserRatingRepository';
+import logger from '../helpers/logger';
+import { InternalServerError } from '../Errors/InternalServerError';
 
 @injectable()
 export class UserRatingService {
@@ -22,13 +24,11 @@ export class UserRatingService {
     userRating.rating = rating;
     try {
       const newUserRating = await this.userRatingRepository.create(userRating);
-      if (!newUserRating) {
-        return null;
-      }
       return data;
     }
     catch (error: any) {
-      throw new Error(`Could not create a new UserRating ${error.message}`);
+      logger.error(error)
+      throw new InternalServerError("an error occurred, please try again later.");
     }
   }
 
@@ -42,7 +42,8 @@ export class UserRatingService {
       return rating;
     }
     catch (error: any) {
-      throw new Error(`Could not create a retrieve the ratings ${error.message}`);
+      logger.error(error);
+      throw new InternalServerError("an error occurred, please try again later.");
 
     }
   }
@@ -58,7 +59,7 @@ export class UserRatingService {
       return res;
     }
     catch (error: any) {
-      throw new Error(`Could not create a retrieve the Comments ${error.message}`);
+      throw new InternalServerError("an error occurred, please try again later.");
 
     }
   }
@@ -78,7 +79,7 @@ export class UserRatingService {
       return updatedUserRatingDTO;
     }
     catch (error: any) {
-      throw new Error(`Could not create a update the Comment ${error.message}`);
+      throw new InternalServerError("an error occurred, please try again later.");
 
     }
   }
