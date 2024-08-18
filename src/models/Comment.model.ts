@@ -5,18 +5,18 @@ import {
   BelongsTo,
   ForeignKey,
   Model,
-} from "sequelize-typescript";
-import { User, Product } from "../models";
-import { defaultTableSettings } from "../config/DefaultTableSettings";
+} from 'sequelize-typescript'
+import { User, Product } from '../models'
+import { defaultTableSettings } from '../config/DefaultTableSettings'
 
 @Table({
-  tableName: "comments",
+  tableName: 'comments',
 
   ...defaultTableSettings,
 })
 export class Comment extends Model<Comment> {
   @Column({ allowNull: false, type: DataType.STRING })
-  content!: string;
+  content!: string
 
   // Product-comment relationship.
   @ForeignKey(() => Product)
@@ -24,10 +24,10 @@ export class Comment extends Model<Comment> {
     allowNull: false,
     type: DataType.INTEGER,
   })
-  productId!: number;
+  productId!: number
 
   @BelongsTo(() => Product)
-  product!: Product;
+  product!: Product
 
   //user-comment relationship.
   @ForeignKey(() => User)
@@ -35,8 +35,8 @@ export class Comment extends Model<Comment> {
     allowNull: false,
     type: DataType.INTEGER,
   })
-  userId!: number;
+  userId!: number
 
   @BelongsTo(() => User)
-  user!: User;
+  user!: User
 }
