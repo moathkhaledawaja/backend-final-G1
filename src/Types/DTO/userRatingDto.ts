@@ -1,6 +1,5 @@
-
 export type UserRatingDTO = {
-  rating: number;
-  userId?: number;
-  productId?: number;
+  rating: number
+  userId?: number
+  productId?: number
 }

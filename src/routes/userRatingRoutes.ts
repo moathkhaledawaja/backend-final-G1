@@ -1,13 +1,23 @@
-import { Router } from "express";
-import { container } from "tsyringe";
-import { UserRatingController } from "../controllers/userRatingController";
-import { createAndUpdateUserRatingValidator } from "../validations";
-import authAndRoleMiddleware from "../middleware/authMiddleware";
+import { Router } from 'express'
+import { container } from 'tsyringe'
+import { UserRatingController } from '../controllers/userRatingController'
+import { createAndUpdateUserRatingValidator } from '../validations'
+import authAndRoleMiddleware from '../middleware/authMiddleware'
 
-const userRatingRouter = Router();
-const userRatingController = container.resolve(UserRatingController);
+const userRatingRouter = Router()
+const userRatingController = container.resolve(UserRatingController)
 
-userRatingRouter.post("/", authAndRoleMiddleware(["user"]), createAndUpdateUserRatingValidator, userRatingController.createUserRating.bind(userRatingController));
-userRatingRouter.patch("/:id", authAndRoleMiddleware(["user"]), createAndUpdateUserRatingValidator, userRatingController.updateUserRating.bind(userRatingController));
+userRatingRouter.post(
+  '/',
+  authAndRoleMiddleware(['user']),
+  createAndUpdateUserRatingValidator,
+  userRatingController.createUserRating.bind(userRatingController)
+)
+userRatingRouter.patch(
+  '/:id',
+  authAndRoleMiddleware(['user']),
+  createAndUpdateUserRatingValidator,
+  userRatingController.updateUserRating.bind(userRatingController)
+)
 
-export default userRatingRouter;
+export default userRatingRouter

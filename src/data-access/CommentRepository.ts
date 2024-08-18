@@ -1,11 +1,11 @@
-import { Comment, User, UserRating } from "../models";
-import { ICommentRepository } from "./Interfaces/ICommentRepository";
-import { RepositoryBase } from "./RepositoryBase";
-
+import { Comment, User, UserRating } from '../models'
+import { ICommentRepository } from './Interfaces/ICommentRepository'
+import { RepositoryBase } from './RepositoryBase'
 
 export class CommentRepository
   extends RepositoryBase<Comment>
-  implements ICommentRepository {
+  implements ICommentRepository
+{
   /**
    *
    * @param productId Id for the product we want to retrieve all comments for.
@@ -14,18 +14,20 @@ export class CommentRepository
   async findByProductId(productId: number): Promise<Comment[]> {
     return await this.model.findAll({
       where: { productId },
-      include: [{
-        model: User,
-        include: [
-          {
-            model: UserRating,
-            where: {
-              productId
-            }
-          }
-        ]
-      }]
-    });
+      include: [
+        {
+          model: User,
+          include: [
+            {
+              model: UserRating,
+              where: {
+                productId,
+              },
+            },
+          ],
+        },
+      ],
+    })
   }
 
   async findByUserIdAndId(userId: number, id: number): Promise<Comment | null> {

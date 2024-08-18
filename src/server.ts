@@ -29,7 +29,7 @@ app.use('/api/carts', cartRouter)
 app.use('/api/wishlists', wishlistRouter)
 app.use('/api/categories', categoryRouter)
 app.use('/api/comments', commentRouter)
-app.use("/api/userratings",userRatingRouter);
+app.use('/api/userratings', userRatingRouter)
 const startServer = async () => {
   try {
     await sequelize.authenticate()

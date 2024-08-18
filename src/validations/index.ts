@@ -10,6 +10,4 @@ export {
   getCartValidator,
 } from './cartValidator'
 
-export {
-  createAndUpdateUserRatingValidator
-} from './userRatingValidator'
+export { createAndUpdateUserRatingValidator } from './userRatingValidator'
