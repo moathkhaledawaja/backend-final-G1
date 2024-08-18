@@ -35,7 +35,7 @@ export class UserRatingService {
   public async findUserRatingsByProductId(productId: number): Promise<number> {
     try {
       const userRatings = await this.userRatingRepository.findAllByProductId(productId);
-      if (!userRatings) {
+      if (!userRatings || userRatings.length === 0) {
         return 0;
       }
       const rating = userRatings.reduce((value, userRating) => value + userRating.dataValues.rating, 0) / userRatings.length;
@@ -59,6 +59,7 @@ export class UserRatingService {
       return res;
     }
     catch (error: any) {
+      logger.error(error)
       throw new InternalServerError("an error occurred, please try again later.");
 
     }
@@ -79,6 +80,7 @@ export class UserRatingService {
       return updatedUserRatingDTO;
     }
     catch (error: any) {
+      logger.error(error)
       throw new InternalServerError("an error occurred, please try again later.");
 
     }
