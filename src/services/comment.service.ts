@@ -3,6 +3,7 @@ import { CommentDTO } from "../Types/DTO/commentDto";
 import { injectable } from "tsyringe";
 import { commentRepository, productRepository } from "../data-access";
 import { InternalServerError } from "../Errors/InternalServerError";
+import logger from "../helpers/logger";
 @injectable()
 export default class CommentService {
   /**
@@ -30,7 +31,8 @@ export default class CommentService {
 
       return await commentRepository.create(newComment);
     } catch (error: any) {
-      throw new InternalServerError("an error occured, please try again later");
+      logger.error(error);
+      throw new InternalServerError("an error occurred, please try again later");
     }
   }
 
@@ -46,9 +48,8 @@ export default class CommentService {
       const commentsDTO: CommentDTO[] = commentsJSON;
       return commentsDTO;
     } catch (error: any) {
-      throw new Error(
-        `Could not create a retrieve the Comments ${error.message}`
-      );
+      logger.error(error);
+      throw new InternalServerError("an error occurred, please try again later");
     }
   }
 
@@ -61,9 +62,8 @@ export default class CommentService {
       const comm: CommentDTO = comment.toJSON();
       return comm;
     } catch (error: any) {
-      throw new Error(
-        `Could not create a retrieve the Comments ${error.message}`
-      );
+      logger.error(error);
+      throw new InternalServerError("an error occurred, please try again later");
     }
   }
 
@@ -74,7 +74,7 @@ export default class CommentService {
   ): Promise<Comment | null> {
     const comment = new Comment();
     comment.id = id;
-    comment.userId = id;
+    comment.userId = userId;
     if (data.content) comment.content = data.content;
     try {
       const updatedComment = await commentRepository.update(comment);
@@ -84,15 +84,21 @@ export default class CommentService {
       const commentJson = updatedComment.toJSON();
       return commentJson;
     } catch (error: any) {
-      throw new Error(`Could not create a update the Comment ${error.message}`);
+      logger.error(error);
+      throw new InternalServerError("an error occurred, please try again later");
     }
   }
 
   public async deleteComment(id: number, userId: number): Promise<boolean> {
     try {
+      const comment = await commentRepository.findByUserIdAndId(userId, id);
+      if (!comment) {
+        return false;
+      }
       return await commentRepository.delete(id);
     } catch (error: any) {
-      throw new Error(`Could not create a update the Comment ${error.message}`);
+      logger.error(error);
+      throw new InternalServerError("an error occurred, please try again later");
     }
   }
 }

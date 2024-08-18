@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 
 @injectable()
 export class CommentController {
-  constructor(@inject(CommentService) private commentService: CommentService) {}
+  constructor(@inject(CommentService) private commentService: CommentService) { }
 
   public async createComment(req: Request, res: Response) {
     try {
@@ -20,15 +20,17 @@ export class CommentController {
       }
       return res.status(201).json(comment);
     } catch (error: any) {
-      return res
+      res
         .status(500)
         .json({ error: "Internal server error, please try again alter" });
+      throw new Error(error.message);
+
     }
   }
 
   public async updateComment(req: Request, res: Response) {
     try {
-      const id = parseInt(req.params.id);
+      const id = req.params.id as unknown as number;
       const commentData: CommentDTO = req.body;
       const userId = (req as any).user.id;
       const comment = await this.commentService.updateComment(
@@ -37,26 +39,27 @@ export class CommentController {
         commentData
       );
       if (!comment) {
-        res.status(404);
-        // to be implemented
-        throw new Error("Comment not found");
+        res.status(404).send("comment not found");
+        return comment;
       }
-      return comment;
     } catch (error: any) {
-      res.status(500);
+      res.status(500).json({ error: error.message });
       throw new Error(error.message);
     }
   }
 
   public async deleteComment(req: Request, res: Response) {
     try {
-      const id = parseInt(req.params.id);
+      const id = req.params.id as unknown as number;
 
       const userId = (req as any).user.id;
-      await this.commentService.deleteComment(id, userId);
+      const isDeleted = await this.commentService.deleteComment(id, userId);
+      if (!isDeleted) {
+        res.status(404).send("comment not found");
+      }
       res.status(204);
     } catch (error: any) {
-      res.status(500);
+      res.status(500).json({ error: error.message });
       throw new Error(error.message);
     }
   }

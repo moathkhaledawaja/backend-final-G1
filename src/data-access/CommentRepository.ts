@@ -14,4 +14,9 @@ export class CommentRepository
   async findByProductId(productId: number): Promise<Comment[]> {
     return await this.model.findAll({ where: { productId } });
   }
+
+
+  async findByUserIdAndId(userId: number, id: number): Promise<Comment | null> {
+    return await this.model.findOne({ where: { id, userId } });
+  }
 }

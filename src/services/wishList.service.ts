@@ -31,7 +31,6 @@ export default class WishlistService {
     }
     catch (error: any) {
       logger.error(error)
-      console.log(error);
       throw new InternalServerError("an error occurred, please try again later.");
     }
   }
