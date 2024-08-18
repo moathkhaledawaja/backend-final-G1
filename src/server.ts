@@ -13,6 +13,7 @@ import {
   wishlistRouter,
 } from './routes'
 import cors from 'cors'
+import userRatingRouter from './routes/userRatingRoutes'
 dotenv.config()
 
 const app = express()
@@ -28,6 +29,7 @@ app.use('/api/carts', cartRouter)
 app.use('/api/wishlists', wishlistRouter)
 app.use('/api/categories', categoryRouter)
 app.use('/api/comments', commentRouter)
+app.use("/api/userratings",userRatingRouter);
 const startServer = async () => {
   try {
     await sequelize.authenticate()
