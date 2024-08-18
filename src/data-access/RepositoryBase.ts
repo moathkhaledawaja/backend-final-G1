@@ -9,55 +9,30 @@ export class RepositoryBase<T extends Model> implements IRepositoryBase<T> {
   }
 
   async findById(id: number): Promise<T | null> {
-    try {
-      return await this.model.findByPk<T>(id);
-    } catch (ex) {
-      console.log(ex);
-    }
-    return null;
+    return await this.model.findByPk<T>(id);
   }
 
   async findAll(): Promise<T[]> {
-    try {
-      return await this.model.findAll<T>();
-    } catch (ex) {
-      console.log(ex);
-    }
-    return [];
+    return await this.model.findAll<T>();
   }
 
-  async create(entity: T): Promise<T | null> {
-    try {
-      return await this.model.create(entity.dataValues);
-    } catch (ex) {}
-    return null;
+  async create(entity: T): Promise<T> {
+    return await this.model.create(entity.dataValues, { returning: true });
   }
 
   async update(entity: T): Promise<T | null> {
-    try {
-      const [_, [updatedEntity]] = await this.model.update<T>(
-        entity.dataValues,
-        {
-          where: { id: entity.id },
-          returning: true,
-        }
-      );
-
-      return updatedEntity;
-    } catch (ex) {
-      console.log(ex);
-    }
-    return null;
+    const [_, [updatedEntity]] = await this.model.update<T>(entity.dataValues, {
+      where: { id: entity.id },
+      returning: true,
+    });
+    return updatedEntity;
   }
 
   async delete(id: number): Promise<boolean> {
-    try {
-      const T = await this.model.findByPk(id);
-      if (T != null) {
-        await T.destroy();
-      }
-    } catch (ex) {
-      console.log(ex);
+    const T = await this.model.findByPk(id);
+    if (T != null) {
+      await T.destroy();
+      return true;
     }
     return false;
   }

@@ -1,6 +1,7 @@
 import { User } from "../models";
 import { userRepository } from "../data-access";
-import { UserDTO } from "../DTO/userDto";
+import { UserDTO } from "../Types/DTO/userDto";
+import bcrypt from "bcrypt";
 
 export default class UserService {
   async createUser(userData: UserDTO): Promise<User> {
@@ -44,68 +45,97 @@ export default class UserService {
     }
   }
 
+  async getAllUsers(): Promise<User[]> {
+    try {
+      const users = await userRepository.findAll();
+      return users;
+    } catch (error) {
+      throw new Error(`Error retrieving users: ${error}`);
+    }
+  }
+
   async updateUser(userId: number, userData: UserDTO): Promise<User | null> {
     try {
       const user = await userRepository.findById(userId);
       if (!user) {
-        console.log('User not found with ID:', userId);
         throw new Error("User not found");
       }
 
-      console.log('Existing user:', user);
-      console.log('New user data:', userData);
-
       const isDataChanged = this.isUserDataChanged(user, userData);
       if (!isDataChanged) {
-        console.log('No changes detected in user data.');
         return user;
       }
-      // Convert UserDTO to Partial<User>
+
+      // Only hash the password if it has changed
       const partialUser: Partial<User> = {
         name: userData.name,
         email: userData.email,
-        password: userData.password,
+        password: userData.password
+          ? await bcrypt.hash(userData.password, 10)
+          : user.password,
         address: userData.address,
         role: userData.role,
       };
 
       const updatedUser = await userRepository.updateUser(userId, partialUser);
-      console.log('Updated user:', updatedUser);
       return updatedUser;
     } catch (error: any) {
-      console.error(`Error updating user: ${error}`);
       throw new Error(`Error updating user: ${error.message}`);
     }
   }
 
-  // Helper function to check if data has changed
+  // Helper function to check if data has changed, excluding password
   private isUserDataChanged(existingUser: User, newUserData: UserDTO): boolean {
     return (
       existingUser.name !== newUserData.name ||
       existingUser.email !== newUserData.email ||
-      existingUser.password !== newUserData.password ||
+      (newUserData.password &&
+        !bcrypt.compareSync(newUserData.password, existingUser.password)) ||
       existingUser.address !== newUserData.address ||
       existingUser.role !== newUserData.role
     );
   }
 
   // Edit the user password
-  async editUserPassword(userId: number, newPassword: string):Promise<string>{
+  async editUserPassword(
+    userId: number,
+    oldPassword: string,
+    newPassword: string
+  ): Promise<string> {
     try {
       const user = await userRepository.findById(userId);
-      if(!user){
+      if (!user) {
         throw new Error("User not found");
       }
-      user.password = newPassword;
-      await userRepository.updateUser(userId, user);
 
+      const isOldPasswordMatch = await bcrypt.compare(
+        oldPassword,
+        user.password
+      );
+      if (!isOldPasswordMatch) {
+        throw new Error("Old password is incorrect");
+      }
+
+      if (oldPassword === newPassword) {
+        throw new Error("New password must be different from the old password");
+      }
+
+      const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+      // Check if the new hashed password is actually different
+      if (user.password === hashedNewPassword) {
+        throw new Error(
+          "New password cannot be the same as the old password after hashing"
+        );
+      }
+
+      user.set("password", hashedNewPassword);
+      await user.save();
       return "Password updated successfully";
     } catch (error: any) {
-      throw new Error(`Error editing user password: ${error}`);
-      
+      throw new Error(`Error editing user password: ${error.message}`);
     }
   }
-
 
   async deleteUser(userId: number): Promise<void> {
     try {
@@ -115,12 +145,15 @@ export default class UserService {
     }
   }
 
-  async getAllUsers(): Promise<User[]> {
+
+  // Function to change the role of a user
+  async changeRole(userId: number, role: string): Promise<User | null> {
     try {
-      const users = await userRepository.findAll();
-      return users;
-    } catch (error) {
-      throw new Error(`Error retrieving users: ${error}`);
+      
+      return await userRepository.changeRole(userId, role);
+    } catch (error: any) {
+      throw new Error(`Error changing user role: ${error.message}`);
+
     }
   }
 }

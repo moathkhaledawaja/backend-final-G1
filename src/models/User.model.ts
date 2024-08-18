@@ -1,6 +1,7 @@
-import { Table, Column, DataType, HasMany } from "sequelize-typescript";
-import { ModelBase, Comment, UserRating } from ".";
+import { Table, Column, DataType, HasMany, Model } from "sequelize-typescript";
+import { Cart, Comment, UserRating, Wishlist } from ".";
 import { UserRoles } from "../enums/UserRolesEnum";
+import { defaultTableSettings } from "../config/DefaultTableSettings";
 
 let userRoles: string[] = [];
 for (const value in UserRoles) {
@@ -10,8 +11,9 @@ for (const value in UserRoles) {
 
 @Table({
   tableName: "users",
+  ...defaultTableSettings,
 })
-export class User extends ModelBase<User> {
+export class User extends Model<User> {
   @Column({
     type: DataType.STRING,
     allowNull: false,
@@ -39,8 +41,15 @@ export class User extends ModelBase<User> {
   @Column({
     type: DataType.ENUM(...userRoles),
     allowNull: false,
+    defaultValue: UserRoles.user,
   })
   role!: string;
+
+  @HasMany(() => Wishlist)
+  wishlists!: Wishlist[];
+
+  @HasMany(() => Cart)
+  carts!: Cart[];
 
   //user-comment relationship.
   @HasMany(() => Comment)

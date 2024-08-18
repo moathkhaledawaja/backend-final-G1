@@ -1,10 +1,18 @@
-import { Table, Column, DataType, ForeignKey } from "sequelize-typescript";
-import { Product, ModelBase, Category } from "../models";
+import {
+  Table,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+} from "sequelize-typescript";
+import { Product, Category } from "../models";
+import { defaultTableSettings } from "../config/DefaultTableSettings";
 
 @Table({
   tableName: "productCategory",
+  ...defaultTableSettings,
 })
-export class ProductCategory extends ModelBase<ProductCategory> {
+export class ProductCategory extends Model<ProductCategory> {
   @ForeignKey(() => Product)
   @Column({ allowNull: false, type: DataType.INTEGER })
   productId!: number;

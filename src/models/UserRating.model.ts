@@ -4,13 +4,16 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  Model,
 } from "sequelize-typescript";
-import { User, ModelBase, Product } from "../models";
+import { User, Product } from "../models";
+import { defaultTableSettings } from "../config/DefaultTableSettings";
 
 @Table({
   tableName: "userRatings",
+  ...defaultTableSettings,
 })
-export class UserRating extends ModelBase<UserRating> {
+export class UserRating extends Model<UserRating> {
   @ForeignKey(() => User)
   @Column({ allowNull: false, type: DataType.INTEGER })
   userId!: number;

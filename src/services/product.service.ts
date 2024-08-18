@@ -1,125 +1,217 @@
 import { injectable } from "tsyringe";
-import { ProductRepository } from "../data-access/ProductRepository";
-import { Product } from "../models";
-import { ProductDTO } from "../DTO";
-
+import { Category, Product, ProductCategory } from "../models";
+import { CategoryDTO, CommentDTO, ProductDTO } from "../Types/DTO";
+import { GetProductOptions } from "../Types/GetProductOptions";
+import {
+  productRepository,
+  categoryRepository,
+  brandRepository,
+} from "../data-access";
+import { ValidationError } from "../Errors/ValidationError";
+import { ValidationError as VE } from "sequelize";
+import { InternalServerError } from "../Errors/InternalServerError";
+import { ratingDto } from "../Types/DTO/ratingDto";
+import { UpdateProductDTO } from "../Types/DTO/productDto";
+import { Brand } from "../models/brand.model";
 @injectable()
-export class ProductService {
-    private productRepository: ProductRepository;
+export default class ProductService {
+  /**
+   *
+   * @param page this with pageSize will define how many products should be skipped,
+   * used to create a pagination pattern.
+   * pages starts from 1.
+   * @default page 1;
+   * @param pageSize will determine the maximum number of products returned,
+   * @default pageSize 10;
+   * @param {GetProductOptions} [options] options that narrows the selection of the returned products.
+   * @returns returns a list of productDto that meets the params, returns empty array when there 
+    isn't any.
+   * @throws {ValidationError} ValidationError when the page or pagesize is less than 1
+   * or when the Validation on the Database fails.
+   * @throws {InternalServerError} InternalServerError when it fails to retrieve the data.
+   */
+  async GetProducts(
+    page: number = 1,
+    pageSize: number = 10,
+    options?: GetProductOptions
+  ): Promise<ProductDTO[] | null> {
+    //validate the parameters.
+    if (page < 1)
+      throw new ValidationError("page should be more than or equal to 1");
+    if (pageSize < 1)
+      throw new ValidationError("pageSize should be more than or equal to 1");
 
-    constructor(productRepository: ProductRepository) {
-        this.productRepository = productRepository;
+    try {
+      //fetch all products from the products repository.
+      const products = await productRepository.GetProducts(
+        page,
+        pageSize,
+        options
+      );
+
+      const prodcutsDto: ProductDTO[] = [];
+
+      //map each Product with a ProductDTO
+      products.forEach((item) => {
+        prodcutsDto.push({
+          name: item.name,
+          price: item.price,
+          stock: item.stock,
+          // brand: item.brand,
+          description: item.description,
+          discount: {
+            amount: item.discount?.discountRate ?? 0,
+            id: item.discount?.id,
+          },
+        });
+      });
+
+      return prodcutsDto;
+    } catch (ex: unknown) {
+      console.log(ex);
+      if (ex instanceof VE) throw new ValidationError(ex.message);
+      throw new InternalServerError();
     }
+  }
 
-    async createProduct(productData: ProductDTO): Promise<Product> {
-        try {
-            const newProduct = new Product();
-            newProduct.name = productData.name;
-            newProduct.price = productData.price;
-            newProduct.stock = productData.stock;
-            newProduct.brand = productData.brand;
-            newProduct.description = productData.description;
-            const product = await this.productRepository.create(newProduct);
-            if (!product) {
-                throw new Error("Failed to create product");
-            }
-            return product;
-        } catch (error) {
-            throw new Error(`Error while creating product`);
-        }
+  /**
+   *
+   * @param Id
+   * @returns {ProductDTO} productDto which contain the product with the specified Id
+   * @returns {null} null when no product is found
+   * @throws {InternalServerError} InternalServerError when an error occuers
+   */
+  async GetProduct(Id: number): Promise<ProductDTO | null> {
+    try {
+      const product = await productRepository.GetProduct(Id);
+      if (!product) return null;
 
+      //map comments.
+      const comments: CommentDTO[] = [];
+      product.comments.forEach((item) => {
+        const comment: CommentDTO = {
+          content: item.content,
+          id: item.id,
+          productId: item.productId,
+          userId: item.userId,
+        };
+        comments.push(comment);
+      });
+
+      //map categories
+      const categories: CategoryDTO[] = [];
+      product.categories.forEach((item) => {
+        const category: CategoryDTO = {
+          name: item.name,
+          id: item.id,
+        };
+        categories.push(category);
+      });
+
+      //map userRatings.
+      const ratings: ratingDto[] = [];
+      product.ratings.forEach((item) => {
+        const rating: ratingDto = {
+          value: item.rating,
+        };
+        ratings.push(rating);
+      });
+
+      const productDTO: ProductDTO = {
+        name: product.name,
+        price: product.price,
+        stock: product.stock,
+        // brand: product.brand,
+        description: product.description,
+        discount: { amount: product.discount?.discountRate ?? 0 },
+        comments,
+        categories,
+        userRatings: ratings,
+      };
+      return productDTO;
+    } catch (ex) {
+      console.log(ex);
+      throw new InternalServerError();
     }
+  }
 
-    async updateProduct(productId: number, productData: ProductDTO): Promise<Product> {
-        try {
-            const oldProduct = await this.productRepository.findById(productId);
-            if (!oldProduct) {
-                throw new Error("Product Doesn't exist");
-            }
+  /**
+   *
+   * @param productData Data specified for creating the product
+   * @returns created product.
+   * @throws {InternalServerError} InternalServerError when it fails to create.
+   */
 
-            oldProduct.name = productData.name;
-            oldProduct.price = productData.price;
-            oldProduct.stock = productData.stock;
-            oldProduct.brand = productData.brand;
-            oldProduct.description = productData.description;
-            const product = await this.productRepository.update(oldProduct);
-            if (!product) {
-                throw new Error("Failed to update product");
-            }
-            return product;
-        } catch (error) {
-            throw new Error(`Error while updating product`);
-        }
+  async createProduct(productData: ProductDTO): Promise<Product | null> {
+    try {
+      //map the data to the Product.
+      const newProduct = new Product();
+      newProduct.name = productData.name;
+      newProduct.price = productData.price;
+      newProduct.stock = productData.stock;
+      newProduct.description = productData.description;
 
+      const categories: Category[] = [];
+      productData.categories?.forEach((item) => {
+        const cat = new Category();
+        cat.name = item.name;
+        categories.push(cat);
+      });
+
+      //first we need to getorcreate the ListOfCategories
+      const cats = await categoryRepository.CreateCategoryList(categories);
+      newProduct.categories = cats;
+
+      //adding the brand.
+      const brand = await brandRepository.GetOrCreate(productData.brand ?? "");
+      newProduct.brand = brand;
+
+      //lets create the product.
+      const product = await productRepository.CreateProduct(newProduct);
+
+      return product;
+    } catch (ex) {
+      console.log(ex);
+      throw new InternalServerError();
     }
+  }
 
-    async deleteProduct(productId: number): Promise<boolean> {
-        try {
-            const deletedProduct = await this.productRepository.delete(productId);
-
-            return deletedProduct;
-
-        } catch (error) {
-            throw new Error(`Error while deleting product`);
-        }
-
-        return false;
-
+  /**
+   *
+   * @param productId Id of the product want to modify.
+   * @param productData new Data for
+   * @returns Produced when find and updated successfully
+   * @returns null when couldnt find any products with the specified Id
+   * @throws {InternalServerError} InternalServerError when an error occured.
+   */
+  async FindAndUpdateProduct(
+    productId: number,
+    productData: UpdateProductDTO
+  ): Promise<Product | null> {
+    try {
+      const product = await productRepository.UpdateProduct(
+        productId,
+        productData
+      );
+      return product;
+    } catch (ex) {
+      console.log(ex);
+      throw new InternalServerError();
     }
-    async findById(id: number): Promise<Product | null> {
-        try {
-            const product = await this.productRepository.findById(id);
-            return product;
-        } catch (error: any) {
-            throw new Error(`Error retrieving product : ${error.message}`)
-        }
+  }
 
-
+  /**
+   *
+   * @param productId delete the sepecified product with the Id.
+   * @returns {boolean} true if the deletion were successful, if not found return false.
+   * @throws {InternalServerError} InternalServerError when an error occures.
+   */
+  async DeleteProduct(productId: number): Promise<boolean> {
+    try {
+      return await productRepository.delete(productId);
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerError();
     }
-    async findByName(name: string): Promise<Product | null> {
-        try {
-            const product = await this.productRepository.findByName(name);
-            return product;
-        } catch (error: any) {
-            throw new Error(`Error retrieving product : ${error.message}`)
-        }
-
-    }
-
-    async findAll(): Promise<Product[]> {
-        try {
-            const product = await this.productRepository.findAll();
-            return product;
-        } catch (error: any) {
-            throw new Error(`Error retrieving products : ${error.message}`)
-        }
-
-    }
-    async findByCategory(categoryId: number): Promise<Product[] | null> {
-        try {
-            const product = await this.productRepository.findByCategory(categoryId);
-            return product;
-        } catch (error: any) {
-            throw new Error(`Error retrieving product : ${error.message}`)
-        }
-
-    }
-    async findAllByRating(ratingId: number): Promise<Product[] | null> {
-        try {
-            const product = await this.findAllByRating(ratingId);
-            return product;
-        } catch (error: any) {
-            throw new Error(`Error retrieving product : ${error.message}`)
-        }
-
-    }
-    async findAllByDiscount(discountId: number): Promise<Product[] | null> {
-        try {
-            const product = await this.findAllByDiscount(discountId);
-            return product;
-        } catch (error: any) {
-            throw new Error(`Error retrieving product : ${error.message}`)
-        }
-
-    }
+  }
 }

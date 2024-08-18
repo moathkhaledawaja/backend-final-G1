@@ -1,20 +1,30 @@
-import { User, UserRating } from "../models";
+import {
+  Brand,
+  Cart,
+  Category,
+  Comment,
+  Discount,
+  Product,
+  User,
+  UserRating,
+  Wishlist,
+} from "../models";
+import { CommentRepository } from "./CommentRepository";
 import { UserRepository } from "./UserRepository";
-import { IUserRepository } from './Interfaces/IUserRepository';
-
+import { CategoryRepository } from "./CategoryRepository";
 import { CartRepository } from "./CartRepository";
-import { ICartRepository } from './Interfaces/ICartRepository';
-import { Cart } from "../models";
+import { ProductRepository } from "./ProductRepository";
+import { WishlistRepository } from "./WishListRepository";
+import { DiscountRepository } from "./DiscountRepository";
+import { BrandRepository } from "./BrandRepository";
 import { UserRatingRepository } from "./UserRatingRepository";
-import { IUserRatingRepository } from './Interfaces/IUserRatingRepository';
-
 
 export const userRepository = new UserRepository(User);
 export const cartRepository = new CartRepository(Cart);
-export const userRatingRepository = new UserRatingRepository(UserRating);
-
-export {
-    IUserRepository,
-    ICartRepository,
-    IUserRatingRepository
-}
+export const commentRepository = new CommentRepository(Comment);
+export const productRepository = new ProductRepository(Product);
+export const categoryRepository = new CategoryRepository(Category);
+export const discountCategpry = new DiscountRepository(Discount);
+export const brandRepository = new BrandRepository(Brand);
+export const wishlistRepository = new WishlistRepository(Wishlist);
+export const userRatingRepository = new UserRatingRepository(UserRating)

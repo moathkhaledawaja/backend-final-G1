@@ -13,7 +13,10 @@ userRouter.get("/email/:email", authAndRoleMiddleware(["user", "admin"]), userCo
 
 userRouter.get("/", authAndRoleMiddleware(["admin"]), userController.getAllUsers.bind(userController));
 
-userRouter.put("/id/:id", authAndRoleMiddleware(["admin"]), userController.updateUser.bind(userController));
+userRouter.patch("/id/:id", authAndRoleMiddleware(["admin"]), userController.updateUser.bind(userController));
 userRouter.delete("/id/:id", authAndRoleMiddleware(["admin"]), userController.deleteUser.bind(userController));
 
+userRouter.patch("/password/:id", authAndRoleMiddleware(["user", "admin"]), userController.editUserPassword.bind(userController));
+
+userRouter.patch("/role/:id", authAndRoleMiddleware(["admin"]), userController.changeRole.bind(userController));
 export default userRouter;
