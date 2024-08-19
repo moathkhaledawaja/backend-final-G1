@@ -5,7 +5,7 @@ module.exports = {
     const orders = [];
     for (let i = 1; i <= 20; i++) {
       orders.push({
-        status: 'pending',
+        status: 'processed',
         isPaid: Math.random() < 0.5,
         userId: Math.floor(Math.random() * 20) + 1,
         createdAt: new Date(),
