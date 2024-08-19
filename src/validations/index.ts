@@ -9,3 +9,5 @@ export {
   updateCartValidator,
   getCartValidator,
 } from './cartValidator'
+
+export { createAndUpdateUserRatingValidator } from './userRatingValidator'
