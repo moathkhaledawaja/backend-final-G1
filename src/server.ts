@@ -11,6 +11,7 @@ import {
   authRouter,
   userRouter,
   wishlistRouter,
+  discountRouter,
 } from './routes'
 import cors from 'cors'
 import userRatingRouter from './routes/userRatingRoutes'
@@ -30,6 +31,7 @@ app.use('/api/wishlists', wishlistRouter)
 app.use('/api/categories', categoryRouter)
 app.use('/api/comments', commentRouter)
 app.use('/api/userratings', userRatingRouter)
+app.use('/api/discounts', discountRouter)
 const startServer = async () => {
   try {
     await sequelize.authenticate()

@@ -5,6 +5,7 @@ import cartRouter from './cartRoutes'
 import authRouter from './authRoutes'
 import wishlistRouter from './wishlistRoutes'
 import commentRouter from './commentRoutes'
+import discountRouter from './discountRoutes'
 
 export {
   productRouter,
@@ -14,4 +15,5 @@ export {
   authRouter,
   wishlistRouter,
   commentRouter,
+  discountRouter,
 }
