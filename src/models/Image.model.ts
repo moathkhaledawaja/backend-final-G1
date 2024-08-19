@@ -6,17 +6,23 @@ import {
   ForeignKey,
   Model,
 } from 'sequelize-typescript'
-import { User, Product } from '../models'
+import { User, Product } from '.'
 import { defaultTableSettings } from '../config/DefaultTableSettings'
 
+const { paranoid, timestamps } = defaultTableSettings
 @Table({
-  tableName: 'comments',
-
-  ...defaultTableSettings,
+  tableName: 'images',
+  paranoid,
+  timestamps,
+  defaultScope: {
+    attributes: {
+      exclude: ['createdAt', 'updatedAt', 'deletedAt', 'productId'],
+    },
+  },
 })
-export class Comment extends Model<Comment> {
+export class Image extends Model<Image> {
   @Column({ allowNull: false, type: DataType.STRING })
-  content!: string
+  publicURL!: string
 
   // Product-comment relationship.
   @ForeignKey(() => Product)
@@ -28,15 +34,4 @@ export class Comment extends Model<Comment> {
 
   @BelongsTo(() => Product)
   product!: Product
-
-  //user-comment relationship.
-  @ForeignKey(() => User)
-  @Column({
-    allowNull: false,
-    type: DataType.INTEGER,
-  })
-  userId!: number
-
-  @BelongsTo(() => User)
-  user!: User
 }

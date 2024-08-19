@@ -1,6 +1,6 @@
-import { Comment } from "../models";
-import { ICommentRepository } from "./Interfaces/ICommentRepository";
-import { RepositoryBase } from "./RepositoryBase";
+import { Comment } from '../models'
+import { ICommentRepository } from './Interfaces/ICommentRepository'
+import { RepositoryBase } from './RepositoryBase'
 
 export class CommentRepository
   extends RepositoryBase<Comment>
@@ -12,6 +12,10 @@ export class CommentRepository
    * @returns {Comment[]} returns list of comments for the specified product, return  empty array when there is none.
    */
   async findByProductId(productId: number): Promise<Comment[]> {
-    return await this.model.findAll({ where: { productId } });
+    return await this.model.findAll({ where: { productId } })
+  }
+
+  async findByUserIdAndId(userId: number, id: number): Promise<Comment | null> {
+    return await this.model.findOne({ where: { id, userId } })
   }
 }

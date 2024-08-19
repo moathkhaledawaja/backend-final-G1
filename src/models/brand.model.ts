@@ -7,33 +7,33 @@ import {
   AllowNull,
   DataType,
   ForeignKey,
-} from "sequelize-typescript";
-import { Product, Wishlist } from "../models";
-import { DataTypes } from "sequelize";
-import { defaultTableSettings } from "../config/DefaultTableSettings";
+} from 'sequelize-typescript'
+import { Product, Wishlist } from '../models'
+import { DataTypes } from 'sequelize'
+import { defaultTableSettings } from '../config/DefaultTableSettings'
 
 @Table({
-  tableName: "brands",
+  tableName: 'brands',
   ...defaultTableSettings,
 })
 export class Brand extends Model<Brand> {
   @AllowNull(false)
   @Column({ type: DataTypes.STRING })
-  name!: string;
+  name!: string
 
   @HasMany(() => Product)
-  brands!: Product[];
+  brands!: Product[]
 }
 @Table({
-  tableName: "wishlistProduct",
+  tableName: 'wishlistProduct',
   ...defaultTableSettings,
 })
 export class WishlistProduct extends Model<WishlistProduct> {
   @ForeignKey(() => Wishlist)
   @Column({ allowNull: false, type: DataType.INTEGER })
-  wishlistId!: number;
+  wishlistId!: number
 
   @ForeignKey(() => Product)
   @Column({ allowNull: false, type: DataType.INTEGER })
-  productId!: number;
+  productId!: number
 }

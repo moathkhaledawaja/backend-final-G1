@@ -8,7 +8,7 @@ import {
   Model,
   BelongsTo,
   ForeignKey,
-} from "sequelize-typescript";
+} from 'sequelize-typescript'
 import {
   Discount,
   Category,
@@ -21,12 +21,13 @@ import {
   Order,
   CartProduct,
   WishlistProduct,
-} from "../models";
-import { Brand } from "./brand.model";
-import { defaultTableSettings } from "../config/DefaultTableSettings";
+  Image,
+} from '../models'
+import { Brand } from './brand.model'
+import { defaultTableSettings } from '../config/DefaultTableSettings'
 
 @Table({
-  tableName: "products",
+  tableName: 'products',
   ...defaultTableSettings,
 })
 export class Product extends Model<Product> {
@@ -34,67 +35,71 @@ export class Product extends Model<Product> {
     type: DataType.STRING,
     allowNull: false,
   })
-  name!: string;
+  name!: string
 
   @Column({
     type: DataType.FLOAT,
     allowNull: false,
   })
-  price!: number;
+  price!: number
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
-  description?: string;
+  description?: string
 
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
     defaultValue: 0,
   })
-  stock!: number;
+  stock!: number
 
   //Product-Discount relationship.
   @HasOne(() => Discount)
-  discount?: Discount;
+  discount?: Discount
 
   //Product-Category relationship.
   @BelongsToMany(() => Category, () => ProductCategory)
-  categories!: Category[];
+  categories!: Category[]
+
+  //product-image relationship
+  @HasMany(() => Image)
+  images!: Image[]
 
   //Prodcut-Comment relationshop.
 
   @HasMany(() => Comment)
-  comments!: Comment[];
+  comments!: Comment[]
 
   @HasMany(() => UserRating)
-  ratings!: UserRating[];
+  ratings!: UserRating[]
 
   @BelongsToMany(() => Wishlist, () => WishlistProduct)
-  Wishlists!: Wishlist[];
+  Wishlists!: Wishlist[]
 
   @BelongsToMany(() => Cart, () => CartProduct)
-  carts!: Cart[];
+  carts!: Cart[]
 
   @BelongsToMany(() => Order, () => OrderProduct)
-  Orders!: Order[];
+  Orders!: Order[]
 
   @ForeignKey(() => Brand)
-  brandId!: number;
+  brandId!: number
 
   @BelongsTo(() => Brand)
-  brand!: Brand;
+  brand!: Brand
 
   // Override destroy method to cascade soft delete
   async destroy(options?: any) {
     // Call the original destroy method
-    await super.destroy(options);
+    await super.destroy(options)
 
     // Soft delete related ProductCategory records
     await ProductCategory.update(
       { deletedAt: new Date() }, // Set deletedAt to now
       { where: { productId: this.id }, individualHooks: true } // Filter by current product
-    );
+    )
   }
 }

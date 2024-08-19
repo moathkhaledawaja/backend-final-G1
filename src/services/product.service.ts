@@ -1,18 +1,18 @@
-import { injectable } from "tsyringe";
-import { Category, Product, ProductCategory } from "../models";
-import { CategoryDTO, CommentDTO, ProductDTO } from "../Types/DTO";
-import { GetProductOptions } from "../Types/GetProductOptions";
+import { injectable } from 'tsyringe'
+import { Category, Image, Product, ProductCategory } from '../models'
+import { ProductDTO } from '../Types/DTO'
+import { GetProductOptions } from '../Types/GetProductOptions'
 import {
   productRepository,
   categoryRepository,
   brandRepository,
-} from "../data-access";
-import { ValidationError } from "../Errors/ValidationError";
-import { ValidationError as VE } from "sequelize";
-import { InternalServerError } from "../Errors/InternalServerError";
-import { ratingDto } from "../Types/DTO/ratingDto";
-import { UpdateProductDTO } from "../Types/DTO/productDto";
-import { Brand } from "../models/brand.model";
+  imageRepository,
+} from '../data-access'
+import { ValidationError } from '../Errors/ValidationError'
+import { ValidationError as VE } from 'sequelize'
+import { InternalServerError } from '../Errors/InternalServerError'
+import { UpdateProductDTO } from '../Types/DTO/productDto'
+import { WriteAllImages } from '../helpers/Storage/StorageManager'
 @injectable()
 export default class ProductService {
   /**
@@ -37,9 +37,9 @@ export default class ProductService {
   ): Promise<ProductDTO[] | null> {
     //validate the parameters.
     if (page < 1)
-      throw new ValidationError("page should be more than or equal to 1");
+      throw new ValidationError('page should be more than or equal to 1')
     if (pageSize < 1)
-      throw new ValidationError("pageSize should be more than or equal to 1");
+      throw new ValidationError('pageSize should be more than or equal to 1')
 
     try {
       //fetch all products from the products repository.
@@ -47,9 +47,9 @@ export default class ProductService {
         page,
         pageSize,
         options
-      );
+      )
 
-      const prodcutsDto: ProductDTO[] = [];
+      const prodcutsDto: ProductDTO[] = []
 
       //map each Product with a ProductDTO
       products.forEach((item) => {
@@ -63,14 +63,14 @@ export default class ProductService {
             amount: item.discount?.discountRate ?? 0,
             id: item.discount?.id,
           },
-        });
-      });
+        })
+      })
 
-      return prodcutsDto;
+      return prodcutsDto
     } catch (ex: unknown) {
-      console.log(ex);
-      if (ex instanceof VE) throw new ValidationError(ex.message);
-      throw new InternalServerError();
+      console.log(ex)
+      if (ex instanceof VE) throw new ValidationError(ex.message)
+      throw new InternalServerError()
     }
   }
 
@@ -81,57 +81,58 @@ export default class ProductService {
    * @returns {null} null when no product is found
    * @throws {InternalServerError} InternalServerError when an error occuers
    */
-  async GetProduct(Id: number): Promise<ProductDTO | null> {
+  async GetProduct(Id: number): Promise<Product | null> {
     try {
-      const product = await productRepository.GetProduct(Id);
-      if (!product) return null;
+      const product = await productRepository.GetProduct(Id)
+      if (!product) return null
 
+      return product.toJSON()
       //map comments.
-      const comments: CommentDTO[] = [];
-      product.comments.forEach((item) => {
-        const comment: CommentDTO = {
-          content: item.content,
-          id: item.id,
-          productId: item.productId,
-          userId: item.userId,
-        };
-        comments.push(comment);
-      });
+      // const comments: CommentDTO[] = []
+      // product.comments.forEach((item) => {
+      //   const comment: CommentDTO = {
+      //     content: item.content,
+      //     id: item.id,
+      //     productId: item.productId,
+      //     userId: item.userId,
+      //   }
+      //   comments.push(comment)
+      // })
 
-      //map categories
-      const categories: CategoryDTO[] = [];
-      product.categories.forEach((item) => {
-        const category: CategoryDTO = {
-          name: item.name,
-          id: item.id,
-        };
-        categories.push(category);
-      });
+      // //map categories
+      // const categories: CategoryDTO[] = []
+      // product.categories.forEach((item) => {
+      //   const category: CategoryDTO = {
+      //     name: item.name,
+      //     id: item.id,
+      //   }
+      //   categories.push(category)
+      // })
 
-      //map userRatings.
-      const ratings: ratingDto[] = [];
-      product.ratings.forEach((item) => {
-        const rating: ratingDto = {
-          value: item.rating,
-        };
-        ratings.push(rating);
-      });
+      // //map userRatings.
+      // const ratings: ratingDto[] = []
+      // product.ratings.forEach((item) => {
+      //   const rating: ratingDto = {
+      //     value: item.rating,
+      //   }
+      //   ratings.push(rating)
+      // })
 
-      const productDTO: ProductDTO = {
-        name: product.name,
-        price: product.price,
-        stock: product.stock,
-        // brand: product.brand,
-        description: product.description,
-        discount: { amount: product.discount?.discountRate ?? 0 },
-        comments,
-        categories,
-        userRatings: ratings,
-      };
-      return productDTO;
+      // const productDTO: ProductDTO = {
+      //   name: product.name,
+      //   price: product.price,
+      //   stock: product.stock,
+      //   // brand: product.brand,
+      //   description: product.description,
+      //   discount: { amount: product.discount?.discountRate ?? 0 },
+      //   comments,
+      //   categories,
+      //   userRatings: ratings,
+      // }
+      // return productDTO
     } catch (ex) {
-      console.log(ex);
-      throw new InternalServerError();
+      console.log(ex)
+      throw new InternalServerError()
     }
   }
 
@@ -145,35 +146,49 @@ export default class ProductService {
   async createProduct(productData: ProductDTO): Promise<Product | null> {
     try {
       //map the data to the Product.
-      const newProduct = new Product();
-      newProduct.name = productData.name;
-      newProduct.price = productData.price;
-      newProduct.stock = productData.stock;
-      newProduct.description = productData.description;
+      const newProduct = new Product()
+      newProduct.name = productData.name
+      newProduct.price = productData.price
+      newProduct.stock = productData.stock
+      newProduct.description = productData.description
 
-      const categories: Category[] = [];
+      const categories: Category[] = []
       productData.categories?.forEach((item) => {
-        const cat = new Category();
-        cat.name = item.name;
-        categories.push(cat);
-      });
+        const cat = new Category()
+        cat.name = item.name
+        categories.push(cat)
+      })
 
       //first we need to getorcreate the ListOfCategories
-      const cats = await categoryRepository.CreateCategoryList(categories);
-      newProduct.categories = cats;
+      const cats = await categoryRepository.CreateCategoryList(categories)
+      newProduct.categories = cats
 
       //adding the brand.
-      const brand = await brandRepository.GetOrCreate(productData.brand ?? "");
-      newProduct.brand = brand;
+      const brand = await brandRepository.GetOrCreate(productData.brand ?? '')
+      newProduct.brand = brand
 
       //lets create the product.
-      const product = await productRepository.CreateProduct(newProduct);
+      const product = await productRepository.CreateProduct(newProduct)
 
-      return product;
+      if (product) {
+        const images = await WriteAllImages(product?.id, productData.images)
+        let databaseImages: Image[] = []
+
+        for (let i = 0; i < images.length; i++) {
+          const image = new Image()
+          image.productId = product.dataValues.id
+          image.publicURL = images[i]
+          const createdImage = await imageRepository.create(image)
+          databaseImages.push(createdImage)
+        }
+        const data = await productRepository.GetProduct(product.id)
+        return data?.toJSON() ?? null
+      }
     } catch (ex) {
-      console.log(ex);
-      throw new InternalServerError();
+      console.log(ex)
+      throw new InternalServerError()
     }
+    return null
   }
 
   /**
@@ -192,11 +207,11 @@ export default class ProductService {
       const product = await productRepository.UpdateProduct(
         productId,
         productData
-      );
-      return product;
+      )
+      return product
     } catch (ex) {
-      console.log(ex);
-      throw new InternalServerError();
+      console.log(ex)
+      throw new InternalServerError()
     }
   }
 
@@ -208,10 +223,10 @@ export default class ProductService {
    */
   async DeleteProduct(productId: number): Promise<boolean> {
     try {
-      return await productRepository.delete(productId);
+      return await productRepository.delete(productId)
     } catch (error) {
-      console.log(error);
-      throw new InternalServerError();
+      console.log(error)
+      throw new InternalServerError()
     }
   }
 }
