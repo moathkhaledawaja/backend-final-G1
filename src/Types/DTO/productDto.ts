@@ -10,6 +10,7 @@ export type ProductDTO = {
   brand?: string
   stock: number
   userRatings?: ratingDto[]
+  images?: Express.Multer.File[]
   comments?: CommentDTO[]
   categories?: CategoryDTO[]
   discount?: discountDTO

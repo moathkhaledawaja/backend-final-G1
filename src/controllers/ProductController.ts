@@ -26,7 +26,7 @@ export class ProductController {
   public async createProduct(req: Request, res: Response) {
     try {
       const product: ProductDTO = req.body
-
+      product.images = req.files as Express.Multer.File[]
       const newProduct = await this.productService.createProduct(product)
 
       return res.status(201).json(newProduct)
