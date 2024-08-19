@@ -57,4 +57,12 @@ cartRouter.delete(
   cartController.removeProductFromCart.bind(cartController)
 )
 
+// get cart products by user id
+cartRouter.get(
+  '/products/:userId',
+  authAndRoleMiddleware(['user', 'admin']),
+  getCartValidator,
+  cartController.getCartProductsByUserId.bind(cartController)
+)
+
 export default cartRouter
