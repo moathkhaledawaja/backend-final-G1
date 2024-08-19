@@ -23,7 +23,6 @@ class AuthController {
   }
 
   async register(req: Request, res: Response) {
-<<<<<<< HEAD
     const {
       firstName,
       lastName,
@@ -41,17 +40,6 @@ class AuthController {
     try {
       await this.authService.register(name, email, password);
       res.status(201).json({ message: "User created successfully" });
-=======
-    const { name, email, password, role, address }: UserDTO = req.body
-
-    if (!name || !email || !password || !role || !address) {
-      return res.status(400).json({ error: 'All fields are required' })
-    }
-
-    try {
-      await this.authService.register(name, email, address, password)
-      res.status(201).json({ message: 'User created successfully' })
->>>>>>> 1f8bb9c4819c5d54b0eccbea6d806dc8fce1c0e9
     } catch (error: any) {
       res.status(400).json({ error: error.message })
     }
