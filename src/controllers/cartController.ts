@@ -6,36 +6,34 @@ import { Cart } from '../models'
 
 @injectable()
 export class CartController {
-  
   constructor(@inject(CartService) private cartService: CartService) {}
 
   async createCart(req: Request, res: Response): Promise<Cart> {
     try {
-      const userId: number = req.body.userId;
-      const productId: number = req.body.products.productId;
-      const quantity: number = req.body.products.quantity;
+      const userId: number = req.body.userId
+      const productId: number = req.body.products.productId
+      const quantity: number = req.body.products.quantity
 
       const cartData: CartDTO = {
         userId,
         products: [],
-      };
+      }
 
       const cart = await this.cartService.createCart(
         cartData,
         productId,
         quantity
-      );
+      )
 
       res
         .status(201)
-        .json({ message: "Cart created and product added successfully", cart });
-      return cart; // Add this line to return the 'cart' value
+        .json({ message: 'Cart created and product added successfully', cart })
+      return cart // Add this line to return the 'cart' value
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
-      throw error;
+      res.status(500).json({ error: error.message })
+      throw error
     }
   }
-  
 
   async getCartByUserId(req: Request, res: Response): Promise<Cart[] | null> {
     try {
@@ -91,12 +89,12 @@ export class CartController {
         cartId,
         productId,
         quantity
-      );
+      )
 
       if (success) {
         res
           .status(200)
-          .json({ message: "Product quantity updated successfully" });
+          .json({ message: 'Product quantity updated successfully' })
       } else {
         res.status(400).json({ error: 'Failed to update product quantity' })
       }
@@ -116,7 +114,7 @@ export class CartController {
         cartId,
         productId,
         quantity
-      );
+      )
 
       if (success) {
         res.status(200).json({ message: 'Product added to cart successfully' })
@@ -131,23 +129,23 @@ export class CartController {
   // remove product from cart
   async removeProductFromCart(req: Request, res: Response): Promise<void> {
     try {
-      const cartId = parseInt(req.params.cartId, 10);
-      const productId = parseInt(req.params.productId, 10);
+      const cartId = parseInt(req.params.cartId, 10)
+      const productId = parseInt(req.params.productId, 10)
 
       const success = await this.cartService.removeProductFromCart(
         cartId,
         productId
-      );
+      )
 
       if (success) {
         res
           .status(200)
-          .json({ message: "Product removed from cart successfully" });
+          .json({ message: 'Product removed from cart successfully' })
       } else {
-        res.status(400).json({ error: "Failed to remove product from cart" });
+        res.status(400).json({ error: 'Failed to remove product from cart' })
       }
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message })
     }
   }
 }

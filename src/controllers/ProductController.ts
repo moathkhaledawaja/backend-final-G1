@@ -86,16 +86,16 @@ export class ProductController {
     } catch (error: any) {
       return res
         .status(500)
-        .json({ error: "internal server error, try again later." });
+        .json({ error: 'internal server error, try again later.' })
     }
   }
 
   async getAllProducts(req: Request, res: Response): Promise<void> {
     try {
-      const products = await this.productService.GetProducts();
-      res.status(200).json(products);
+      const products = await this.productService.GetProducts()
+      res.status(200).json(products)
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message })
     }
   }
 }

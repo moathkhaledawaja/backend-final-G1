@@ -2,7 +2,7 @@ export {
   createCommentValidator,
   deleteCommentValidator,
   updateCommentValidator,
-} from "./commentsValidator";
+} from './commentsValidator'
 export {
   createCartValidator,
   deleteCartValidator,
@@ -11,4 +11,4 @@ export {
   updateProductQuantityValidator,
   addProductToCartValidator,
   removeProductFromCartValidator,
-} from "./cartValidator";
+} from './cartValidator'
