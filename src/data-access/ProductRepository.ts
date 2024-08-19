@@ -6,6 +6,7 @@ import {
   Comment,
   UserRating,
   Brand,
+  Image,
 } from '../models'
 import { RepositoryBase } from './RepositoryBase'
 import { GetProductOptions } from '../Types/GetProductOptions'
@@ -33,6 +34,7 @@ export class ProductRepository
         { model: Comment },
         { model: UserRating },
         { model: Brand },
+        { model: Image },
       ],
     })
   }
@@ -124,5 +126,13 @@ export class ProductRepository
       returning: true,
     })
     return updatedEntity
+  }
+
+  async SetImages(id: number, images: Image[]) {
+    const product = await this.findById(id)
+    await product?.$set('images', images)
+    await product?.save()
+
+    return product
   }
 }

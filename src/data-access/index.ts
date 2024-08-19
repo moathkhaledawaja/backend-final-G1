@@ -4,6 +4,7 @@ import {
   Category,
   Comment,
   Discount,
+  Image,
   Product,
   User,
   Wishlist,
@@ -16,6 +17,7 @@ import { ProductRepository } from './ProductRepository'
 import { WishlistRepository } from './WishListRepository'
 import { DiscountRepository } from './DiscountRepository'
 import { BrandRepository } from './BrandRepository'
+import { ImageRepository } from './ImageRepository'
 
 export const userRepository = new UserRepository(User)
 export const cartRepository = new CartRepository(Cart)
@@ -25,3 +27,4 @@ export const categoryRepository = new CategoryRepository(Category)
 export const discountCategpry = new DiscountRepository(Discount)
 export const brandRepository = new BrandRepository(Brand)
 export const wishlistRepository = new WishlistRepository(Wishlist)
+export const imageRepository = new ImageRepository(Image)

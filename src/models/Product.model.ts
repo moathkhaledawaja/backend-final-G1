@@ -21,6 +21,7 @@ import {
   Order,
   CartProduct,
   WishlistProduct,
+  Image,
 } from '../models'
 import { Brand } from './brand.model'
 import { defaultTableSettings } from '../config/DefaultTableSettings'
@@ -62,6 +63,10 @@ export class Product extends Model<Product> {
   //Product-Category relationship.
   @BelongsToMany(() => Category, () => ProductCategory)
   categories!: Category[]
+
+  //product-image relationship
+  @HasMany(() => Image)
+  images!: Image[]
 
   //Prodcut-Comment relationshop.
 

@@ -1,18 +1,41 @@
 import { supbaseClient } from '../../config/Storage'
-import { Buffer } from 'buffer'
-import fs from 'fs'
-export const ReadAllImage = async (path: string, image: any) => {
+export const WriteAllImages = async (id: number, image: any) => {
+  const imagesUrl: string[] = []
   try {
-    // console.log(image)
-    // const { data, error } = await supbaseClient.storage
-    //   .from('Storage')
-    //   .upload('images/image.png', JSON.stringify(image))
+    for (let i = 0; i < image.length; i++) {
+      const { data, error } = await supbaseClient.storage
+        .from('Storage')
+        .upload(`images/${id}/${i}.png`, image[i].buffer, {
+          contentType: 'image/png',
+        })
+      if (data) {
+        const url = supbaseClient.storage
+          .from('Storage')
+          .getPublicUrl(data?.path)
+        imagesUrl.push(url.data.publicUrl)
+      }
+    }
+    return imagesUrl
 
-    const { data, error } = await supbaseClient.storage.from('Storage').list()
+    // const data = supbaseClient.storage
+    // .from('Storage')
+    // .getPublicUrl('images/imageee.png')
 
-    console.log(data)
-    console.log(error)
+    // console.log(data.data.publicUrl)
   } catch (ex) {
     console.log(ex)
   }
+  return imagesUrl
 }
+
+// export const ReadAllImage = async (id: number) => {
+//   try {
+//     const data = await supbaseClient.storage
+//       .from('Storage')
+//       .list(`images/${id}`)
+
+//     return data
+//   } catch (ex) {
+//     console.log(ex)
+//   }
+// }
