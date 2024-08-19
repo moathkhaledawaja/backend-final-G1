@@ -23,11 +23,10 @@ class AuthController {
   }
 
   async register(req: Request, res: Response) {
-    const { firstName,lastName, email, password,  } = req.body
+    const { firstName, lastName, email, password } = req.body
     const name = `${firstName} ${lastName}`
-    
 
-    if (!name || !email || !password ) {
+    if (!name || !email || !password) {
       return res.status(400).json({ error: 'All fields are required' })
     }
 

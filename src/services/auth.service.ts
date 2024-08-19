@@ -47,7 +47,7 @@ export default class AuthService {
       name,
       email,
       password: hashedPassword,
-      address :'put address here',
+      address: 'put address here',
       role: 'user',
     }
     return await this.userService.createUser(newUser)
