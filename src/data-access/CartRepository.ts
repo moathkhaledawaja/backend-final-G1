@@ -136,4 +136,17 @@ export class CartRepository
     )
     return true
   }
+
+  async findCartProductByUserId(userId: number): Promise<Cart | null> {
+    return await this.model.findOne({
+      where: { userId },
+      include: [
+        {
+          association: 'products',  
+          through: { attributes: [] },  
+        }
+      ],
+    });
+  }
+  
 }
