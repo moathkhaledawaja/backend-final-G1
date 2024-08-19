@@ -29,7 +29,6 @@ describe('UserRatingService', () => {
       userRating.userId = userId
       userRating.productId = productId
       userRating.rating = 4
-
       ;(userRatingRepository.create as jest.Mock).mockResolvedValue(userRating)
 
       const result = await userRatingService.createUserRating(
@@ -68,7 +67,6 @@ describe('UserRatingService', () => {
       const userRatings: UserRating[] = [new UserRating(), new UserRating()]
       userRatings[0].rating = 4
       userRatings[1].rating = 5
-
       ;(userRatingRepository.findAllByProductId as jest.Mock).mockResolvedValue(
         userRatings
       )
@@ -115,7 +113,6 @@ describe('UserRatingService', () => {
       const productId = 123
       const userRating = new UserRating()
       userRating.toJSON = jest.fn().mockReturnValue({ rating: 4 })
-
       ;(
         userRatingRepository.findByUserIdAndProductId as jest.Mock
       ).mockResolvedValue(userRating)
@@ -171,7 +168,6 @@ describe('UserRatingService', () => {
       updatedUserRating.rating = 5
       updatedUserRating.userId = userId
       updatedUserRating.productId = productId
-
       ;(userRatingRepository.update as jest.Mock).mockResolvedValue(
         updatedUserRating
       )
