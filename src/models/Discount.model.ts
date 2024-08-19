@@ -7,6 +7,7 @@ import {
   Model,
   Max,
   Min,
+  Unique,
 } from 'sequelize-typescript'
 import { Product } from '../models'
 import { defaultTableSettings } from '../config/DefaultTableSettings'
@@ -25,6 +26,7 @@ export class Discount extends Model<Discount> {
   discountRate!: number
 
   @ForeignKey(() => Product)
+  @Unique
   @Column({
     allowNull: false,
     type: DataType.INTEGER,
