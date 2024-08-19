@@ -36,6 +36,7 @@ const authAndRoleMiddleware = (allowedRoles: string[]) => {
           .json({ error: 'Access forbidden: insufficient role' })
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ;(req as any).user = user
       next()
     } catch (error) {

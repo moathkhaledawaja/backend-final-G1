@@ -5,7 +5,7 @@ import { UserDTO } from '../Types/DTO'
 
 @injectable()
 class AuthController {
-  constructor(@inject(AuthService) private authService: AuthService) {}
+  constructor(@inject(AuthService) private authService: AuthService) { }
 
   async login(req: Request, res: Response) {
     const { email, password } = req.body
@@ -17,8 +17,12 @@ class AuthController {
     try {
       const token = await this.authService.login(email, password)
       res.status(200).json({ token })
-    } catch (error: any) {
-      res.status(401).json({ error: 'Invalid credentials' })
+    }catch (error) {
+      if (error instanceof Error) {
+        res.status(500).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: 'An unknown error occurred' });
+      }
     }
   }
 
@@ -32,8 +36,12 @@ class AuthController {
     try {
       await this.authService.register(name, email, address, password)
       res.status(201).json({ message: 'User created successfully' })
-    } catch (error: any) {
-      res.status(400).json({ error: error.message })
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(500).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: 'An unknown error occurred' });
+      }
     }
   }
 
@@ -53,8 +61,12 @@ class AuthController {
     try {
       await this.authService.logout(token)
       res.status(200).json({ message: 'Logged out successfully' })
-    } catch (error: any) {
-      res.status(500).json({ error: 'An error occurred while logging out' })
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(500).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: 'An unknown error occurred' });
+      }
     }
   }
 }

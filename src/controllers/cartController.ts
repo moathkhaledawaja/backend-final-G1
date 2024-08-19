@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from 'express'
 import { injectable, inject } from 'tsyringe'
 import CartService from '../services/cart.service'
@@ -28,7 +29,7 @@ export class CartController {
       res
         .status(201)
         .json({ message: 'Cart created and product added successfully', cart })
-      return cart // Add this line to return the 'cart' value
+      return cart  
     } catch (error: any) {
       res.status(500).json({ error: error.message })
       throw error

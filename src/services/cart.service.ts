@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { Cart } from '../models'
 import { cartRepository } from '../data-access'
 import { CartDTO } from '../Types/DTO/cartDto'
@@ -9,7 +11,6 @@ export default class CartService {
     quantity: number
   ): Promise<Cart> {
     try {
-      // Step 1: Create a new cart
       const newCart = new Cart()
       newCart.userId = cartData.userId
       const cart = await cartRepository.create(newCart)

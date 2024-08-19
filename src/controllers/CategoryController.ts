@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { injectable, inject } from 'tsyringe'
 import { Request, Response } from 'express'
 import CategoryService from '../services/category.service'

@@ -1,5 +1,5 @@
 import { injectable } from 'tsyringe'
-import { Category, Product, ProductCategory } from '../models'
+import { Category, Product } from '../models'
 import { CategoryDTO, CommentDTO, ProductDTO } from '../Types/DTO'
 import { GetProductOptions } from '../Types/GetProductOptions'
 import {
@@ -12,7 +12,6 @@ import { ValidationError as VE } from 'sequelize'
 import { InternalServerError } from '../Errors/InternalServerError'
 import { ratingDto } from '../Types/DTO/ratingDto'
 import { UpdateProductDTO } from '../Types/DTO/productDto'
-import { Brand } from '../models/brand.model'
 @injectable()
 export default class ProductService {
   /**

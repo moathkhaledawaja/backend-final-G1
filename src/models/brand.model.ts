@@ -3,7 +3,6 @@ import {
   Column,
   Model,
   HasMany,
-  NotNull,
   AllowNull,
   DataType,
   ForeignKey,

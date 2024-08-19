@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from 'express'
 import { injectable, inject } from 'tsyringe'
 import WishlistService from '../services/wishList.service'
@@ -62,15 +63,18 @@ export class WishlistController {
       throw error
     }
   }
-  async clearWishList(req: Request, res: Response): Promise<boolean> {
+  async clearWishList(req: Request, res: Response): Promise<boolean | undefined> {
     try {
       const userId = (req as any).user.id
       const cleared = await this.wishlistService.clearWishList(userId)
       res.json('Wishlist has been cleared')
       return cleared
-    } catch (error: any) {
-      res.status(500).json({ error: error.message })
-      throw error
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(500).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: 'An unknown error occurred' });
+      }
     }
   }
 }

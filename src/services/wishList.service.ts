@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import 'reflect-metadata'
 import { injectable } from 'tsyringe'
 import { wishlistRepository } from '../data-access'
 import { WishlistDTO } from '../Types/DTO'
 import { InternalServerError } from '../Errors/InternalServerError'
-import { NotFoundError } from '../Errors/NotFoundError'
 import logger from '../helpers/logger'
 
 @injectable()

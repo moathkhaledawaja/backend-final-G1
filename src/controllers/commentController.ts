@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CommentService } from '../services'
 import { CommentDTO } from '../Types/DTO'
 import { injectable, inject } from 'tsyringe'

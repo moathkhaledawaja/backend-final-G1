@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { categoryRepository } from '../data-access'
 import { Category } from '../models'
 import { CategoryDTO } from '../Types/DTO'
@@ -13,8 +15,8 @@ export default class CategoryService {
         throw new Error('Failed to create category  `')
       }
       return category
-    } catch (error) {
-      throw new Error('Error creating category')
+    } catch (error: any) {
+      throw new Error(`Error creating category${error.message}`)
     }
   }
 
@@ -34,8 +36,8 @@ export default class CategoryService {
         throw new Error('Failed to update category')
       }
       return category
-    } catch (error) {
-      throw new Error(`Error while updating category`)
+    } catch (error: any) {
+      throw new Error(`Error while updating category ${error.message}`)
     }
   }
 
@@ -44,8 +46,8 @@ export default class CategoryService {
     try {
       const category = await categoryRepository.findById(id)
       return category
-    } catch (error) {
-      throw new Error('Error retrieving category')
+    } catch (error: any) {
+      throw new Error(`Error retrieving category ${error.message}`)
     }
   }
 
@@ -53,28 +55,33 @@ export default class CategoryService {
     try {
       const categories = await categoryRepository.findAll()
       return categories
-    } catch (error) {
-      throw new Error('Error retrieving Categories')
+    } catch (error: any) {
+      throw new Error(`Error retrieving Categories ${error.message}`)
     }
   }
   async findByName(name: string): Promise<Category | null> {
     try {
       const category = await categoryRepository.findByName(name)
       return category
-    } catch (error) {
-      throw new Error('Error retrieving Category')
+    } catch (error: any) {
+      throw new Error(`Error retrieving Category ${error.message}`)
     }
   }
 
   async deleteCategory(CategoryId: number): Promise<boolean> {
     try {
+      // check if category exists
+      const category = await categoryRepository.findById(CategoryId)
+      if (!category) {
+        throw new Error('Category not found')
+      }
+
       const deletedCategory = await categoryRepository.delete(CategoryId)
 
       return deletedCategory
-    } catch (error) {
-      throw new Error(`Error while deleting category`)
+    } catch (error: any) {
+      throw new Error(`Error while deleting category ${error.message}`)
     }
 
-    return false
   }
 }
