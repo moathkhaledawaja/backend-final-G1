@@ -28,23 +28,17 @@ class AuthController {
       lastName,
       email,
       password,
-      // role,
-      street,
-      city,
-      state,
-      zip
     } = req.body;
 
     const name = `${firstName} ${lastName}`;
 
-    const address = `${street}, ${city}, ${state}, ${zip}`;
 
-    if (!firstName || !lastName || !email || !password  || !street || !city || !state || !zip) {
+    if (!firstName || !lastName || !email || !password ) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
     try {
-      await this.authService.register(name, email, address, password);
+      await this.authService.register(name, email, password);
       res.status(201).json({ message: "User created successfully" });
     } catch (error: any) {
       res.status(400).json({ error: error.message });
