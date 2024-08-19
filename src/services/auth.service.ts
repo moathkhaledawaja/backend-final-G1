@@ -35,7 +35,6 @@ export default class AuthService {
   public async register(
     name: string,
     email: string,
-    address: string,
     password: string
   ): Promise<User> {
     const existingUser = await this.userService.getUserByEmail(email)
@@ -48,7 +47,7 @@ export default class AuthService {
       name,
       email,
       password: hashedPassword,
-      address,
+      address :'put address here',
       role: 'user',
     }
     return await this.userService.createUser(newUser)

@@ -149,21 +149,24 @@ export class CartController {
     }
   }
 
-  // get cart products by user id 
-  async getCartProductsByUserId(req: Request, res: Response): Promise<Cart[] | null> {
+  // get cart products by user id
+  async getCartProductsByUserId(
+    req: Request,
+    res: Response
+  ): Promise<Cart[] | null> {
     try {
-      const userId = parseInt(req.params.userId, 10);
-      const cart = await this.cartService.getCartProductByUserId(userId);
-  
+      const userId = parseInt(req.params.userId, 10)
+      const cart = await this.cartService.getCartProductByUserId(userId)
+
       if (!cart) {
-        res.status(404).json({ error: 'Cart not found' });
+        res.status(404).json({ error: 'Cart not found' })
       } else {
-        res.status(200).json(cart);
+        res.status(200).json(cart)
       }
-      return cart; // Add this line to return the 'cart' value
+      return cart // Add this line to return the 'cart' value
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
-      throw error;
+      res.status(500).json({ error: error.message })
+      throw error
     }
-  } 
+  }
 }

@@ -142,11 +142,10 @@ export class CartRepository
       where: { userId },
       include: [
         {
-          association: 'products',  
-          through: { attributes: [] },  
-        }
+          association: 'products',
+          through: { attributes: [] },
+        },
       ],
-    });
+    })
   }
-  
 }
