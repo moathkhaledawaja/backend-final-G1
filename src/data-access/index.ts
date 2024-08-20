@@ -7,9 +7,12 @@ import {
   Image,
   Product,
   User,
-  UserRating,
+  Order,
   Wishlist,
+  UserRating,
 } from '../models'
+import { OrderRepository } from './OrderRepository'
+
 import { CommentRepository } from './CommentRepository'
 import { UserRepository } from './UserRepository'
 import { CategoryRepository } from './CategoryRepository'
@@ -31,3 +34,4 @@ export const brandRepository = new BrandRepository(Brand)
 export const wishlistRepository = new WishlistRepository(Wishlist)
 export const userRatingRepository = new UserRatingRepository(UserRating)
 export const imageRepository = new ImageRepository(Image)
+export const orderRepository = new OrderRepository(Order)
