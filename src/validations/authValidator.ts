@@ -8,7 +8,8 @@ export const validateLogin = [
 ]
 
 export const validateRegister = [
-  body('name').notEmpty().withMessage('Name is required'),
+  body('firstName').notEmpty().withMessage('Name is required'),
+  body('lastName').notEmpty().withMessage('Name is required'),
   body('email').isEmail().withMessage('Please provide a valid email address'),
   body('password')
     .notEmpty()
