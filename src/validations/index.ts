@@ -11,3 +11,9 @@ export {
 } from './cartValidator'
 
 export { createAndUpdateUserRatingValidator } from './userRatingValidator'
+
+export {
+  validateLogin,
+  validateRegister,
+  validateLogout,
+} from './authValidator'
