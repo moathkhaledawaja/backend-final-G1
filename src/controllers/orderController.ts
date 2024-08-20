@@ -101,12 +101,10 @@ export class OrderController {
       const userId = (req as any).user.id
       const canceled = await this.orderService.cancelOrder(id, userId)
       if (!canceled) {
-        res
-          .status(400)
-          .json({
-            error:
-              'Order can only be canceled if it is created by the user and status is processed',
-          })
+        res.status(400).json({
+          error:
+            'Order can only be canceled if it is created by the user and status is processed',
+        })
       }
       res.status(204).send(canceled)
       return canceled
