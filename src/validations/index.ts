@@ -12,4 +12,8 @@ export {
 
 export { createAndUpdateUserRatingValidator } from './userRatingValidator'
 
-export { validateLogin, validateRegister, validateLogout } from './authValidator'
+export {
+  validateLogin,
+  validateRegister,
+  validateLogout,
+} from './authValidator'
