@@ -21,19 +21,9 @@ export class Brand extends Model<Brand> {
   @Column({ type: DataTypes.STRING })
   name!: string
 
-  @HasMany(() => Product)
-  brands!: Product[]
-}
-@Table({
-  tableName: 'wishlistProduct',
-  ...defaultTableSettings,
-})
-export class WishlistProduct extends Model<WishlistProduct> {
-  @ForeignKey(() => Wishlist)
-  @Column({ allowNull: false, type: DataType.INTEGER })
-  wishlistId!: number
+  @Column({ type: DataTypes.STRING })
+  icon!: string
 
-  @ForeignKey(() => Product)
-  @Column({ allowNull: false, type: DataType.INTEGER })
-  productId!: number
+  @HasMany(() => Product)
+  prodcuts!: Product[]
 }

@@ -12,9 +12,10 @@ import {
   userRouter,
   wishlistRouter,
   discountRouter,
+  brandRouter,
+  userRatingRouter,
 } from './routes'
 import cors from 'cors'
-import userRatingRouter from './routes/userRatingRoutes'
 dotenv.config()
 
 const app = express()
@@ -32,11 +33,12 @@ app.use('/api/categories', categoryRouter)
 app.use('/api/comments', commentRouter)
 app.use('/api/userratings', userRatingRouter)
 app.use('/api/discounts', discountRouter)
+app.use('/api/brands', brandRouter)
 const startServer = async () => {
   try {
     await sequelize.authenticate()
     console.log('Database connected!')
-    // await sequelize.sync({ force: true })
+    await sequelize.sync({ alter: true })
     // console.log("Database synchronized!");
     app.listen(PORT, () => {
       console.log(`Server is running on http://localhost:${PORT}`)
