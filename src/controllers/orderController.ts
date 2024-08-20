@@ -12,7 +12,7 @@ export class OrderController {
 
   async createOrder(req: Request, res: Response) {
     try {
-      const orderData: OrderDTO = req.body;
+      const isPaid: boolean = req.body.isPaid;
       const userId = (req as any).user.id;
       const cart = await this.cartService.getCartProductByUserId(userId);
       if (!cart) {
@@ -20,7 +20,7 @@ export class OrderController {
         return;
       }
       const productIds = cart[0].toJSON().products
-      const order = this.orderService.createOrder(userId, orderData, productIds);
+      const order = this.orderService.createOrder(userId, isPaid, productIds);
       res.status(201).json(order);
       return order;
     } catch (error: any) {

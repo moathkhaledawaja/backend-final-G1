@@ -11,12 +11,10 @@ import { BadRequestError } from '../Errors/BadRequestError';
 @injectable()
 export default class OrderService {
 
-  public async createOrder(userId: number, data: OrderDTO, product: Product[]): Promise<OrderDTO> {
-    const { products, isPaid, status } = data;
+  public async createOrder(userId: number, isPaid: boolean, product: Product[]): Promise<OrderDTO> {
     const newOrder = new Order();
     newOrder.isPaid = isPaid;
-    newOrder.status = status;
-    newOrder.products = products;
+    newOrder.status = OrderStatus.processed;
     newOrder.userId = userId;
     const productIds: number[] = product.map(product => product.dataValues.id);
     try {
