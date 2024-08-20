@@ -53,55 +53,78 @@
             "example": "Product not found"
           }
         }
-      }
-    },
-    "WishlistDTO": {
-      "type": "object",
-      "properties": {
-        "products": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/Product"
+      },
+      "UserRatingDTO": {
+        "type": "object",
+        "properties": {
+          "rating": {
+            "type": "number",
+            "example": 4.5,
+            "description": "The rating given by the user, typically from 1 to 5."
+          },
+          "userId": {
+            "type": "integer",
+            "example": 1,
+            "description": "The ID of the user giving the rating."
+          },
+          "productId": {
+            "type": "integer",
+            "example": 101,
+            "description": "The ID of the product being rated."
+          }
+        },
+        "required": [
+          "rating"
+        ]
+      },
+      "WishlistDTO": {
+        "type": "object",
+        "properties": {
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Product"
+            }
           }
         }
-      }
-    },
-    "Product": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "example": "Sample Product"
-        },
-        "description": {
-          "type": "string",
-          "example": "This is a sample product."
-        },
-        "price": {
-          "type": "number",
-          "example": 99.99
-        },
-        "stock": {
-          "type": "integer",
-          "example": 100
-        },
-        "brand": {
-          "type": "string",
-          "example": "Sample Brand"
-        }
-      }
-    },
-    "AddProductRequest": {
-      "type": "object",
-      "properties": {
-        "productId": {
-          "type": "integer",
-          "example": 1
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Sample Product"
+          },
+          "description": {
+            "type": "string",
+            "example": "This is a sample product."
+          },
+          "price": {
+            "type": "number",
+            "example": 99.99
+          },
+          "stock": {
+            "type": "integer",
+            "example": 100
+          },
+          "brand": {
+            "type": "string",
+            "example": "Sample Brand"
+          }
         }
       },
-      "required": [
-        "productId"
-      ]
+      "AddProductRequest": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "example": 1
+          }
+        },
+        "required": [
+          "productId"
+        ]
+      }
     },
     "RemoveProductRequest": {
       "type": "object",
@@ -469,6 +492,178 @@
           },
           "500": {
             "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userratings": {
+      "post": {
+        "summary": "Create a user rating",
+        "description": "Create a new rating for a product by an authenticated user.",
+        "tags": [
+          "User Ratings"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRatingDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Rating created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Rating Created Successfully."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userratings/{id}": {
+      "patch": {
+        "summary": "Update a user rating",
+        "description": "Update an existing rating for a product by an authenticated user.",
+        "tags": [
+          "User Ratings"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "The ID of the rating to be updated."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRatingDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Rating updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Rating Updated Successfully."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User Rating not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get a user rating by user and product",
+        "description": "Retrieve a rating given by an authenticated user for a specific product.",
+        "tags": [
+          "User Ratings"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 101
+            },
+            "description": "The ID of the product."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User Rating retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRatingDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User Rating not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
             "content": {
               "application/json": {
                 "schema": {

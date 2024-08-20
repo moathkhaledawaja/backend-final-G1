@@ -5,6 +5,9 @@ import cartRouter from './cartRoutes'
 import authRouter from './authRoutes'
 import wishlistRouter from './wishlistRoutes'
 import commentRouter from './commentRoutes'
+import discountRouter from './discountRoutes'
+import brandRouter from './brandRoutes'
+import userRatingRouter from './userRatingRoutes'
 
 export {
   productRouter,
@@ -14,4 +17,7 @@ export {
   authRouter,
   wishlistRouter,
   commentRouter,
+  discountRouter,
+  brandRouter,
+  userRatingRouter,
 }
