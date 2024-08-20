@@ -20,7 +20,8 @@ export class OrderController {
         return;
       }
       const productIds = cart[0].toJSON().products
-      const order = this.orderService.createOrder(userId, isPaid, productIds);
+      const order = await this.orderService.createOrder(userId, isPaid, productIds);
+      const newCart = await this.cartService.deleteCart(cart[0].dataValues.id);
       res.status(201).json(order);
       return order;
     } catch (error: any) {

@@ -20,3 +20,8 @@ export {
   validateRegister,
   validateLogout,
 } from './authValidator'
+
+export {
+createOrderValidator,
+updateOrderValidator
+} from './orderValidator'
