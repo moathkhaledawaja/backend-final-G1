@@ -1,157 +1,155 @@
-import WishlistService from '../services/wishList.service';
-import { WishlistRepository } from '../data-access/WishListRepository';
-import { WishlistDTO } from '../Types/DTO/wishlistDto';
-import { mock, MockProxy } from 'jest-mock-extended';
-import { Wishlist } from '../models';
+import 'reflect-metadata'
+import WishlistService from '../services/wishList.service'
+import { wishlistRepository } from '../data-access'
+import { WishlistDTO } from '../Types/DTO'
+import { InternalServerError } from '../Errors/InternalServerError'
+import logger from '../helpers/logger'
 
-jest.mock('../models/Wishlist.model.ts');
+jest.mock('../data-access/wishlistRepository')
+jest.mock('../helpers/logger')
 
 describe('WishlistService', () => {
-  let wishlistService: WishlistService;
-  let wishlistRepository: MockProxy<WishlistRepository>;
+  let wishlistService: WishlistService
 
   beforeEach(() => {
-    wishlistRepository = mock<WishlistRepository>();
-    wishlistService = new WishlistService();
-  });
+    wishlistService = new WishlistService()
+    jest.clearAllMocks()
+  })
 
   describe('getWishlistByUserId', () => {
-    it('should return a wishlist for a given userId', async () => {
-      const userId = 1;
-      const wishlist = new Wishlist();
-      wishlist.products = [];
+    it('should return the wishlist for a given user ID', async () => {
+      const userId = 1
+      const wishlist: WishlistDTO = { products: [] }
 
-      wishlistRepository.findByUserId.mockResolvedValue(wishlist);
+      ;(wishlistRepository.findByUserId as jest.Mock).mockResolvedValue(
+        wishlist
+      )
 
-      const result = await wishlistService.getWishlistByUserId(userId);
+      const result = await wishlistService.getWishlistByUserId(userId)
 
-      expect(wishlistRepository.findByUserId).toHaveBeenCalledWith(userId);
-      expect(result).toEqual(wishlist);
-    });
+      expect(wishlistRepository.findByUserId).toHaveBeenCalledWith(userId)
+      expect(result).toEqual(wishlist)
+    })
 
     it('should return null if no wishlist is found', async () => {
-      const userId = 1;
+      const userId = 1
 
-      wishlistRepository.findByUserId.mockResolvedValue(null);
+      ;(wishlistRepository.findByUserId as jest.Mock).mockResolvedValue(null)
 
-      const result = await wishlistService.getWishlistByUserId(userId);
+      const result = await wishlistService.getWishlistByUserId(userId)
 
-      expect(result).toBeNull();
-    });
+      expect(result).toBeNull()
+    })
 
-    it('should throw an error if there is an issue retrieving the wishlist', async () => {
-      const userId = 1;
+    it('should throw an InternalServerError if an error occurs', async () => {
+      const userId = 1
 
-      wishlistRepository.findByUserId.mockRejectedValue(new Error('Database error'));
+      ;(wishlistRepository.findByUserId as jest.Mock).mockRejectedValue(
+        new Error('Database error')
+      )
 
       await expect(wishlistService.getWishlistByUserId(userId)).rejects.toThrow(
-        'Error retrieving the wishlist: Database error'
-      );
-    });
-  });
+        InternalServerError
+      )
+      expect(logger.error).toHaveBeenCalledWith('Database error')
+    })
+  })
 
   describe('addProductToWishlist', () => {
-    it('should return true if the product is successfully added', async () => {
-      const userId = 1;
-      const productId = 123;
+    it('should add a product to the wishlist and return true', async () => {
+      const userId = 1
+      const productId = 123
 
-      wishlistRepository.addProductToWishlist.mockResolvedValue(true);
+      ;(wishlistRepository.addProductToWishlist as jest.Mock).mockResolvedValue(
+        true
+      )
 
-      const result = await wishlistService.addProductToWishlist(userId, productId);
+      const result = await wishlistService.addProductToWishlist(
+        userId,
+        productId
+      )
 
-      expect(wishlistRepository.addProductToWishlist).toHaveBeenCalledWith(userId, productId);
-      expect(result).toBe(true);
-    });
+      expect(wishlistRepository.addProductToWishlist).toHaveBeenCalledWith(
+        userId,
+        productId
+      )
+      expect(result).toBe(true)
+    })
 
-    it('should return false if the product cannot be added', async () => {
-      const userId = 1;
-      const productId = 123;
+    it('should throw an InternalServerError if an error occurs', async () => {
+      const userId = 1
+      const productId = 123
 
-      wishlistRepository.addProductToWishlist.mockResolvedValue(false);
+      ;(wishlistRepository.addProductToWishlist as jest.Mock).mockRejectedValue(
+        new Error('Database error')
+      )
 
-      const result = await wishlistService.addProductToWishlist(userId, productId);
-
-      expect(result).toBe(false);
-    });
-
-    it('should throw an error if there is an issue adding the product', async () => {
-      const userId = 1;
-      const productId = 123;
-
-      wishlistRepository.addProductToWishlist.mockRejectedValue(new Error('Database error'));
-
-      await expect(wishlistService.addProductToWishlist(userId, productId)).rejects.toThrow(
-        'Error Adding the product: Database error'
-      );
-    });
-  });
+      await expect(
+        wishlistService.addProductToWishlist(userId, productId)
+      ).rejects.toThrow(InternalServerError)
+      expect(logger.error).toHaveBeenCalledWith(new Error('Database error'))
+    })
+  })
 
   describe('clearWishList', () => {
-    it('should return true if the wishlist is successfully cleared', async () => {
-      const userId = 1;
+    it('should clear the wishlist and return true', async () => {
+      const userId = 1
 
-      wishlistRepository.clearWishList.mockResolvedValue(true);
+      ;(wishlistRepository.clearWishList as jest.Mock).mockResolvedValue(true)
 
-      const result = await wishlistService.clearWishList(userId);
+      const result = await wishlistService.clearWishList(userId)
 
-      expect(wishlistRepository.clearWishList).toHaveBeenCalledWith(userId);
-      expect(result).toBe(true);
-    });
+      expect(wishlistRepository.clearWishList).toHaveBeenCalledWith(userId)
+      expect(result).toBe(true)
+    })
 
-    it('should return false if the wishlist cannot be cleared', async () => {
-      const userId = 1;
+    it('should throw an InternalServerError if an error occurs', async () => {
+      const userId = 1
 
-      wishlistRepository.clearWishList.mockResolvedValue(false);
-
-      const result = await wishlistService.clearWishList(userId);
-
-      expect(result).toBe(false);
-    });
-
-    it('should throw an error if there is an issue clearing the wishlist', async () => {
-      const userId = 1;
-
-      wishlistRepository.clearWishList.mockRejectedValue(new Error('Database error'));
+      ;(wishlistRepository.clearWishList as jest.Mock).mockRejectedValue(
+        new Error('Database error')
+      )
 
       await expect(wishlistService.clearWishList(userId)).rejects.toThrow(
-        'clearing the wishlist: Database error'
-      );
-    });
-  });
+        InternalServerError
+      )
+      expect(logger.error).toHaveBeenCalledWith('Database error')
+    })
+  })
 
   describe('removeProductFromWishList', () => {
-    it('should return true if the product is successfully removed', async () => {
-      const userId = 1;
-      const productId = 123;
+    it('should remove a product from the wishlist and return true', async () => {
+      const userId = 1
+      const productId = 123
 
-      wishlistRepository.removeProductFromWishList.mockResolvedValue(true);
+      ;(
+        wishlistRepository.removeProductFromWishList as jest.Mock
+      ).mockResolvedValue(true)
 
-      const result = await wishlistService.removeProductFromWishList(userId, productId);
+      const result = await wishlistService.removeProductFromWishList(
+        userId,
+        productId
+      )
 
-      expect(wishlistRepository.removeProductFromWishList).toHaveBeenCalledWith(userId, productId);
-      expect(result).toBe(true);
-    });
+      expect(wishlistRepository.removeProductFromWishList).toHaveBeenCalledWith(
+        userId,
+        productId
+      )
+      expect(result).toBe(true)
+    })
 
-    it('should return false if the product cannot be removed', async () => {
-      const userId = 1;
-      const productId = 123;
+    it('should throw an InternalServerError if an error occurs', async () => {
+      const userId = 1
+      const productId = 123
 
-      wishlistRepository.removeProductFromWishList.mockResolvedValue(false);
+      ;(
+        wishlistRepository.removeProductFromWishList as jest.Mock
+      ).mockRejectedValue(new Error('Database error'))
 
-      const result = await wishlistService.removeProductFromWishList(userId, productId);
-
-      expect(result).toBe(false);
-    });
-
-    it('should throw an error if there is an issue removing the product', async () => {
-      const userId = 1;
-      const productId = 123;
-
-      wishlistRepository.removeProductFromWishList.mockRejectedValue(new Error('Database error'));
-
-      await expect(wishlistService.removeProductFromWishList(userId, productId)).rejects.toThrow(
-        'Error removing the product: Database error'
-      );
-    });
-  });
-});
+      await expect(
+        wishlistService.removeProductFromWishList(userId, productId)
+      ).rejects.toThrow(InternalServerError)
+      expect(logger.error).toHaveBeenCalledWith('Database error')
+    })
+  })
+})

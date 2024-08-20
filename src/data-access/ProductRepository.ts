@@ -1,4 +1,4 @@
-import { IProductRepository } from "./Interfaces";
+import { IProductRepository } from './Interfaces'
 import {
   Category,
   Discount,
@@ -6,12 +6,13 @@ import {
   Comment,
   UserRating,
   Brand,
-} from "../models";
-import { RepositoryBase } from "./RepositoryBase";
-import { GetProductOptions } from "../Types/GetProductOptions";
+  Image,
+} from '../models'
+import { RepositoryBase } from './RepositoryBase'
+import { GetProductOptions } from '../Types/GetProductOptions'
 
-import { Op } from "sequelize";
-import { UpdateProductDTO } from "../Types/DTO/productDto";
+import { Op } from 'sequelize'
+import { UpdateProductDTO } from '../Types/DTO/productDto'
 
 export class ProductRepository
   extends RepositoryBase<Product>
@@ -33,8 +34,9 @@ export class ProductRepository
         { model: Comment },
         { model: UserRating },
         { model: Brand },
+        { model: Image },
       ],
-    });
+    })
   }
 
   /**
@@ -68,7 +70,7 @@ export class ProductRepository
           through: { attributes: [] },
         },
       ],
-    };
+    }
 
     //this will filter all products added to the database before the specified date.
     if (options?.earliestDate) {
@@ -76,15 +78,15 @@ export class ProductRepository
         createdAt: {
           [Op.gt]: options.earliestDate,
         },
-      };
+      }
     }
 
     //this filter will return all products that contain one or more category of the specified categories.
     if (options?.categories) {
-      opts.include[0].where = { name: options.categories };
+      opts.include[0].where = { name: options.categories }
     }
-    console.log(opts);
-    return await this.model.findAll(opts);
+    console.log(opts)
+    return await this.model.findAll(opts)
   }
 
   /**
@@ -96,15 +98,15 @@ export class ProductRepository
    */
   async CreateProduct(product: Product) {
     //create a new instance based on the values specified.
-    const newProduct = await this.model.create(product.dataValues);
+    const newProduct = await this.model.create(product.dataValues)
 
     //add the categories to the product.
-    await newProduct.$set("categories", product.categories);
-    await newProduct.$set("brand", product.brand);
+    await newProduct.$set('categories', product.categories)
+    await newProduct.$set('brand', product.brand)
     //save the changes, this will add tuples to the ProductCategory database for each connection
     //between the product and the category.
-    await newProduct.save({ returning: true });
-    return await this.GetProduct(newProduct.id);
+    await newProduct.save({ returning: true })
+    return await this.GetProduct(newProduct.id)
   }
   /**
    *
@@ -117,12 +119,12 @@ export class ProductRepository
     productId: number,
     newValues: UpdateProductDTO
   ): Promise<Product | null> {
-    const obj = { ...newValues };
+    const obj = { ...newValues }
 
     const [_, [updatedEntity]] = await this.model.update(obj, {
       where: { id: productId },
       returning: true,
-    });
-    return updatedEntity;
+    })
+    return updatedEntity
   }
 }

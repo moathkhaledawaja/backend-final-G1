@@ -1,13 +1,16 @@
-import { DiscountRepository } from "../data-access/DiscountRepository";
-import { injectable } from "tsyringe";
-
+import { injectable } from 'tsyringe'
+import { discountRepository } from '../data-access'
+import { Discount } from '../models'
 @injectable()
 export default class DiscountService {
-  repository: DiscountRepository;
-  constructor(repository: DiscountRepository) {
-    this.repository = repository;
-  }
   GetDiscountedItemsAsync = async () => {
-    return await this.repository.GetDiscounteadItems();
-  };
+    return await discountRepository.GetDiscounteadItems()
+  }
+
+  AddDiscount = async (
+    productId: number,
+    discountValue: number
+  ): Promise<Discount> => {
+    return await discountRepository.AddDiscount(productId, discountValue)
+  }
 }

@@ -1,7 +1,5 @@
-import { Product } from "../../models";
-
+import { Product } from '../../models'
 
 export type WishlistDTO = {
-  products:Product[]
-};
-
+  products: Product[]
+}
