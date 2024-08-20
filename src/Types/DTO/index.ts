@@ -1,4 +1,4 @@
-export { OrderDTO } from "./orderDto";
+export { OrderDTO } from './orderDto'
 export { CartDTO } from './cartDto'
 export { UserDTO } from './userDto'
 export { WishlistDTO } from './wishlistDto'

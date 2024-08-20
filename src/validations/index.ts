@@ -21,7 +21,4 @@ export {
   validateLogout,
 } from './authValidator'
 
-export {
-createOrderValidator,
-updateOrderValidator
-} from './orderValidator'
+export { createOrderValidator, updateOrderValidator } from './orderValidator'
