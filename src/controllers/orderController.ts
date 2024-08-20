@@ -10,13 +10,17 @@ import { BadRequestError } from '../Errors/BadRequestError';
 export class OrderController {
   constructor(@inject(OrderService) private orderService: OrderService, @inject(CartService) private cartService: CartService) { }
 
-  async createOrder(req: Request, res: Response): Promise<OrderDTO> {
+  async createOrder(req: Request, res: Response) {
     try {
       const orderData: OrderDTO = req.body;
-      const userId = req.user!.id;
-      // const cart = this.cartService.getCartByUserId(userId);
-
-      const order = this.orderService.createOrder(userId, cart);
+      const userId = (req as any).user.id;
+      const cart = await this.cartService.getCartProductByUserId(userId);
+      if (!cart) {
+        res.status(400).json({ error: "There is nothing in the cart." });
+        return;
+      }
+      const productIds = cart[0].toJSON().products
+      const order = this.orderService.createOrder(userId, orderData, productIds);
       res.status(201).json(order);
       return order;
     } catch (error: any) {
@@ -25,10 +29,10 @@ export class OrderController {
     }
   }
 
-  async getOrderByUserId(req: Request, res: Response): Promise<OrderDTO | null> {
+  async getOrderByUserId(req: Request, res: Response) {
     try {
       const id = req.params.id as unknown as number;
-      const userId = req.user!.id;
+      const userId = (req as any).user.id;
       const order = await this.orderService.getOrderById(id, userId);
       if (!order) {
         res.status(404).json({ error: 'Order not found' });
@@ -42,9 +46,9 @@ export class OrderController {
     }
   }
 
-  async getOrdersByUserId(req: Request, res: Response): Promise<OrderDTO[] | null> {
+  async getOrdersByUserId(req: Request, res: Response) {
     try {
-      const userId = req.user!.id;
+      const userId = (req as any).user.id;
       const orders = await this.orderService.getOrders(userId);
       if (!orders) {
         res.status(404).json({ error: 'No Orders found' });
@@ -57,10 +61,10 @@ export class OrderController {
       throw error;
     }
   }
-  async updateOrder(req: Request, res: Response): Promise<OrderDTO | null> {
+  async updateOrder(req: Request, res: Response) {
     try {
       const id = req.params.id as unknown as number;
-      const userId = req.user!.id;
+      const userId = (req as any).user.id;
       const newStatus: OrderStatus = req.body.status;
       const isPaid = req.body.isPaid;
       const order = await this.orderService.updateOrder(id, userId, newStatus, isPaid);
@@ -79,10 +83,10 @@ export class OrderController {
     }
   }
 
-  async deleteOrder(req: Request, res: Response): Promise<boolean> {
+  async deleteOrder(req: Request, res: Response) {
     try {
       const id = req.params.id as unknown as number;
-      const userId = req.user!.id;
+      const userId = (req as any).user.id;
       const canceled = await this.orderService.cancelOrder(id, userId);
       if (!canceled) {
         res.status(400).json({ error: 'Order can only be canceled if it is created by the user and status is processed' });

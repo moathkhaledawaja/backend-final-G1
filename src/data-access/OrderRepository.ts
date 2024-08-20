@@ -5,11 +5,10 @@ import { RepositoryBase } from "./RepositoryBase";
 export class OrderRepository
   extends RepositoryBase<Order>
   implements IOrderRepository {
-  async findById(id: number): Promise<Order | null> {
-    throw new Error("Order Can't Be Found By ID")
-  }
-  async findAll(): Promise<Order[]> {
-    throw new Error("Order Can't Be Found By ID")
+  async createOrder(order: Order, productIds: number[]): Promise<Order> {
+    const newOrder = await this.model.create(order);
+    await newOrder.$add("products", productIds);
+    return newOrder;
   }
 
   async findByIdAndUserId(id: number, userId: number): Promise<Order | null> {

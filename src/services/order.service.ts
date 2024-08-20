@@ -1,4 +1,4 @@
-import { Order } from '../models';
+import { Order, Product } from '../models';
 import { OrderDTO } from '../Types/DTO';
 import { injectable } from 'tsyringe';
 import { orderRepository } from '../data-access';
@@ -11,14 +11,16 @@ import { BadRequestError } from '../Errors/BadRequestError';
 @injectable()
 export default class OrderService {
 
-  public async createOrder(userId: number, data: OrderDTO): Promise<OrderDTO> {
+  public async createOrder(userId: number, data: OrderDTO, product: Product[]): Promise<OrderDTO> {
     const { products, isPaid, status } = data;
     const newOrder = new Order();
     newOrder.isPaid = isPaid;
     newOrder.status = status;
     newOrder.products = products;
+    newOrder.userId = userId;
+    const productIds: number[] = product.map(product => product.dataValues.id);
     try {
-      const order = await orderRepository.create(newOrder);
+      const order = await orderRepository.createOrder(newOrder, productIds);
       return orderToOrderDTO(order);
     }
     catch (error: any) {
@@ -103,12 +105,12 @@ export default class OrderService {
 
   public async cancelOrder(id: number, userId: number): Promise<boolean> {
     try {
-      const oldOrder = await orderRepository.findByIdAndUserId(id,userId);
-      if(!oldOrder){
+      const oldOrder = await orderRepository.findByIdAndUserId(id, userId);
+      if (!oldOrder) {
         return false;
       }
       const oldOrderJSON = oldOrder?.toJSON();
-      if(oldOrderJSON?.status !== OrderStatus.processed){
+      if (oldOrderJSON?.status !== OrderStatus.processed) {
         return false;
       }
       return await orderRepository.delete(id);
