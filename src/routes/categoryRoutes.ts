@@ -2,10 +2,10 @@ import { Router } from 'express'
 import { container } from 'tsyringe'
 import { CategoryController } from '../controllers/CategoryController'
 import {
-  getCategoryById,
-  createCategory,
-  updateCategory,
-  deleteCategory,
+  getCategoryByIdValidator,
+  createCategoryValidator,
+  updateCategoryValidator,
+  deleteCategoryValidator,
 } from '../validations/categoryValidator'
 
 const categoryRoutes = Router()
@@ -17,22 +17,22 @@ categoryRoutes.get(
 )
 categoryRoutes.get(
   '/:id',
-  getCategoryById,
+  getCategoryByIdValidator,
   categoryController.getCategoryByID.bind(categoryController)
 )
 categoryRoutes.post(
   '/',
-  createCategory,
+  createCategoryValidator,
   categoryController.createCategory.bind(categoryController)
 )
 categoryRoutes.put(
   '/:id',
-  updateCategory,
+  updateCategoryValidator,
   categoryController.updateCategory.bind(categoryController)
 )
 categoryRoutes.delete(
   '/:id',
-  deleteCategory,
+  deleteCategoryValidator,
   categoryController.deleteCategory.bind(categoryController)
 )
 
