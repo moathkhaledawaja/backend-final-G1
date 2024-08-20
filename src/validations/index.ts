@@ -8,6 +8,9 @@ export {
   deleteCartValidator,
   updateCartValidator,
   getCartValidator,
+  updateProductQuantityValidator,
+  addProductToCartValidator,
+  removeProductFromCartValidator,
 } from './cartValidator'
 
 export { createAndUpdateUserRatingValidator } from './userRatingValidator'
