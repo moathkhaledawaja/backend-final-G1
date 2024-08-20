@@ -127,12 +127,4 @@ export class ProductRepository
     })
     return updatedEntity
   }
-
-  async SetImages(id: number, images: Image[]) {
-    const product = await this.findById(id)
-    await product?.$set('images', images)
-    await product?.save()
-
-    return product
-  }
 }
