@@ -7,15 +7,34 @@ export class CartRepository
   extends RepositoryBase<Cart>
   implements ICartRepository
 {
+  /**
+   * retrieve a cart with the specified Userid.
+   * @param {number} userId - this is the id of the user we want to retrieve their cart from our Database.
+   * @returns {Cart[] | null} returns the cart identified with the userId, if not found returns null.
+   * @throws {Error} when it fails to retrieve from or connect with the database.
+   */
   async findCartByUserId(userId: number): Promise<Cart[]> {
     return await this.model.findAll({ where: { userId } })
   }
+
+  /**
+   * retrieve products for a specific cart
+   * @param {number} cartId - this is the id of the cart we want to retrieve its products from our Database.
+   * @returns {Cart | null} returns the cart identified with the cartId, if not found returns null.
+   * @throws {Error} when it fails to retrieve from or connect with the database.
+   */
   async findCartProducts(cartId: number): Promise<Cart | null> {
     return await this.model.findByPk(cartId, {
       include: { all: true },
     })
   }
 
+  /**
+   * Update a cart with the specified cartId.
+   * @param {number} id - this is the id of the cart we want to update
+   * @returns {Cart | null} returns the updated cart identified with the cartId, if not found returns null.
+   * @throws {Error} when it fails to retrieve from or connect with the database.
+   */
   async updateCart(id: number, cartData: Cart): Promise<Cart | null> {
     const [affectedRows, [updatedCart]] = await this.model.update(cartData, {
       where: { id },
@@ -24,12 +43,23 @@ export class CartRepository
     return affectedRows > 0 ? updatedCart : null
   }
 
+  /**
+   * delete a cart with the specified Userid.
+   * @param {number} id - this is the id of the cart we want to delete from our Database.
+   * @returns {boolean} returns true if the cart is deleted otherwise it returns false
+   * @throws {Error} when it fails to retrieve from or connect with the database.
+   */
   async deleteCart(id: number): Promise<boolean> {
     const deleted = await this.model.destroy({ where: { id } })
     return deleted > 0
   }
 
-  // add product to cart
+  /**
+   * adding a product to cart
+   * @params {number,number,number} cartId,productId,quantity
+   * @returns {Cart[] | null} returns true if the product is added successfully otherwise returns false
+   * @throws {Error} when it fails to retrieve from or connect with the database.
+   */
   async addProductToCart(
     cartId: number,
     productId: number,
@@ -69,7 +99,12 @@ export class CartRepository
     })
   }
 
-  // remove item from cart
+  /**
+   * remove a product from a cart
+   * @params {number, number} cartId, productId
+   * @returns {boolean} returns true if the product removed successfully, otherwise returns false
+   * @throws {Error} when it fails to retrieve from or connect with the database.
+   */
   async removeProductFromCart(
     cartId: number,
     productId: number
@@ -100,7 +135,12 @@ export class CartRepository
     })
   }
 
-  // update product quantity in cart
+  /**
+   * update the quantity of the product
+   * @params {number,number,number} cartId, productId, quantity - cartId is the id of the cart, productId is the product we want to update it's quantity
+   * @returns {boolean} returns true if the quantity is updated successfully otherwise, false
+   * @throws {Error} when it fails to retrieve from or connect with the database.
+   */
   async updateProductQuantity(
     cartId: number,
     productId: number,
