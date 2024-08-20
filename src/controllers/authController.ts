@@ -9,11 +9,6 @@ class AuthController {
 
   async login(req: Request, res: Response) {
     const { email, password } = req.body
-
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Email and password are required' })
-    }
-
     try {
       const token = await this.authService.login(email, password)
       res.status(200).json({ token })
@@ -23,14 +18,10 @@ class AuthController {
   }
 
   async register(req: Request, res: Response) {
-    const { name, email, password, role, address }: UserDTO = req.body
-
-    if (!name || !email || !password || !role || !address) {
-      return res.status(400).json({ error: 'All fields are required' })
-    }
-
+    const { firstName, lastName, email, password } = req.body
+    const name = `${firstName} ${lastName}`
     try {
-      await this.authService.register(name, email, address, password)
+      await this.authService.register(name, email, password)
       res.status(201).json({ message: 'User created successfully' })
     } catch (error: any) {
       res.status(400).json({ error: error.message })

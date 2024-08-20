@@ -13,6 +13,30 @@ export const createCartValidator = [
   validateResult,
 ]
 
+export const updateProductQuantityValidator = [
+  body('cartId').isInt({ gt: 0 }).toInt(),
+
+  body('products').isArray({ min: 1 }),
+
+  body('products.*.productId').isInt({ gt: 0 }).toInt(),
+
+  body('products.*.quantity').isInt({ gt: 0 }).toInt(),
+
+  validateResult,
+]
+
+export const addProductToCartValidator = [
+  body('cartId').isInt({ gt: 0 }).toInt(),
+
+  body('products').isArray({ min: 1 }),
+
+  body('products.*.productId').isInt({ gt: 0 }).toInt(),
+
+  body('products.*.quantity').isInt({ gt: 0 }).toInt(),
+
+  validateResult,
+]
+
 export const getCartValidator = [
   param('userId').isInt().toInt(),
   validateResult,
@@ -29,4 +53,11 @@ export const updateCartValidator = [
   body('products.*.productId').isInt({ gt: 0 }).toInt(),
 
   body('products.*.quantity').isInt({ gt: 0 }).toInt(),
+  validateResult,
+]
+
+export const removeProductFromCartValidator = [
+  param('cartId').isInt().toInt(),
+  param('productId').isInt().toInt(),
+  validateResult,
 ]

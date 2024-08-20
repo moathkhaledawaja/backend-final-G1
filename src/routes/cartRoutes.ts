@@ -7,6 +7,9 @@ import {
   updateCartValidator,
   deleteCartValidator,
   getCartValidator,
+  updateProductQuantityValidator,
+  addProductToCartValidator,
+  removeProductFromCartValidator,
 } from '../validations'
 
 const cartRouter = Router()
@@ -40,13 +43,15 @@ cartRouter.delete(
 cartRouter.put(
   '/:cartId/product/:productId/quantity',
   authAndRoleMiddleware(['user', 'admin']),
+  updateProductQuantityValidator,
   cartController.updateProductQuantity.bind(cartController)
 )
 
 // add product to cart
-cartRouter.put(
+cartRouter.post(
   '/:cartId/product/:productId',
   authAndRoleMiddleware(['user', 'admin']),
+  addProductToCartValidator,
   cartController.addProductToCart.bind(cartController)
 )
 
@@ -54,7 +59,16 @@ cartRouter.put(
 cartRouter.delete(
   '/:cartId/product/:productId',
   authAndRoleMiddleware(['user', 'admin']),
+  removeProductFromCartValidator,
   cartController.removeProductFromCart.bind(cartController)
+)
+
+// get cart products by user id
+cartRouter.get(
+  '/products/:userId',
+  authAndRoleMiddleware(['user', 'admin']),
+  getCartValidator,
+  cartController.getCartProductsByUserId.bind(cartController)
 )
 
 export default cartRouter
