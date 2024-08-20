@@ -30,7 +30,7 @@ export class OrderRepository
     });
   }
   async findByUserId(userId: number): Promise<Order[] | null> {
-    return await this.model.findAll({ where: { userId } });
+    return await this.model.findAll({ where: { userId }});
   }
 
 

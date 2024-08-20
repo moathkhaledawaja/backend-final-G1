@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import { injectable, inject } from 'tsyringe';
 import OrderService from '../services/order.service';
-import { OrderDTO } from '../Types/DTO';
 import CartService from '../services/cart.service';
 import { OrderStatus } from '../enums/OrderStatusEnum';
 import { BadRequestError } from '../Errors/BadRequestError';
+import { OrderDTO } from '../Types/DTO';
 
 @injectable()
 export class OrderController {
@@ -20,7 +20,7 @@ export class OrderController {
         return;
       }
       const productIds = cart[0].toJSON().products
-      const order = await this.orderService.createOrder(userId, isPaid, productIds);
+      const order:OrderDTO = await this.orderService.createOrder(userId, isPaid, productIds);
       const newCart = await this.cartService.deleteCart(cart[0].dataValues.id);
       res.status(201).json(order);
       return order;
