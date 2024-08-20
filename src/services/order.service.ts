@@ -33,7 +33,7 @@ export default class OrderService {
     try {
       const order = await orderRepository.findByIdAndUserId(id, userId);
       if (!order) {
-        throw null;
+        return null;
       }
       return orderToOrderDTO(order);
 
@@ -68,7 +68,7 @@ export default class OrderService {
       if (!oldOrder) {
         return null;
       }
-      const oldOrderJSON = await oldOrder?.toJSON();
+      const oldOrderJSON = await oldOrder.toJSON();
       isPaid = isPaid || oldOrderJSON.isPaid;
       if (oldOrderJSON.status === OrderStatus.processed) {
         if (status !== OrderStatus.outForDelivery) {
@@ -96,7 +96,9 @@ export default class OrderService {
     }
     catch (error: any) {
       logger.error(`Error updating Order: ${error.message}`);
-
+      if (error instanceof BadRequestError) {
+        throw error;
+      }
       throw new InternalServerError();
     }
   }
