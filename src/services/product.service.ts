@@ -49,12 +49,13 @@ export default class ProductService {
         pageSize,
         options
       )
-
       const prodcutsDto: GetProductDTO[] = []
-
       //map each Product with a ProductDTO
       products.forEach((item) => {
         prodcutsDto.push({
+          id: item.id,
+          averageRating: item.toJSON().averageRating,
+          ratingCount: item.toJSON().ratingCount,
           name: item.name,
           price: item.price,
           stock: item.stock,
@@ -121,6 +122,7 @@ export default class ProductService {
 
       const productDTO: GetProductDTO = {
         name: product.name,
+        id: product.id,
         price: product.price,
         stock: product.stock,
         brand: product.brand,

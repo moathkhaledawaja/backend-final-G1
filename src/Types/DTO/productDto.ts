@@ -17,9 +17,12 @@ export type PostProductDTO = {
 }
 
 export type GetProductDTO = {
+  id: number
   name: string
   price: number
   stock: number
+  averageRating?: number
+  ratingCount?: number
   description?: string
   discount?: discountDTO
   categories?: CategoryDTO[]
