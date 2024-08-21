@@ -69,6 +69,7 @@ export class ProductRepository
           model: Category,
           through: { attributes: [] },
         },
+        { model: Image },
       ],
     }
 
