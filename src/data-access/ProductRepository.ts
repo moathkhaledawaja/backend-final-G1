@@ -69,7 +69,7 @@ export class ProductRepository
       offset: pageSize * (page - 1),
       where: {
         ...(options?.earliestDate && {
-          createAt: {
+          createdAt: {
             [Op.gt]: options.earliestDate,
           },
         }),
