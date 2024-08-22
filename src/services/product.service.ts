@@ -66,6 +66,7 @@ export default class ProductService {
             id: item.discount?.id,
           },
           images: item.images,
+          categories: item.categories,
         })
       })
 

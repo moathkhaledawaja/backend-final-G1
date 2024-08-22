@@ -104,6 +104,7 @@ export class ProductRepository
               name: options.categories,
             },
           }),
+          through: { attributes: [] },
         },
         {
           model: UserRating,
