@@ -69,7 +69,7 @@ export class ProductRepository
       offset: pageSize * (page - 1),
       where: {
         ...(options?.earliestDate && {
-          createAt: {
+          createdAt: {
             [Op.gt]: options.earliestDate,
           },
         }),
@@ -117,6 +117,9 @@ export class ProductRepository
             },
           }),
         },
+        {
+          model: Image,
+        },
       ],
       group: [
         'Product.id', // Group by Product ID
@@ -125,6 +128,7 @@ export class ProductRepository
         'categories->ProductCategory.categoryId', // Group by categoryId from ProductCategory
         'ratings.id', // Group by UserRating ID
         'brand.id', // Group by UserRating ID
+        'images.id',
       ],
       having: {
         ...(options?.minRating && {
