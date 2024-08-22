@@ -132,6 +132,7 @@ export default class ProductService {
         comments,
         categories,
         userRatings: ratings,
+        images: product.images,
       }
 
       return productDTO
